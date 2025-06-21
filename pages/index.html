@@ -3,157 +3,151 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="initial-scale=1, width=device-width">
-
-    <link rel="stylesheet"  href="../styles/index.css"/>
+    <link rel="stylesheet" href="../styles/index.css"/>
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500&display=swap" />
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Rubik:wght@400&display=swap" />
     <title>Sazón Patrimonial</title>
-
-
 </head>
 <body>
-
 <div class="vista-principal">
-    <div class="rectangle-parent">
-        <div class="frame-child">
-        </div>
-        <div class="logo-blanco-parent">
-            <img class="logo-blanco" alt="" src="../images/logo_white.png">
-
-            <div class="catlogo-de-restaurantes">Catálogo de Restaurantes en San Cristóbal</div>
-        </div>
-        <div class="registro-usuario-parent">
-            <img class="registro" alt="" src="../images/agregar-usuario.png">
-
-            <div class="registrarse">Registrarse</div>
-        </div>
-        <div class="log-in-parent">
-            <img class="registro" alt="" src="../images/usuario.png">
-
-            <div class="iniciar-sesin">Iniciar sesión</div>
-        </div>
-    </div>
-    <div class="calles-con-encanto-scaled-parent">
-        <img class="calles-con-encanto-scaled-icon" alt="" src="../images/fondo_inicio.png">
-
-        <div class="descubre-la-magia">Descubre la Magia Culinaria de San Cristóbal</div>
-        <div class="explora-los-mejores">Explora los mejores sabores de esta tierra</div>
-        <div class="component-32">
-            <div class="component-32-child">
+    <header class="header-principal">
+        <div class="rectangle-parent">
+            <div class="frame-child"></div>
+            <div class="logo-blanco-parent">
+                <img class="logo-blanco" alt="Logo Sazón Patrimonial" src="../images/logo_sp_blanco.png">
+                <div class="catlogo-de-restaurantes">Catálogo de Restaurantes en San Cristóbal</div>
             </div>
-            <img class="busqueda" alt="" src="../images/buscar.png">
-
-            <div class="buscar">Buscar</div>
+            <nav class="acciones-usuario">
+                <button class="registro-usuario-parent" type="button"></button>
+                    <img class="registro" alt="Registrarse" src="../images/agregar-usuario.png">
+                    <span class="registrarse">Registrarse</span>
+                </button>
+                <button class="log-in-parent" type="button">
+                    <img class="registro" alt="Iniciar sesión" src="../images/usuario.png">
+                    <span class="iniciar-sesin">Iniciar sesión</span>
+                </button>
+            </nav>
         </div>
-    </div>
-    <div class="rectangle-group">
-        <div class="frame-item">
+    </header>
+
+    <main>
+        <section class="calles-con-encanto-scaled-parent">
+            <img class="calles-con-encanto-scaled-icon" alt="" src="../images/fondo_inicio.png">
+            <div class="contenido-superpuesto">
+                <div class="descubre-la-magia">
+                    Descubre la Magia Culinaria de <br>San Cristóbal
+                </div>
+                <div class="explora-los-mejores">
+                    Explora los mejores sabores de esta tierra
+                </div>
+                <div class="barra-busqueda">
+                    <img class="busqueda-icono" alt="" src="../images/buscar.png">
+                    <input type="text" placeholder="Buscar restaurantes, platillos...">
+                    <button class="buscar">Buscar</button>
+                </div>
+            </div>
+        </section>
+
+        <div class="contenido-principal">
+            <aside class="rectangle-group">
+                <div class="frame-item"></div>
+                <div class="filtrar-por">Filtrar por</div>
+                <div class="component-2">
+                    <img class="reloj-icon" alt="" src="../images/dolar.png">
+                    <select class="filtro-select">
+                        <option value="bajo">$</option>
+                        <option value="medio">$$</option>
+                        <option value="alto">$$$</option>
+                    </select>
+                    <div class="keyboard-arrow-down-wrapper">
+                        <img class="keyboard-arrow-down-icon" alt="" src="../images/flecha-hacia-abajo-para-navegar.png">
+                    </div>
+                </div>
+                <div class="component-4">
+                    <img class="reloj-icon" alt="" src="../images/reloj-de-pared.png">
+                    <select class="filtro-select">
+                        <option value="manana">Mañana</option>
+                        <option value="tarde">Tarde</option>
+                        <option value="noche">Noche</option>
+                    </select>
+                    <div class="keyboard-arrow-down-container">
+                        <img class="keyboard-arrow-down-icon1" alt="" src="../images/flecha-hacia-abajo-para-navegar.png">
+                    </div>
+                </div>
+                <div class="component-6">
+                    <img class="reloj-icon" alt="" src="../images/menu.png">
+                    <select class="filtro-select">
+                        <option value="mexicana">Mexicana</option>
+                        <option value="cafe">Café</option>
+                        <option value="internacional">Internacional</option>
+                    </select>
+                    <div class="keyboard-arrow-down-container">
+                        <img class="keyboard-arrow-down-icon1" alt="" src="../images/flecha-hacia-abajo-para-navegar.png">
+                    </div>
+                </div>
+                <div class="component-8">
+                    <img class="reloj-icon" alt="" src="../images/ubicacion.png">
+                    <select class="filtro-select">
+                        <option value="centro">Centro</option>
+                        <option value="norte">Norte</option>
+                        <option value="sur">Sur</option>
+                    </select>
+                    <div class="keyboard-arrow-down-container">
+                        <img class="keyboard-arrow-down-icon1" alt="" src="../images/flecha-hacia-abajo-para-navegar.png">
+                    </div>
+                </div>
+                <div class="component-11">
+                    <div class="buscar1">Buscar</div>
+                </div>
+            </aside>
+
+            <section class="line-parent">
+                <div class="restaurante-card">
+                    <img class="restaurante-img" src="../images/rest_placeholder.png" alt="Restaurante La Mansión">
+                    <div class="restaurante-info">
+                        <h3 class="restaurante-nombre">La Mansión</h3>
+                        <div class="restaurante-tipos">
+                            <span>Cocina regional mexicana</span><br>
+                            <span>Café</span>
+                        </div>
+                        <div class="restaurante-horario">
+                            <span>Lunes a viernes</span>
+                            <span>8:00 a 20:00</span>
+                        </div>
+                    </div>
+                </div>
+            </section>
         </div>
-        <div class="filtrar-por">Filtrar por</div>
-        <div class="component-2">
-            <img class="reloj-icon" alt="" src="../images/dolar.png">
+    </main>
 
-            <div class="keyboard-arrow-down-wrapper">
-                <img class="keyboard-arrow-down-icon" alt="" src="../images/flecha-hacia-abajo-para-navegar.png">
-
+    <footer class="rectangle-container">
+        <div class="footer-contactos-redes">
+            <div class="contctanos-parent">
+                <div class="contctanos">Contáctanos</div>
+                <div class="gmail-1-1-parent">
+                    <img class="llamada-telefonica-2-icon" alt="Correo" src="../images/gmail_logo.png">
+                    <div class="sazonpatrimonialgmailcom">sazonpatrimonial@gmail.com</div>
+                </div>
+                <div class="llamada-telefonica-2-parent">
+                    <img class="llamada-telefonica-2-icon" alt="Teléfono" src="../images/call_logo.png">
+                    <div class="sazonpatrimonialgmailcom">+52 961 652 2093</div>
+                </div>
+                <div class="logotipo-de-instagram-2-parent">
+                    <img class="llamada-telefonica-2-icon" alt="Instagram" src="../images/insta_logo.png">
+                    <div class="sazonpatrimonialgmailcom">@sazonpatrimonial</div>
+                </div>
+                <div class="facebook-1-1-parent">
+                    <img class="llamada-telefonica-2-icon" alt="Facebook" src="../images/face_logo.png">
+                    <div class="sazonpatrimonialgmailcom">@sazonpatrimonial</div>
+                </div>
             </div>
         </div>
-        <div class="component-4">
-            <img class="reloj-icon" alt="" src="../images/reloj-de-pared.png">
-
-            <div class="keyboard-arrow-down-container">
-                <img class="keyboard-arrow-down-icon1" alt="" src="../images/flecha-hacia-abajo-para-navegar.png">
-
-            </div>
+        <div class="footer-logos">
+            <img class="logo-blanco-2" alt="Logo Sazón Patrimonial" src="../images/logo_sp_blanco.png">
+            <img class="logo-equipo" alt="Logo Devbox" src="../images/devbox_logo.png">
+            <img class="logo-universidad" alt="Logo UP" src="../images/up_logo.png">
         </div>
-        <div class="component-6">
-            <img class="reloj-icon" alt="" src="../images/menu.png">
-
-            <div class="keyboard-arrow-down-container">
-                <img class="keyboard-arrow-down-icon1" alt="" src="../images/flecha-hacia-abajo-para-navegar.png">
-
-            </div>
-        </div>
-        
-        <div class="component-8">
-            <img class="reloj-icon" alt="" src="../images/ubicacion.png">
-
-            <div class="keyboard-arrow-down-container">
-                <img class="keyboard-arrow-down-icon1" alt="" src="../images/flecha-hacia-abajo-para-navegar.png">
-
-            </div>
-        </div>
-        <div class="component-11">
-            <div class="component-11-child">
-            </div>
-            <div class="buscar1">Buscar</div>
-        </div>
-    </div>
-    <div class="line-parent">
-        <img class="frame-inner" alt="" src="Line 3.svg">
-
-        <div class="parent" id="frameContainer">
-            <img class="icon" alt="" src="../images/rest_placeholder.png">
-
-            <div class="component-child">
-            </div>
-            <div class="la-mansin-san">La mansión- San Cristóbal</div>
-            <div class="cocina-regional-mexicana-container">
-                <p class="cocina-regional-mexicana">Cocina regional mexicana</p>
-                <p class="cocina-regional-mexicana">Café</p>
-                <p class="cocina-regional-mexicana">...</p>
-            </div>
-            <div class="lunes-a-viernes-container">
-                <p class="cocina-regional-mexicana">Lunes a viernes</p>
-                <p class="cocina-regional-mexicana">8:00 a 20:00</p>
-            </div>
-        </div>
-
-    <div class="rectangle-container">
-        <div class="frame-child9">
-        </div>
-        <div class="contctanos-parent">
-            <div class="contctanos">Contáctanos</div>
-            <div class="gmail-1-1-parent">
-                <img class="llamada-telefonica-2-icon" alt="" src="../images/gmail_logo.png">
-
-                <div class="sazonpatrimonialgmailcom">sazonpatrimonial@gmail.com</div>
-            </div>
-            <div class="llamada-telefonica-2-parent">
-                <img class="llamada-telefonica-2-icon" alt="" src="../images/call_logo.png">
-
-                <div class="sazonpatrimonialgmailcom">+52 961 652 2093</div>
-            </div>
-        </div>
-        <div class="logotipo-de-instagram-2-parent">
-            <img class="llamada-telefonica-2-icon" alt="" src="../images/insta_logo.png">
-
-            <div class="sazonpatrimonialgmailcom">@sazonpatrimonial</div>
-        </div>
-        <div class="facebook-1-1-parent">
-            <img class="llamada-telefonica-2-icon" alt="" src="../images/face_logo.png">
-
-            <div class="sazonpatrimonialgmailcom">@sazonpatrimonial</div>
-        </div>
-        <img class="chatgpt-image-10-jun-2025-10-1" alt="" src="../images/logo_white.png">
-
-        <img class="logo-universidad-1-icon" alt="" src="../images/up_logo.png">
-
-        <img class="captura-de-pantalla-2025-06-19" alt="" src="../images/devbox_logo.png">
-
-    </div>
+    </footer>
 </div>
-</div>
-
-
-
-
-<script>
-    var frameContainer = document.getElementById("frameContainer");
-    if(frameContainer) {
-        frameContainer.addEventListener("click", function (e) {
-            // Add your code here
-        });
-    }</script>
 </body>
 </html>
