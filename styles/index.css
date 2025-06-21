@@ -6,7 +6,7 @@
     width: 1440px;
     height: 150px;
 }
-.chatgpt-image-10-jun-2025-10- {
+.logo-blanco {
     width: 150px;
     position: relative;
     max-height: 100%;
@@ -19,7 +19,7 @@
     display: inline-block;
     flex-shrink: 0;
 }
-.chatgpt-image-10-jun-2025-10-parent {
+.logo-blanco-parent {
     position: absolute;
     top: -1px;
     left: 16px;
@@ -34,7 +34,7 @@
     font-size: 30px;
     color: #f4f4f4;
 }
-.user-plus-1-icon {
+.registro {
     width: 24px;
     position: relative;
     height: 24px;
@@ -44,7 +44,7 @@
 .registrarse {
     position: relative;
 }
-.user-plus-1-parent {
+.registro-usuario-parent {
     position: absolute;
     top: 36px;
     left: 946px;
@@ -63,7 +63,7 @@
     display: inline-block;
     flex-shrink: 0;
 }
-.log-in-2-parent {
+.log-in-parent {
     position: absolute;
     top: 36px;
     left: 1163px;
@@ -120,7 +120,7 @@
     width: 1106px;
     height: 50px;
 }
-.simbolo-de-la-interfaz-de-busq-icon {
+.busqueda {
     position: absolute;
     top: 10px;
     left: 13px;
@@ -234,6 +234,7 @@
     justify-content: flex-start;
     gap: 6px;
 }
+
 .component-6 {
     position: absolute;
     top: 262px;
