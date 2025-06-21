@@ -34,7 +34,7 @@ html, body {
 .logo-blanco-parent {
     display: flex;
     align-items: center;
-    gap: 0px;
+    gap: 10px;
 }
 
 .logo-blanco {
