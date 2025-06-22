@@ -4,18 +4,19 @@
     box-sizing: border-box;
 }
 
-/*
-body{
-    background-image:url('../images/fondo_blancoo.jpeg');
+body {
+    height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #f9f9f9; /* Opcional: fondo suave */
 }
-*/
 
 .form{
     width:400px;
     background: #ffffff;
     padding : 30px;
     margin: auto;
-    margin-top: 100px;
     border-radius: 4px;
     font-family: 'rubik', sans-serif;
     color: #912F2F;
