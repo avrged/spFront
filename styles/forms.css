@@ -9,7 +9,7 @@ body {
     display: flex;
     align-items: center;
     justify-content: center;
-    background: #f9f9f9; /* Opcional: fondo suave */
+    background: #f9f9f9; 
 }
 
 .form{
@@ -24,6 +24,7 @@ body {
 }
 
 .form h4{
+    text-align: center;
     font-size: 36px;
     margin-bottom: 20px;
 }
@@ -66,4 +67,10 @@ label {
     color: #912F2F;
     font-weight: 500;
     font-family: 'rubik', sans-serif;
+}
+
+.button:hover, .button:focus {
+    background: #B64040;
+    transform: translateY(-2px) scale(1.03);
+    transition: background 0.2s, transform 0.2s;
 }
