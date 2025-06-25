@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../styles/solicitud.css">
+    <title>Registro de usuario</title>
+</head>
+<body>
+    <header class="header-principal">
+        <div class="rectangle-parent">
+            <div class="logo-blanco-parent">
+                <img class="logo-blanco" alt="Logo Sazón Patrimonial" src="../images/logo_sp_blanco.png">
+                <div class="catlogo-de-restaurantes">
+                    Catálogo de Restaurantes <br>en San Cristóbal
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <div class="registro-container">
+
+        <section class="form-section">
+            <form>
+                <h4>Solicitud de validación</h4>
+                <p class="sub-text">
+                    Proporciona la siguiente información para verificar la propiedad de tu restaurante
+                </p>
+
+                <label for="restaurante">Restaurante</label>
+                <input class="controls" type="text" id="restaurante"
+                       placeholder="Ingrese el nombre del restaurante">
+
+                <label for="propietario">Propietario</label>
+                <input class="controls" type="text" id="propietario"
+                       placeholder="Ingrese el nombre del propietario">
+
+                <label for="correo">Correo electrónico</label>
+                <input class="controls" type="email" id="correo"
+                       placeholder="Ingrese su correo">
+
+                <label for="numero">Número de celular</label>
+                <input class="controls" type="tel" id="numero"
+                       placeholder="Ingrese su número de celular">
+
+                <label for="direccion">Dirección</label>
+                <input class="controls" type="text" id="direccion"
+                       placeholder="Ingrese la dirección del restaurante">
+
+                <label for="horario">Horario</label>
+                <input class="controls" type="text" id="horario"
+                       placeholder="Ingrese el horario">
+
+                <label>Imágenes</label>
+                <div class="imagenes-group">
+                    <label class="input-file">
+                        Seleccionar imagen
+                        <input type="file" name="imagen1" hidden>
+                    </label>
+                    <label class="input-file">
+                        Seleccionar imagen
+                        <input type="file" name="imagen2" hidden>
+                    </label>
+                    <label class="input-file">
+                        Seleccionar imagen
+                        <input type="file" name="imagen3" hidden>
+                    </label>
+                </div>
+
+                <input class="button" type="submit" value="Enviar solicitud">
+            </form>
+        </section>
+
+        <section class="image-section">
+            <img src="../images/registro.jpeg" alt="Restaurante"
+                 class="registro-img">
+        </section>
+    </div>
+
+    <footer class="rectangle-container">
+        <div class="footer-contactos-redes">
+            <div class="contctanos">Contáctanos</div>
+            <div class="contactos-grid">
+                <div class="gmail-1-1-parent">
+                    <img class="llamada-telefonica-2-icon" alt="Correo"
+                         src="../images/gmail_logo.png">
+                    <div class="sazonpatrimonialgmailcom">
+                        sazonpatrimonial@gmail.com
+                    </div>
+                </div>
+                <div class="llamada-telefonica-2-parent">
+                    <img class="llamada-telefonica-2-icon" alt="Teléfono"
+                         src="../images/call_logo.png">
+                    <div class="sazonpatrimonialgmailcom">+52 961 652 2093</div>
+                </div>
+                <div class="logotipo-de-instagram-2-parent">
+                    <img class="llamada-telefonica-2-icon" alt="Instagram"
+                         src="../images/insta_logo.png">
+                    <div class="sazonpatrimonialgmailcom">@sazonpatrimonial</div>
+                </div>
+                <div class="facebook-1-1-parent">
+                    <img class="llamada-telefonica-2-icon" alt="Facebook"
+                         src="../images/face_logo.png">
+                    <div class="sazonpatrimonialgmailcom">@sazonpatrimonial</div>
+                </div>
+            </div>
+        </div>
+        <div class="footer-logos">
+            <img class="logo-blanco-2" alt="Logo Sazón Patrimonial"
+                 src="../images/logo_sp_blanco.png">
+            <img class="logo-equipo" alt="Logo Devbox"
+                 src="../images/devbox_logo.png">
+            <img class="logo-universidad" alt="Logo UP"
+                 src="../images/logo_uni.png">
+        </div>
+    </footer>
+</body>
+</html>

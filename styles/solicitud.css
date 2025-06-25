@@ -1,0 +1,268 @@
+html, body {
+    width: 100%;
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    overflow-x: hidden;
+}
+
+.registro-container {
+    display: flex;
+    gap: 24px;
+    max-width: 100%;         
+    margin: 100px 40px 40px 40px;  
+    width: 100%;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+.form-section {
+    background: #fff;
+    padding: 40px;
+    width: 520px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.form-section h4 {
+    text-align: center;
+    font-size: 2rem;
+    margin-bottom: 4px;
+    color: #912F2F;
+    font-weight: 700;
+    font-family: 'Rubik', sans-serif;
+}
+
+.form-section .sub-text {
+    text-align: center;
+    font-size: 0.95rem;
+    color: #912F2F;
+    margin-bottom: 24px;
+    font-family: 'Rubik', sans-serif;
+}
+
+label {
+    display: block;
+    margin-bottom: 6px;
+    margin-top: 10px;
+    color: #912F2F;
+    font-weight: 500;
+    font-family: 'Rubik', sans-serif;
+    font-size: 1rem;
+}
+
+.controls {
+    width: 100%;
+    background: #fff;
+    padding: 10px;
+    border-radius: 8px;
+    margin-bottom: 12px;
+    border: 1.5px solid #B64040;
+    font-family: 'Rubik', sans-serif;
+    font-size: 1rem;
+    color: #912F2F;
+    transition: border 0.2s;
+}
+
+.controls:focus {
+    border: 1.5px solid #912F2F;
+    outline: none;
+}
+
+.imagenes-group {
+    display: flex;
+    gap: 10px;
+    margin-top: 10px;
+    margin-bottom: 18px;
+}
+
+.input-file {
+    background: #912F2F;
+    color: #fff;
+    text-align: center;
+    border: none;
+    border-radius: 8px;
+    padding: 10px;
+    font-weight: 500;
+    width: 100%;
+    cursor: pointer;
+    transition: background 0.2s;
+    font-family: 'Rubik', sans-serif;
+    font-size: 1rem;
+}
+
+.input-file:hover {
+    background: #B64040;
+}
+
+.button {
+    width: 100%;
+    background: #912F2F;
+    border: none;
+    padding: 14px;
+    color: #fff;
+    margin-top: 16px;
+    font-size: 1.1rem;
+    border-radius: 8px;
+    cursor: pointer;
+    font-family: 'Rubik', sans-serif;
+    font-weight: 500;
+    transition: background 0.2s, transform 0.2s;
+}
+
+.button:hover, .button:focus {
+    background: #B64040;
+    transform: translateY(-2px) scale(1.03);
+}
+
+.image-section {
+    display: flex;
+    align-items: stretch;
+    justify-content: center;
+    width: 700px;
+    padding: 40px;
+    box-sizing: border-box;
+}
+
+.registro-img {
+    width: 100%;
+    height: 100%;
+    max-width: 700px;
+    border-radius: 12px;
+    object-fit: cover;
+    box-shadow: 0 2px 12px rgba(145,47,47,0.10);
+}
+
+::placeholder {
+    color: #912F2F;
+    opacity: 0.8;   
+    font-weight: 400;
+}
+
+.vista-principal {
+    width: 100%;
+}
+
+.header-principal {
+    position: fixed;
+    top: 0;
+    z-index: 1000;
+    width: 100%;
+    background: #6b1e1e;
+    color: #fff;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+}
+
+.rectangle-parent {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 110px;
+    padding-left: 40px;
+    padding-right: 40px;
+    position: relative;
+}
+
+.logo-blanco-parent {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.logo-blanco {
+    margin-left: 0;
+    height: 90px;
+    width: auto;
+}
+
+.catlogo-de-restaurantes {
+    font-size: 2rem;
+    font-weight: 500;
+    color: #fff;
+    font-family: 'Montserrat', sans-serif;
+}
+
+.rectangle-container {
+    width: 100%;
+    background: #912f2f;
+    color: #fff;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-start;
+    justify-content: space-between;
+    padding: 32px 40px 20px 40px;
+    box-sizing: border-box;
+    gap: 32px;
+    font-family: 'Montserrat', sans-serif;
+}
+
+.contctanos {
+    font-size: 1.2rem;
+    font-weight: 600;
+    margin-bottom: 16px;
+    grid-column: 1 / -1;
+}
+
+.contactos-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 18px 40px;
+}
+
+.gmail-1-1-parent,
+.llamada-telefonica-2-parent,
+.logotipo-de-instagram-2-parent,
+.facebook-1-1-parent {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 1rem;
+}
+
+.llamada-telefonica-2-icon {
+    width: 26px;
+    height: 26px;
+    object-fit: contain;
+}
+
+.sazonpatrimonialgmailcom {
+    font-size: 1rem;
+    color: #fff;
+}
+
+.footer-logos {
+    display: flex;
+    align-items: center;
+    gap: 18px;
+}
+
+.logo-blanco-2,
+.logo-equipo,
+.logo-universidad {
+    height: 120px;
+    width: auto;
+    object-fit: contain;
+    border-radius: 8px;
+}
+
+@media (max-width: 960px) {
+    .registro-container {
+        flex-direction: column;
+        align-items: center;
+        margin: 100px 20px 40px 20px;
+    }
+
+    .form-section, .image-section {
+        width: 100%;
+        max-width: 500px;
+    }
+
+    .image-section {
+        padding: 0;
+    }
+
+    .registro-img {
+        height: auto;
+    }
+}
