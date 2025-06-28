@@ -21,50 +21,55 @@
     <div class="registro-container">
 
         <section class="form-section">
-            <form>
+            <form id="registroForm">
                 <h4>Solicitud de validación</h4>
                 <p class="sub-text">
                     Proporciona la siguiente información para verificar la propiedad de tu restaurante
                 </p>
 
                 <label for="restaurante">Restaurante</label>
-                <input class="controls" type="text" id="restaurante"
-                       placeholder="Ingrese el nombre del restaurante">
+                <input class="controls" type="text" id="restaurante" placeholder="Ingrese el nombre del restaurante">
+                <span class="error-msg" id="error-nombre-restaurante"></span>
+
 
                 <label for="propietario">Propietario</label>
-                <input class="controls" type="text" id="propietario"
-                       placeholder="Ingrese el nombre del propietario">
+                <input class="controls" type="text" id="propietario"placeholder="Ingrese el nombre del propietario">
+                <span class="error-msg" id="error-nombre-propietario"></span>
+
 
                 <label for="correo">Correo electrónico</label>
-                <input class="controls" type="email" id="correo"
-                       placeholder="Ingrese su correo">
+                <input class="controls" type="email" id="correo"placeholder="Ingrese su correo">
+                <span class="error-msg" id="error-correo"></span>
 
                 <label for="numero">Número de celular</label>
-                <input class="controls" type="tel" id="numero"
-                       placeholder="Ingrese su número de celular">
+                <input class="controls" type="tel" id="numero" placeholder="Ingrese su número de celular">
+                <span class="error-msg" id="error-numero"></span>
 
                 <label for="direccion">Dirección</label>
-                <input class="controls" type="text" id="direccion"
-                       placeholder="Ingrese la dirección del restaurante">
+                <input class="controls" type="text" id="direccion" placeholder="Ingrese la dirección del restaurante">
+                <span class="error-msg" id="error-direccion"></span>
 
-                <label for="horario">Horario</label>
-                <input class="controls" type="text" id="horario"
-                       placeholder="Ingrese el horario">
+                <label for="horario">Horarios de cierre y apertura</label>
+                <input class="controls" type="text" id="horario" placeholder="Ingrese el horario">
+                <span class="error-msg" id="error-horario"></span>
+
 
                 <label>Imágenes</label>
                 <div class="imagenes-group">
+                  <div class="input-file-group">
                     <label class="input-file">
-                        Seleccionar imagen
-                        <input type="file" name="imagen1" hidden>
+                      Seleccionar tres imágenes (JPG, PNG)
+                      <input type="file" name="imagen1" hidden multiple accept="image/png, image/jpeg">
                     </label>
+                    <span class="error-msg" id="error-images"></span>
+                  </div>
+                  <div class="input-file-group">
                     <label class="input-file">
-                        Seleccionar imagen
-                        <input type="file" name="imagen2" hidden>
+                      Comprobante de domicilio (PDF)
+                      <input type="file" name="imagen2" hidden accept="application/pdf">
                     </label>
-                    <label class="input-file">
-                        Seleccionar imagen
-                        <input type="file" name="imagen3" hidden>
-                    </label>
+                    <span class="error-msg" id="error-comprobante"></span>
+                  </div>
                 </div>
 
                 <input class="button" type="submit" value="Enviar solicitud">
@@ -114,5 +119,15 @@
                  src="../images/logo_uni.png">
         </div>
     </footer>
+
+    <div id="modal" class="modal">
+        <div class="modal-contenido">
+            <span id="cerrarModal" class="cerrar">&times;</span>
+            <p>¡Su solicitud ha sido enviada con éxito!<br>La información será validada muy pronto.<br>:)</p>
+        </div>
+    </div>
+
+<script src="../Scripts/modal.js"></script>
+
 </body>
 </html>
