@@ -7,15 +7,21 @@
 </head>
 <body>
 <section class="form">
-    <form>
+    <form id="registroForm">
         <img src="../images/logo_sp_rojo.png" class="logo" width="100">
         <h4>Iniciar sesión</h4>
         <label for="correo">Correo electrónico:</label>
         <input class="controls" type="email" name="correo" id="correo" placeholder="Ingrese su correo">
+        <span class="error-msg" id="error-correo"></span>
+
         <label for="contrasena">Contraseña:</label>
         <input class="controls" type="password" name="contrasena" id="contrasena" placeholder="Ingrese su contraseña">
+        <span class="error-msg" id="error-contrasena"></span>
+
         <input class="button" type="submit" value="Iniciar sesión">
     </form>
 </section>
+
+<script src="../Scripts/loginAdmin.js"></script>
 </body>
 </html>
