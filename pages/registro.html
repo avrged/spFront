@@ -7,19 +7,29 @@
 </head>
 <body>
 <section class="form">
-    <form>
+    <form id="registroForm">
         <img src="../images/logo_sp_rojo.png" class="logo" width="100">
         <h4>Registro de usuario</h4>
-        <label for="Nombre">Nombre de usuario:</label>
-        <input class="controls" type="text" name="Nombre" id="Nombre" placeholder="Ingrese su nombre">
+        <label for="nombre">Nombre de usuario:</label>
+        <input class="controls" type="text" name="nombre" id="nombre" placeholder="Ingrese su nombre">
+        <span class="error-msg" id="error-nombre"></span>
+
         <label for="correo">Correo electrónico:</label>
         <input class="controls" type="email" name="correo" id="correo" placeholder="Ingrese su correo">
+        <span class="error-msg" id="error-correo"></span>
+
         <label for="contrasena">Contraseña:</label>
         <input class="controls" type="password" name="contrasena" id="contrasena" placeholder="Ingrese su contraseña">
-        <label for="Confirmar">Confirmar contraseña:</label>
-        <input class="controls" type="password" name="Confirmar" id="Confirmar" placeholder="Confirmar contraseña">
-        <input class="button" type="button" value="Registrarse" onclick="window.location.href='solicitud.html'">
+        <span class="error-msg" id="error-contrasena"></span>
+
+        <label for="confirmar">Confirmar contraseña:</label>
+        <input class="controls" type="password" name="confirmar" id="confirmar" placeholder="Confirmar contraseña">
+        <span class="error-msg" id="error-confirmar"></span>
+
+        <input class="button" type="submit" value="Registrarse" >
     </form>
 </section>
+
+<script src="../Scripts/registro.js"></script>
 </body>
 </html>

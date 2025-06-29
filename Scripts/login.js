@@ -19,15 +19,15 @@ document.addEventListener("DOMContentLoaded", function () {
     contrasena.classList.remove("input-error");
 
     if (correo.value.trim() === "") {
-      errorCorreo.textContent = "*Este campo es obligatorio.";
-      correo.classList.add("input-error");
-      formularioValido = false;
+        errorCorreo.textContent = "*Este campo es obligatorio.";
+        correo.classList.add("input-error");
+        formularioValido = false;
     }
 
     if (contrasena.value.trim() === "") {
-      errorContrasena.textContent = "*Este campo es obligatorio.";
-      contrasena.classList.add("input-error");
-      formularioValido = false;
+        errorContrasena.textContent = "*Este campo es obligatorio.";
+        contrasena.classList.add("input-error");
+        formularioValido = false;
     }
 
   });
