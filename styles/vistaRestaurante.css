@@ -1,11 +1,8 @@
-.icon-16 {
+.icon-16, .icon-20 {
     width: 20px;
     height: 20px;
 }
-.icon-20 {
-    width: 20px;
-    height: 20px;
-}
+
 .icon-32 {
     width: 32px;
     height: 32px;
@@ -16,6 +13,7 @@
 .icon-rotate-90 {
     transform: rotate(90deg);
 }
+
 .restaurante-vista-container {
     max-width: 90%;
     margin: 140px auto 40px auto;
@@ -25,6 +23,7 @@
     font-family: 'Montserrat', sans-serif;
     position: relative;
 }
+
 .btn-back {
     background: none;
     border: none;
@@ -34,6 +33,7 @@
     cursor: pointer;
     padding: 0;
 }
+
 .restaurante-nombre {
     text-align: center;
     font-size: 3rem;
@@ -42,6 +42,7 @@
     margin: 0 0 8px 0;
     letter-spacing: 1px;
 }
+
 .restaurante-divider {
     border: none;
     border-top: 4px solid #912f2f;
@@ -49,13 +50,15 @@
     margin: 0 auto 24px auto;
     border-radius: 2px;
 }
+
 .restaurante-galeria {
     display: flex;
-    gap: 20px;
+    gap: 2%;
     margin-bottom: 28px;
     justify-content: center;
     flex-wrap: wrap;
 }
+
 .galeria-principal {
     width: 50%;
     height: 40%;
@@ -78,25 +81,21 @@
 }
 
 .restaurante-info-flex {
-    display: flex;
-    justify-content: space-between;
-    gap: 32px;
-    margin-bottom: 22px;
-    flex-wrap: wrap;
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 24px;
+    width: 90%;
+    max-width: 1100px;
+    margin: 0 auto 32px auto;
 }
-.restaurante-horarios, .restaurante-contactos, .restaurante-ubicacion {
-    background: #fff;
-    padding: 18px 22px;
-    min-width: 30%;
-    flex: 1 1 220px;
-    margin-bottom: 8px;
-}
-.restaurante-horarios h2, .restaurante-contactos h2, .restaurante-ubicacion h2 {
+
+.restaurante-info-box h2 {
     font-size: 2rem;
     color: #912f2f;
     margin: 0 0 8px 0;
     font-weight: 600;
 }
+
 .restaurante-contactos div {
     margin-bottom: 6px;
     font-size: 1.3rem;
@@ -106,31 +105,69 @@
     color:#912f2f;
 }
 
-.restaurante-horarios, .restaurante-ubicacion{
-    margin-bottom: 6px;
-    font-size: 1.3rem;
-    color:#912f2f;
-}
 
 .restaurante-caracteristicas {
     display: flex;
-    gap: 6px;
-    margin: 18px 0 18px 0;
-    flex-wrap: wrap;
-    justify-content: center;
+    align-items: flex-start;
+    gap: 14px;
+    background: transparent;
+    box-shadow: none;
+    padding: 0;
 }
+
+.caracteristicas-izq {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+}
+
+.icon-etiqueta {
+    width: 32px;
+    height: 32px;
+    margin-top: 2px;
+    flex-shrink: 0;
+}
+
+.caracteristicas-lista {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    align-items: flex-start;
+}
+
+.caracteristica-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
 .caracteristica {
     background: #912f2f;
     color: #fff;
     border-radius: 18px;
-    padding: 7px 18px;
-    font-size: 1.2rem;
-    font-weight: 500;
+    padding: 6px 16px;
+    min-width: 160px;
+    max-width: 160px;
+    text-align: center;
+    white-space: nowrap;
+    box-sizing: border-box;
     display: flex;
+    justify-content: center;
     align-items: center;
-    gap: 6px;
-    box-shadow: 0 1px 4px rgba(0,0,0,0.07);
 }
+
+.restaurante-info-box {
+    background: #fff;
+    padding: 20px;
+    border-radius: 12px;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    font-size: 1.3rem;
+    color: #912f2f;
+}
+
+
 .btn-menu {
     display: flex;
     align-items: center;
@@ -149,6 +186,12 @@
 }
 .btn-menu:hover {
     background: #912f2f;
+}
+
+.restaurante-info-flex,
+.restaurante-caracteristicas,
+.btn-menu {
+    max-width: 1100px
 }
 
 html, body {
