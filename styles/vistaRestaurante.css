@@ -1,0 +1,271 @@
+.icon-16 {
+    width: 20px;
+    height: 20px;
+}
+.icon-20 {
+    width: 20px;
+    height: 20px;
+}
+.icon-32 {
+    width: 32px;
+    height: 32px;
+}
+.icon-middle {
+    vertical-align: middle;
+}
+.icon-rotate-90 {
+    transform: rotate(90deg);
+}
+.restaurante-vista-container {
+    max-width: 90%;
+    margin: 140px auto 40px auto;
+    background: #fff;
+    border-radius: 18px;
+    padding: 32px 36px 36px 36px;
+    font-family: 'Montserrat', sans-serif;
+    position: relative;
+}
+.btn-back {
+    background: none;
+    border: none;
+    position: absolute;
+    top: 24px;
+    left: 24px;
+    cursor: pointer;
+    padding: 0;
+}
+.restaurante-nombre {
+    text-align: center;
+    font-size: 3rem;
+    font-weight: 700;
+    color: #912f2f;
+    margin: 0 0 8px 0;
+    letter-spacing: 1px;
+}
+.restaurante-divider {
+    border: none;
+    border-top: 4px solid #912f2f;
+    width: 80%;
+    margin: 0 auto 24px auto;
+    border-radius: 2px;
+}
+.restaurante-galeria {
+    display: flex;
+    gap: 20px;
+    margin-bottom: 28px;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+.galeria-principal {
+    width: 50%;
+    height: 40%;
+    object-fit: cover;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+}
+.galeria-secundaria {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    justify-content: flex-start;
+}
+.galeria-secundaria img {
+    width: 100%;
+    height: 42%;
+    object-fit: cover;
+    border-radius: 8px;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.07);
+}
+
+.restaurante-info-flex {
+    display: flex;
+    justify-content: space-between;
+    gap: 32px;
+    margin-bottom: 22px;
+    flex-wrap: wrap;
+}
+.restaurante-horarios, .restaurante-contactos, .restaurante-ubicacion {
+    background: #fff;
+    padding: 18px 22px;
+    min-width: 30%;
+    flex: 1 1 220px;
+    margin-bottom: 8px;
+}
+.restaurante-horarios h2, .restaurante-contactos h2, .restaurante-ubicacion h2 {
+    font-size: 2rem;
+    color: #912f2f;
+    margin: 0 0 8px 0;
+    font-weight: 600;
+}
+.restaurante-contactos div {
+    margin-bottom: 6px;
+    font-size: 1.3rem;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    color:#912f2f;
+}
+
+.restaurante-horarios, .restaurante-ubicacion{
+    margin-bottom: 6px;
+    font-size: 1.3rem;
+    color:#912f2f;
+}
+
+.restaurante-caracteristicas {
+    display: flex;
+    gap: 6px;
+    margin: 18px 0 18px 0;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+.caracteristica {
+    background: #912f2f;
+    color: #fff;
+    border-radius: 18px;
+    padding: 7px 18px;
+    font-size: 1.2rem;
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.07);
+}
+.btn-menu {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: #6A1E1E;
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    padding: 12px 28px;
+    font-size: 1.1rem;
+    font-weight: 600;
+    cursor: pointer;
+    margin: 0 auto;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+    transition: background 0.2s;
+}
+.btn-menu:hover {
+    background: #912f2f;
+}
+
+html, body {
+    width: 100%;
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    overflow-x: hidden;
+}
+
+*, *::before, *::after {
+    box-sizing: inherit;
+}
+
+.vista-principal {
+    width: 100%;
+}
+
+.header-principal {
+    position: fixed;
+    top: 0;
+    z-index: 1000;
+    width: 100%;
+    background: #6b1e1e;
+    color: #fff;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+}
+
+.rectangle-parent {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 110px;
+    padding-left: 40px;
+    padding-right: 40px;
+    position: relative;
+}
+
+.logo-blanco-parent {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.logo-blanco {
+    margin-left: 0;
+    height: 90px;
+    width: auto;
+}
+
+.catlogo-de-restaurantes {
+    font-size: 2rem;
+    font-weight: 500;
+    color: #fff;
+    font-family: 'Montserrat', sans-serif;
+}
+
+.rectangle-container {
+    width: 100%;
+    background: #912f2f;
+    color: #fff;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-start;
+    justify-content: space-between;
+    padding: 32px 40px 20px 40px;
+    box-sizing: border-box;
+    gap: 32px;
+    font-family: 'Montserrat', sans-serif;
+}
+
+
+.contctanos {
+    font-size: 1.2rem;
+    font-weight: 600;
+    margin-bottom: 16px;
+    grid-column: 1 / -1;
+}
+
+.contactos-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 18px 40px;
+}
+
+.gmail-1-1-parent,
+.llamada-telefonica-2-parent,
+.logotipo-de-instagram-2-parent,
+.facebook-1-1-parent {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 1rem;
+}
+
+.llamada-telefonica-2-icon {
+    width: 26px;
+    height: 26px;
+    object-fit: contain;
+}
+
+.sazonpatrimonialgmailcom {
+    font-size: 1rem;
+    color: #fff;
+}
+
+.footer-logos {
+    display: flex;
+    align-items: center;
+    gap: 18px;
+}
+
+.logo-blanco-2,
+.logo-equipo,
+.logo-universidad {
+    height: 120px;
+    width: auto;
+    object-fit: contain;
+    border-radius: 8px;
+}
