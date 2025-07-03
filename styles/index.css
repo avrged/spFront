@@ -217,40 +217,46 @@ html, body {
 .component-4,
 .component-6,
 .component-8 {
+    font-family: 'rubik', sans-serif;
+    position: relative;
     display: flex;
     align-items: center;
-    gap: 12px;
+    gap: 10px;
     background: #fff;
-    border-radius: 10px;
+    border-radius: 20px;
     padding: 10px 12px;
-    border: 1px solid #B64040;
+    margin-bottom: 18px;
 }
 
 .filtro-select {
-    flex: 1;
-    border: none;
-    background: transparent;
+    width: 100%;
+    padding: 10px 38px 10px 36px;
+    border: 1px solid #912f2f;
+    border-radius: 20px;
     font-size: 1rem;
-    color: #912F2F;
-    font-family: 'rubik', sans-serif;
-    padding: 6px 0;
-    outline: none;
+    color: #912f2f;
+    background: #fff;
     appearance: none;
+    outline: none;
+    margin-bottom: 0;
     cursor: pointer;
+    font-family: 'rubik', sans-serif;
 }
 
 .reloj-icon {
+    position: absolute;
+    left: 18px;
     width: 24px;
     height: 24px;
+    pointer-events: none;
 }
 
-.keyboard-arrow-down-wrapper {
-    display: flex;
-    align-items: center;
-}
-
-.keyboard-arrow-down-icon,
 .keyboard-arrow-down-icon1 {
+    position: absolute;
+    right: 18px;
+    top: 50%;
+    transform: translateY(-50%);
+    pointer-events: none;
     width: 18px;
     height: 18px;
 }
