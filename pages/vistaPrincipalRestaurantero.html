@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="initial-scale=1, width=device-width">
+    <link rel="stylesheet" href="../styles/vistaPrincipalRestaurantero.css"/>
+    <title>Sazón Patrimonial</title>
+</head>
+<body>
+<div class="vista-principal">
+    <header class="header-principal">
+        <div class="rectangle-parent">
+            <div class="logo-blanco-parent">
+                <img class="logo-blanco" alt="Logo Sazón Patrimonial" src="../images/logo_sp_blanco.png">
+                <div class="catlogo-de-restaurantes">Catálogo de Restaurantes <br>en San Cristóbal</div>
+            </div>
+            <nav class="acciones-usuario">
+                <button class="mi-restaurante-parent" type="button">
+                    <img class="miRestaurante" alt="miRestaurante" src="../images/miRestaurante.png">
+                    <span class="miRestaurante">Mi restaurante</span>
+                </button>
+                <button class="log-out-parent" type="button">
+                    <img class="log out" alt="Cerrar sesion" src="../images/logout.png">
+                    <span class="log-out">Cerrar sesión</span>
+                </button>
+            </nav>
+            <div class="icono-restaurantero">
+                <img class="icono-restaurantero" alt="icono-restaurantero" src="../images/restaurantero.png">
+            </div>
+        </div>
+    </header>
+
+    <main>
+        <section class="calles-con-encanto-scaled-parent">
+            <img class="calles-con-encanto-scaled-icon" alt="" src="../images/fondo_inicio.png">
+            <div class="contenido-superpuesto">
+                <div class="descubre-la-magia">
+                    Descubre la Magia Culinaria de <br>San Cristóbal
+                </div>
+                <div class="explora-los-mejores">
+                    Explora los mejores sabores de esta tierra
+                </div>
+                <div class="barra-busqueda">
+                    <img class="busqueda-icono" alt="" src="../images/buscar.png">
+                    <input type="text" placeholder="Buscar restaurantes">
+                    <button class="buscar">Buscar</button>
+                </div>
+            </div>
+        </section>
+
+        <div class="contenido-principal">
+            <aside class="rectangle-group">
+                <div class="frame-item"></div>
+                <div class="filtrar-por">Filtrar por</div>
+                <div class="component-2">
+                    <img class="reloj-icon" alt="" src="../images/dolar.png">
+                    <select class="filtro-select">
+                        <option value="" disabled selected>Seleccionar</option>
+                        <option value="bajo">Bajo</option>
+                        <option value="medio">Medio</option>
+                        <option value="alto">Alto</option>
+                    </select>
+                    <img class="keyboard-arrow-down-icon1" alt="" src="../images/flecha-hacia-abajo-para-navegar.png">
+                </div>
+                <div class="component-4">
+                    <img class="reloj-icon" alt="" src="../images/reloj-de-pared.png">
+                    <select class="filtro-select">
+                        <option value="" disabled selected>Seleccionar</option>
+                        <option value="manana">Mañana</option>
+                        <option value="tarde">Tarde</option>
+                        <option value="noche">Noche</option>
+                    </select>
+                    <img class="keyboard-arrow-down-icon1" alt="" src="../images/flecha-hacia-abajo-para-navegar.png">
+                </div>
+                <div class="component-6">
+                    <img class="reloj-icon" alt="" src="../images/menu.png">
+                    <select class="filtro-select">
+                        <option value="" disabled selected>Seleccionar</option>
+                        <option value="mexicana">Mexicana</option>
+                        <option value="cafe">Café</option>
+                        <option value="internacional">Internacional</option>
+                    </select>
+                    <img class="keyboard-arrow-down-icon1" alt="" src="../images/flecha-hacia-abajo-para-navegar.png">
+                </div>
+                <div class="component-8">
+                    <img class="reloj-icon" alt="" src="../images/ubicacion.png">
+                    <select class="filtro-select">
+                        <option value="" disabled selected>Seleccionar</option>
+                        <option value="centro">Centro</option>
+                        <option value="norte">Norte</option>
+                        <option value="sur">Sur</option>
+                    </select>
+                    <img class="keyboard-arrow-down-icon1" alt="" src="../images/flecha-hacia-abajo-para-navegar.png">
+                </div>
+                <div class="component-11">
+                    <div class="buscar1">Buscar</div>
+                </div>
+            </aside>
+
+            <section class="line-parent">
+                <div class="restaurante-card" onclick="window.location.href='vistaRestaurante.html'">
+                    <img class="restaurante-img" src="../images/rest_placeholder.png" alt="Restaurante La Mansión">
+                    <div class="restaurante-info">
+                        <h3 class="restaurante-nombre">La Mansión</h3>
+                        <div class="restaurante-tipos">
+                            <span>Cocina regional mexicana</span><br>
+                        </div>
+                        <div class="restaurante-horario">
+                            <span>Lunes a viernes</span>
+                            <span>8:00 a 20:00</span>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <footer class="rectangle-container">
+       <div class="footer-contactos-redes">
+            <div class="contctanos">Contáctanos</div>
+            <div class="contactos-grid">
+                <div class="gmail-1-1-parent">
+                    <img class="llamada-telefonica-2-icon" alt="Correo" src="../images/gmail_logo.png">
+                    <div class="sazonpatrimonialgmailcom">sazonpatrimonial@gmail.com</div>
+                </div>
+                <div class="llamada-telefonica-2-parent">
+                    <img class="llamada-telefonica-2-icon" alt="Teléfono" src="../images/call_logo.png">
+                    <div class="sazonpatrimonialgmailcom">+52 961 652 2093</div>
+                </div>
+                <div class="logotipo-de-instagram-2-parent">
+                    <img class="llamada-telefonica-2-icon" alt="Instagram" src="../images/insta_logo.png">
+                    <div class="sazonpatrimonialgmailcom">@sazonpatrimonial</div>
+                </div>
+                <div class="facebook-1-1-parent">
+                    <img class="llamada-telefonica-2-icon" alt="Facebook" src="../images/face_logo.png">
+                    <div class="sazonpatrimonialgmailcom">@sazonpatrimonial</div>
+                </div>
+            </div>
+        </div>
+        <div class="footer-logos">
+            <img class="logo-blanco-2" alt="Logo Sazón Patrimonial" src="../images/logo_sp_blanco.png">
+            <img class="logo-equipo" alt="Logo Devbox" src="../images/devbox_logo.png">
+            <img class="logo-universidad" alt="Logo UP" src="../images/logo_uni.png">
+        </div>
+    </footer>
+</div>
+</body>
+</html>

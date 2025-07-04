@@ -27,11 +27,11 @@ html, body {
 .rectangle-parent {
     display: flex;
     align-items: center;
-    justify-content: space-between;
+    justify-content: flex-start;
     height: 110px;
     padding-left: 40px;
     padding-right: 40px;
-    position: relative;
+    gap: 32px;
 }
 
 .logo-blanco-parent {
@@ -54,12 +54,13 @@ html, body {
 }
 
 .acciones-usuario {
+    margin-left: auto;
     display: flex;
     gap: 18px;
 }
 
-.registro-usuario-parent,
-.log-in-parent {
+.mi-restaurante-parent,
+.log-out-parent {
     display: flex;
     align-items: center;
     gap: 8px;
@@ -74,15 +75,26 @@ html, body {
     transition: background 0.2s;
 }
 
-.registro-usuario-parent:hover,
-.log-in-parent:hover {
+.mi-restaurante-parent:hover,
+.log-out-parent:hover {
     background: #912f2f;
 }
 
-.registro-usuario-parent img,
-.log-in-parent img {
+.mi-restaurante-parent img,
+.log-out-parent img {
     height: 22px;
     width: 22px;
+}
+
+.icono-restaurantero {
+    display: flex;
+    align-items: center;
+}
+
+.icono-restaurantero img {
+    height: 48px;
+    width: 48px;
+    border-radius: 50%;
 }
 
 .calles-con-encanto-scaled-parent {
