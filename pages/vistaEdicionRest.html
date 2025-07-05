@@ -47,83 +47,99 @@
                     <label class="campo-titulo">Galería de Imágenes</label>
                     <div class="galeria-imagenes">
                         <label class="imagen-slot">
-                            <input type="file" hidden>
+                            <input type="file" hidden multiple accept="image/png, image/jpeg">
                             <img src="../images/imagen.png" alt="Subir imagen">
                         </label>
                         <label class="imagen-slot">
-                            <input type="file" hidden>
+                            <input type="file" hidden multiple accept="image/png, image/jpeg">
                             <img src="../images/imagen.png" alt="Subir imagen">
                         </label>
                         <label class="imagen-slot">
-                            <input type="file" hidden>
+                            <input type="file" hidden multiple accept="image/png, image/jpeg">
                             <img src="../images/imagen.png" alt="Subir imagen">
                         </label>
                     </div>
                 </div>
 
                 <div class="linea-interna">
-                    <label class="campo-titulo">Horarios:</label>
-                    <div class="horarios-inputs">
-                        <span>Lunes a Viernes: <input type="text" placeholder="Ingrese el horario"></span>
-                        <span>Sábado a Domingo: <input type="text" placeholder="Ingrese el horario"></span>
+                    <div class="restaurante-info-flex">
+                        <div class="area horarios-area">
+                            <label class="campo-titulo">Horarios:</label>
+                            <div class="horarios-inputs">
+                            <span>Lunes a Viernes: <input type="text" placeholder="Ingrese el horario"></span>
+                            <span>Sábado a Domingo: <input type="text" placeholder="Ingrese el horario"></span>
+                            </div>
+                        </div>
+
+                        <div class="area ubicacion-area">
+                            <label class="campo-titulo">Ubicación:</label>
+                            <input type="text" placeholder="Ingrese la dirección">
+                        </div>
+
+                        <div class="area menu-area">
+                            <label class="campo-titulo">Menú:</label>
+                            <button class="btn-menu">
+                            <img src="../images/subir.png" alt="Menú" class="icon-20">Subir menú
+                            </button>
+                        </div>
                     </div>
-                    <label class="campo-titulo">Ubicación:</label>
-                    <input type="text" placeholder="Ingrese la dirección">
                 </div>
 
                    
 
                 <div class="linea-interna contacto-etiquetas">
-                    <div class="contactos">
-                        <label class="campo-titulo">Contactos:</label>
-                        <div class="input-con-icono">
-                            <img src="../images/llamada.png" alt="Teléfono">
-                            <input type="text" placeholder="Ingrese su número celular">
+                    <div class="restaurante-info-flex">
+                        <div class="contactos">
+                            <label class="campo-titulo">Contactos:</label>
+                            <div class="input-con-icono">
+                                <img src="../images/llamada.png" alt="Teléfono">
+                                <input type="text" placeholder="Ingrese su número celular">
+                            </div>
+                            <div class="input-con-icono">
+                                <img src="../images/facebook.png" alt="Facebook">
+                                <input type="text" placeholder="Ingrese su facebook">
+                            </div>
+                            <div class="input-con-icono">
+                                <img src="../images/instagram.png" alt="Instagram">
+                                <input type="text" placeholder="Ingrese su instagram">
+                            </div>
                         </div>
-                        <div class="input-con-icono">
-                            <img src="../images/facebook.png" alt="Facebook">
-                            <input type="text" placeholder="Ingrese su facebook">
-                        </div>
-                        <div class="input-con-icono">
-                            <img src="../images/instagram.png" alt="Instagram">
-                            <input type="text" placeholder="Ingrese su instagram">
-                        </div>
-                    </div>
 
-                    <div class="etiquetas">
-                        <label class="campo-titulo">Etiquetas:</label>
-                        <div class="input-con-icono">
-                            <img src="../images/etiqueta.png" alt="Etiqueta">
-                            <select class="filtro-select">
-                                <option value="" disabled selected>Seleccionar</option>
-                                <option value=""></option>
-                                <option value=""></option>
-                                <option value=""></option>
-                            </select>
-                        </div>
-                        <div class="input-con-icono">
-                            <img src="../images/etiqueta.png" alt="Etiqueta">
-                            <select class="filtro-select">
-                                <option value="" disabled selected>Seleccionar</option>
-                                <option value=""></option>
-                                <option value=""></option>
-                                <option value=""></option>
-                            </select>
-                        </div>
-                        <div class="input-con-icono">
-                            <img src="../images/etiqueta.png" alt="Etiqueta">
-                            <select class="filtro-select">
-                                <option value="" disabled selected>Seleccionar</option>
-                                <option value=""></option>
-                                <option value=""></option>
-                                <option value="ato"></option>
-                            </select>
+                        <div class="etiquetas">
+                            <label class="campo-titulo">Etiquetas:</label>
+                            <div class="input-con-icono">
+                                <img src="../images/etiqueta.png" alt="Etiqueta">
+                                <select class="filtro-select">
+                                    <option value="" disabled selected>Seleccionar</option>
+                                    <option value=""></option>
+                                    <option value=""></option>
+                                    <option value=""></option>
+                                </select>
+                            </div>
+                            <div class="input-con-icono">
+                                <img src="../images/etiqueta.png" alt="Etiqueta">
+                                <select class="filtro-select">
+                                    <option value="" disabled selected>Seleccionar</option>
+                                    <option value=""></option>
+                                    <option value=""></option>
+                                    <option value=""></option>
+                                </select>
+                            </div>
+                            <div class="input-con-icono">
+                                <img src="../images/etiqueta.png" alt="Etiqueta">
+                                <select class="filtro-select">
+                                    <option value="" disabled selected>Seleccionar</option>
+                                    <option value=""></option>
+                                    <option value=""></option>
+                                    <option value="ato"></option>
+                                </select>
+                            </div>
                         </div>
                     </div>
+                    
                 </div>
-                <label class="campo-titulo">Menú:</label>
-                <button class="btn-menu"><img src="../images/subir.png" alt="Menú" class="icon-20">Subir menú</button>
             </section>
+            <button class="btn-aplicar">Aplicar cambios</button>
     </main>
 
     <footer class="rectangle-container">
