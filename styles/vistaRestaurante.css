@@ -4,15 +4,13 @@
 }
 
 .icon-32 {
-    width: 32px;
-    height: 32px;
+    width: 40px;
+    height: 40px;
 }
 .icon-middle {
     vertical-align: middle;
 }
-.icon-rotate-90 {
-    transform: rotate(90deg);
-}
+
 
 .restaurante-vista-container {
     max-width: 90%;

@@ -133,10 +133,3 @@ label {
 .cerrar:hover {
   color: #B64040;
 }
-
-@media (max-width: 500px) {
-  .modal-contenido {
-    padding: 18px 6px 12px 6px;
-    max-width: 95vw;
-  }
-}
