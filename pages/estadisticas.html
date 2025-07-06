@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="initial-scale=1, width=device-width">
+    <link rel="stylesheet" href="../styles/estadisticas.css"/>
+    <title>Estadísticas del restaurante</title>
+</head>
+<body>
+<div class="vista-principal">
+    <header class="header-principal">
+        <div class="rectangle-parent">
+            <div class="logo-blanco-parent">
+                <img class="logo-blanco" alt="Logo Sazón Patrimonial" src="../images/logo_sp_blanco.png">
+                <div class="catlogo-de-restaurantes">Catálogo de Restaurantes <br>en San Cristóbal</div>
+            </div>
+            <nav class="acciones-usuario">
+                <button class="log-out-parent" type="button">
+                    <img class="log out" alt="Cerrar sesion" src="../images/logout.png">
+                    <span class="log-out">Cerrar sesión</span>
+                </button>
+            </nav>
+            <div class="icono-restaurantero">
+                <img class="icono-restaurantero" alt="icono-restaurantero" src="../images/restaurantero.png">
+            </div>
+        </div>
+    </header>
+
+    <main>
+        <div class="restaurante-estadisticas-container">
+            <button class="btn-back" aria-label="Regresar" onclick="window.history.back()">
+                <img src="../images/back.png" alt="Regresar" class="icon-rotate-90 icon-32">
+            </button>
+            <h1 class="restaurante-title">Estadísticas de su restaurante</h1>
+            <hr class="restaurante-divider">
+            <div class="estadisticas-grid">
+                <div class="tarjeta estadistica-menu efecto-brillante">
+                    <img src="../images/descargas-menu.png" alt="Descargas" class="icono-tarjeta">
+                    <h3>DESCARGAS DE MENÚ</h3>
+                    <p>Esta semana<br><strong></strong></p>
+                    <p>Total acumulados<br><strong></strong></p>
+                    <p class="porcentaje-subida">+%</p>
+                </div>
+
+                <div class="tarjeta estadistica-origen efecto-brillante">
+                    <img src="../images/visitas.png" alt="Origen" class="icono-tarjeta">
+                    <h3>INTERÉS POR ORIGEN</h3>
+                    <p><span class="locales">● Locales</span> %</p>
+                    <p><span class="extranjeros">● Extranjeros</span> %</p>
+                    <div class="grafico-pastel">
+
+                    </div>
+                </div>
+
+                <div class="tarjeta estadistica-aspectos efecto-brillante">
+                    <img src="../images/aspectos.png" alt="Aspectos" class="icono-tarjeta">
+                    <h3>ASPECTOS DESTACADOS</h3>
+                    <div class="barras-aspectos">
+                        <div class="barra ambiente"> %</div>
+                        <div class="barra comida">%</div>
+                        <div class="barra higiene">%</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+
+    <footer class="rectangle-container">
+       <div class="footer-contactos-redes">
+            <div class="contctanos">Contáctanos</div>
+            <div class="contactos-grid">
+                <div class="gmail-1-1-parent">
+                    <img class="llamada-telefonica-2-icon" alt="Correo" src="../images/gmail_logo.png">
+                    <div class="sazonpatrimonialgmailcom">sazonpatrimonial@gmail.com</div>
+                </div>
+                <div class="llamada-telefonica-2-parent">
+                    <img class="llamada-telefonica-2-icon" alt="Teléfono" src="../images/call_logo.png">
+                    <div class="sazonpatrimonialgmailcom">+52 961 652 2093</div>
+                </div>
+                <div class="logotipo-de-instagram-2-parent">
+                    <img class="llamada-telefonica-2-icon" alt="Instagram" src="../images/insta_logo.png">
+                    <div class="sazonpatrimonialgmailcom">@sazonpatrimonial</div>
+                </div>
+                <div class="facebook-1-1-parent">
+                    <img class="llamada-telefonica-2-icon" alt="Facebook" src="../images/face_logo.png">
+                    <div class="sazonpatrimonialgmailcom">@sazonpatrimonial</div>
+                </div>
+            </div>
+        </div>
+        <div class="footer-logos">
+            <img class="logo-blanco-2" alt="Logo Sazón Patrimonial" src="../images/logo_sp_blanco.png">
+            <img class="logo-equipo" alt="Logo Devbox" src="../images/devbox_logo.png">
+            <img class="logo-universidad" alt="Logo UP" src="../images/logo_uni.png">
+        </div>
+    </footer>
+</div>
+</body>
+</html>

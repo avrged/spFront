@@ -1,0 +1,296 @@
+html, body {
+    width: 100%;
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    overflow-x: hidden;
+}
+
+*, *::before, *::after {
+    box-sizing: inherit;
+}
+
+.vista-principal {
+    width: 100%;
+}
+
+.header-principal {
+    position: fixed;
+    top: 0;
+    z-index: 1000;
+    width: 100%;
+    background: #6b1e1e;
+    color: #fff;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+}
+
+.rectangle-parent {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    height: 110px;
+    padding-left: 40px;
+    padding-right: 40px;
+    gap: 32px;
+}
+
+.logo-blanco-parent {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.logo-blanco {
+    margin-left: 0;
+    height: 90px;
+    width: auto;
+}
+
+.catlogo-de-restaurantes {
+    font-size: 2rem;
+    font-weight: 500;
+    color: #fff;
+    font-family: 'Montserrat', sans-serif;
+}
+
+.acciones-usuario {
+    margin-left: auto;
+    display: flex;
+    gap: 18px;
+}
+
+.log-out-parent {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: #6A1E1E;
+    border: none;
+    border-radius: 50px;
+    color: #fff;
+    padding: 12px 22px;
+    font-size: 1rem;
+    font-family: 'Montserrat', sans-serif;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.log-out-parent:hover {
+    background: #912f2f;
+}
+
+.log-out-parent img {
+    height: 22px;
+    width: 22px;
+}
+
+.icono-restaurantero {
+    display: flex;
+    align-items: center;
+}
+
+.icono-restaurantero img {
+    height: 48px;
+    width: 48px;
+    border-radius: 50%;
+}
+
+.restaurante-estadisticas-container {
+    max-width: 90%;
+    margin: 140px auto 40px auto;
+    background: #fff;
+    border-radius: 18px;
+    padding: 32px 36px 36px 36px;
+    font-family: 'Montserrat', sans-serif;
+    position: relative;
+}
+
+.icon-32 {
+    width: 40px;
+    height: 40px;
+}
+.icon-middle {
+    vertical-align: middle;
+}
+
+.btn-back {
+    background: none;
+    width: 10px;
+    border: none;
+    position: absolute;
+    top: 24px;
+    left: 24px;
+    cursor: pointer;
+    padding: 0;
+}
+
+.restaurante-title {
+    text-align: center;
+    font-size: 3rem;
+    font-weight: 700;
+    color: #912f2f;
+    margin: 0 0 8px 0;
+    letter-spacing: 1px;
+}
+
+.restaurante-divider {
+    border: none;
+    border-top: 4px solid #912f2f;
+    width: 80%;
+    margin: 0 auto 24px auto;
+    border-radius: 2px;
+}
+
+.estadisticas-grid {
+    display: flex;
+    gap: 36px;
+    justify-content: center;
+    flex-wrap: wrap;
+    margin-top: 40px;
+}
+
+.tarjeta {
+    border: 2px solid #912f2f;
+    border-radius: 12px;
+    padding: 20px;
+    width: 300px;
+    font-family: 'Montserrat', sans-serif;
+    text-align: center;
+    color: #912f2f;
+    background: #fff;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+}
+
+.icono-tarjeta {
+    width: 40px;
+    margin-bottom: 12px;
+}
+
+.tarjeta h3 {
+    font-size: 1.1rem;
+    margin-bottom: 16px;
+}
+
+.porcentaje-subida {
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: #c04242;
+    margin-top: 10px;
+}
+
+.locales {
+    color: #6b1e1e;
+    font-weight: bold;
+}
+
+.extranjeros {
+    color: #e07878;
+    font-weight: bold;
+}
+
+.grafico-pastel img {
+    width: 120px;
+    margin-top: 10px;
+}
+
+.barras-aspectos {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+    margin-top: 10px;
+}
+
+.barra {
+    width: 100%;
+    padding: 6px 12px;
+    color: #fff;
+    border-radius: 6px;
+    font-size: 0.9rem;
+}
+
+.barra.ambiente {
+    background-color: #6b1e1e;
+}
+
+.barra.comida {
+    background-color: #c06060;
+}
+
+.barra.higiene {
+    background-color: #efcfcf;
+    color: #6b1e1e;
+}
+
+.efecto-brillante {
+    transition: transform 0.3s ease;
+}
+
+.efecto-brillante:hover {
+    transform: scale(1.05);
+    box-shadow: 0 8px 16px rgba(51, 34, 34, 0.2);
+}
+
+.rectangle-container {
+    width: 100%;
+    background: #912f2f;
+    color: #fff;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-start;
+    justify-content: space-between;
+    padding: 32px 40px 20px 40px;
+    box-sizing: border-box;
+    gap: 32px;
+    font-family: 'Montserrat', sans-serif;
+}
+
+
+.contctanos {
+    font-size: 1.2rem;
+    font-weight: 600;
+    margin-bottom: 16px;
+    grid-column: 1 / -1;
+}
+
+.contactos-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 18px 40px;
+}
+
+.gmail-1-1-parent,
+.llamada-telefonica-2-parent,
+.logotipo-de-instagram-2-parent,
+.facebook-1-1-parent {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 1rem;
+}
+
+.llamada-telefonica-2-icon {
+    width: 26px;
+    height: 26px;
+    object-fit: contain;
+}
+
+.sazonpatrimonialgmailcom {
+    font-size: 1rem;
+    color: #fff;
+}
+
+.footer-logos {
+    display: flex;
+    align-items: center;
+    gap: 18px;
+}
+
+.logo-blanco-2,
+.logo-equipo,
+.logo-universidad {
+    height: 120px;
+    width: auto;
+    object-fit: contain;
+    border-radius: 8px;
+}
+
