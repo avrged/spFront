@@ -15,11 +15,11 @@
                 <div class="catlogo-de-restaurantes">Catálogo de Restaurantes <br>en San Cristóbal</div>
             </div>
             <nav class="acciones-usuario">
-                <button class="registro-usuario-parent" type="button" onclick="window.location.href='registro.html'">
+                <button class="registro-usuario-parent" type="button" onclick="openRegistroModal()">
                     <img class="registro" alt="Registrarse" src="../images/agregar-usuario.png">
                     <span class="registrarse">Registrarse</span>
                 </button>
-                <button class="log-in-parent" type="button" onclick="window.location.href='loginSelect.html'">
+                <button class="log-in-parent" type="button" onclick="openLoginModal()">
                     <img class="registro" alt="Iniciar sesión" src="../images/usuario.png">
                     <span class="iniciar-sesin">Iniciar sesión</span>
                 </button>
@@ -141,5 +141,35 @@
         </div>
     </footer>
 </div>
+
+<div id="registroModal" class="modal-overlay">
+    <div class="modal-content">
+        <button class="close-modal" onclick="closeRegistroModal()">&times;</button>
+        <div id="registroContent"></div>
+    </div>
+</div>
+
+<div id="loginModal" class="modal-overlay">
+    <div class="modal-content">
+        <button class="close-modal" onclick="closeLoginModal()">&times;</button>
+        <div id="loginContent"></div>
+    </div>
+</div>
+
+<div id="loginAdminModal" class="modal-overlay">
+    <div class="modal-content">
+        <button class="close-modal" onclick="closeLoginAdminModal()">&times;</button>
+        <div id="loginAdminContent"></div>
+    </div>
+</div>
+
+<div id="loginRestModal" class="modal-overlay">
+    <div class="modal-content">
+        <button class="close-modal" onclick="closeLoginRestModal()">&times;</button>
+        <div id="loginRestContent"></div>
+    </div>
+</div>
+
+<script src="../Scripts/modals.js"></script>
 </body>
 </html>

@@ -1,0 +1,99 @@
+#registroModal .form {
+    width: 450px;
+    background: #ffffff;
+    padding: 20px;
+    margin: auto;
+    border-radius: 4px;
+    font-family: 'Rubik', sans-serif;
+    color: #912F2F;
+    box-shadow: 7px 7px 5px #B64040;
+    transform: scale(0.8) translateY(-30px);
+    transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275), opacity 0.3s ease;
+    opacity: 0;
+    box-sizing: border-box;
+}
+
+#registroModal.show .form {
+    transform: scale(1) translateY(0);
+    opacity: 1;
+}
+
+#registroModal .form h4 {
+    text-align: center;
+    font-size: 36px;
+    margin: 0 0 20px 0;
+}
+
+#registroModal .form img {
+    display: block;
+    margin: 0 auto 0 auto;
+}
+
+#registroModal .form label {
+    display: block;
+    margin-bottom: 4px;
+    color: #912F2F;
+    font-weight: 500;
+    font-family: 'Rubik', sans-serif;
+}
+
+#registroModal .controls {
+    width: 100%;
+    background: #ffffff;
+    padding: 10px;
+    border-radius: 8px;
+    margin-bottom: 6px;
+    border: 1px solid #912F2F;
+    font-family: 'Rubik', sans-serif;
+    font-size: 16px;
+    color: #912F2F;
+    box-sizing: border-box;
+}
+
+#registroModal .controls::placeholder {
+    color: #912F2F;
+    opacity: 1;
+}
+
+#registroModal .controls:focus {
+    outline: none;
+    border-color: #B64040;
+}
+
+#registroModal .controls.input-error {
+    border-color: #d32f2f;
+    background-color: #ffeaea;
+}
+
+#registroModal .botons {
+    width: 100%;
+    background: #6A1E1E;
+    border: none;
+    padding: 12px;
+    color: #ffffff;
+    margin: 16px 0;
+    font-size: 16px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-family: 'Rubik', sans-serif;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 8px rgba(182,64,64,0.08);
+    box-sizing: border-box;
+}
+
+#registroModal .botons:hover, #registroModal .botons:focus {
+    background: #B64040;
+    transform: translateY(-2px) scale(1.03);
+}
+
+#registroModal .error-msg {
+    color: #d32f2f;
+    font-size: 14px;
+    margin-bottom: 10px;
+    display: block;
+    min-height: 20px;
+}
+
+
+
+
