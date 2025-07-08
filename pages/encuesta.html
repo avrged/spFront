@@ -7,11 +7,11 @@
     <link rel="stylesheet" href="../styles/encuesta.css">
 </head>
 <body>
-    <section class="form">
+    <form class="form" id="encuestaForm">
         <img src="../images/logo_sp_rojo.png" class="logo" width="100">
         <h4>¿Qué te atrajo del restaurante?</h4>
         <div class="select-container">
-            <select class="selec-filtro">
+            <select class="selec-filtro" id="atraccion">
                 <option value="" disabled selected>Selecciona una opción</option>
                 <option value="colores">Los colores</option>
                 <option value="ubicacion">La ubicación</option>
@@ -22,7 +22,7 @@
 
         <h4>¿De dónde nos visitas?</h4>
         <div class="select-container">
-            <select class="selec-filtro">
+            <select class="selec-filtro" id="origen">
                 <option value="" disabled selected>Selecciona una opción</option>
                 <option value="local">Local</option>
                 <option value="extranjero">Extranjero</option>
@@ -31,6 +31,8 @@
         </div>
 
         <input class="button" type="submit" value="Enviar">
-    </section>
+    </form>
+
+<script src="../Scripts/encuesta.js"></script>
 </body>
 </html>

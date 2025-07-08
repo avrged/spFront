@@ -4,6 +4,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="initial-scale=1, width=device-width">
     <link rel="stylesheet" href="../styles/vistaRestaurante.css"/>
+    <link rel="stylesheet" href="../styles/encuesta.css"/>
     <title>Sazón Patrimonial</title>
 </head>
 <body>
@@ -64,7 +65,9 @@
                     Av. 4 de junio N°20, San Cristóbal de las Casas, Chiapas, México.
                 </div>
             </div>
-            <button class="btn-menu"><img src="../images/download.png" alt="Menú" class="icon-20"> Menú</button>
+            <button class="btn-menu" onclick="abrirModalEncuesta()">
+                <img src="../images/download.png" alt="Menú" class="icon-20"> Menú
+            </button>
         </div>
     </main>
 
@@ -97,5 +100,66 @@
         </div>
     </footer>
 </div>
+
+<div id="encuestaModal" class="modal-overlay">
+    <div class="modal-content">
+        <button class="close-modal" id="cerrarModalEncuesta" onclick="cerrarModalEncuesta()">&times;</button>
+        <form class="form" id="encuestaForm">
+            <img src="../images/logo_sp_rojo.png" class="logo" width="100">
+            <h4>¿Qué te atrajo del restaurante?</h4>
+            <div class="select-container">
+                <select class="selec-filtro" id="atraccion">
+                    <option value="" disabled selected>Selecciona una opción</option>
+                    <option value="colores">Los colores</option>
+                    <option value="ubicacion">La ubicación</option>
+                    <option value="caracteristicas">Las etiquetas</option>
+                </select>
+                <img class="keyboard-arrow-down-icon" alt="" src="../images/flecha-hacia-abajo-para-navegar.png">
+            </div>
+            <h4>¿De dónde nos visitas?</h4>
+            <div class="select-container">
+                <select class="selec-filtro" id="origen">
+                    <option value="" disabled selected>Selecciona una opción</option>
+                    <option value="local">Local</option>
+                    <option value="extranjero">Extranjero</option>
+                </select>
+                <img class="keyboard-arrow-down-icon" alt="" src="../images/flecha-hacia-abajo-para-navegar.png">
+            </div>
+            <input class="button" type="submit" value="Enviar">
+        </form>
+    </div>
+</div>
+
+<div id="membresiaModal" class="modal-overlay">
+    <div class="modal-content">
+        <button class="close-modal" id="cerrarModalMembresia" type="button">&times;</button>
+        <form class="form" id="membresiaForm">
+            <img src="../images/logo_sp_rojo.png" class="logo" width="100">
+            <h4>Pago de membresía</h4>
+            <div class="registro-container">
+                <label for="correo">Correo electrónico</label>
+                <input class="controls" type="email" name="correo" id="correo" placeholder="Ingrese su correo">
+                <span class="error-msg" id="error-correo"></span>
+
+                <label for="contrasena">Contraseña:</label>
+                <input class="controls" type="password" name="contrasena" id="contrasena" placeholder="Ingrese su contraseña">
+                <span class="error-msg" id="error-contrasena"></span>
+
+                <label for="numero">Número de celular</label>
+                <input class="controls" type="tel" id="numero" placeholder="Ingrese su número de celular">
+                <span class="error-msg" id="error-numero"></span>
+
+                <label for="motivo">Motivo:</label>
+                <input class="controls" type="text" id="motivo" placeholder="Ingrese el motivo de la solicitud">
+                <span class="error-msg" id="error-motivo"></span>
+
+                <input class="button" type="submit" value="Enviar">
+            </div>
+        </form>
+    </div>
+</div>
+
+<script src="../Scripts/encuestaModal.js"></script>
+<script src="../Scripts/encuesta.js"></script>
 </body>
 </html>

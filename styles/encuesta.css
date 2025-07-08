@@ -1,16 +1,3 @@
-* {
-    margin:0;
-    padding: 0;
-    box-sizing: border-box;
-}
-
-body {
-    height: 100vh;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background: #f9f9f9; 
-}
 
 .form {
     width: 350px;
@@ -42,12 +29,13 @@ body {
 .select-container {
     position: relative;
     width: 100%;
-    margin-bottom: 18px;
+    margin-top: 10px;
+    margin-bottom: 20px; 
 }
 
 .selec-filtro {
     width: 100%;
-    padding: 10px 38px 10px 12px;
+    padding: 10px 10px 10px 12px;
     border: 1px solid #B64040;
     border-radius: 20px;
     font-size: 1rem;
@@ -87,4 +75,24 @@ body {
     background: #B64040;
     transform: translateY(-2px) scale(1.03);
     transition: background 0.2s, transform 0.2s;
+}
+
+.selec-filtro.error {
+    border: 2px solid #e74c3c;
+    background-color: #fdf2f2;
+}
+
+.error-message {
+    position: absolute;
+    left: 0;
+    bottom: -18px;
+    color: #e74c3c;
+    font-size: 12px;
+    padding: 0 6px;
+    display: block;
+    z-index: 2;
+    pointer-events: none;
+    width: max-content;
+    max-width: 90%;
+    margin: 0;
 }

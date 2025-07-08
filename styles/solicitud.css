@@ -10,6 +10,22 @@ html, body {
     font-family: 'Rubik', sans-serif;
 }
 
+.icon-32 {
+    width: 40px;
+    height: 40px;
+}
+.btn-back {
+    background: none;
+    border: none;
+    position: absolute;
+    top: 65px;
+    left: 65px;
+    cursor: pointer;
+    padding: 0;
+}
+
+
+
 .registro-container {
     display: flex;
     gap: 24px;
@@ -18,6 +34,7 @@ html, body {
     width: 100%;
     flex-wrap: wrap;
     justify-content: center;
+    position: relative;
 }
 
 .form-section {
@@ -259,30 +276,24 @@ label {
 }
 
 .modal {
-  display: none;
   position: fixed;
-  z-index: 9999;
-  left: 0;
-  top: 0;
-  width: 100%;
-  height: 100%;
-  background-color: rgba(0,0,0,0.5);
-  justify-content: center;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: rgba(0,0,0,0.5);
+  z-index: 2000;
+  display: flex;
   align-items: center;
+  justify-content: center;
 }
 
 .modal-contenido {
-  background-color: #fff;
-  padding: 30px;
+  background: #fff;
   border-radius: 12px;
-  text-align: center;
-  max-width: 400px;
-  width: 90%;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-  border: 2px solid #912F2F;
+  padding: 32px 24px 24px 24px;
+  box-shadow: 0 4px 32px rgba(0,0,0,0.18);
   position: relative;
-  font-family: 'Rubik', sans-serif;
-  color: #912F2F;
+  min-width: 300px;
+  max-width: 90vw;
+  text-align: center;
 }
 
 .modal-contenido p {
@@ -292,13 +303,11 @@ label {
 
 .cerrar {
   position: absolute;
-  top: 10px;
-  right: 16px;
-  font-size: 24px;
-  font-weight: bold;
+  top: 12px;
+  right: 18px;
+  font-size: 2rem;
   color: #912F2F;
   cursor: pointer;
-  transition: color 0.2s;
 }
 
 .cerrar:hover {
