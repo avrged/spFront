@@ -97,14 +97,12 @@ function initializeLoginForm() {
     }
 
     if (formularioValido) {
-        console.log('Formulario válido, procesando login...');
-        alert("Login exitoso!");
-        
-        if (typeof closeLoginAdminModal === 'function') {
+        if (typeof closeLoginAdminModal === 'function' && document.getElementById('loginAdminModal')?.style.display === 'flex') {
             closeLoginAdminModal();
-        }
-        if (typeof closeLoginRestModal === 'function') {
+            window.location.href = 'vistaPrincipalAdmin.html';
+        } else if (typeof closeLoginRestModal === 'function' && document.getElementById('loginRestModal')?.style.display === 'flex') {
             closeLoginRestModal();
+            window.location.href = 'vistaPrincipalRestaurantero.html';
         }
     } else {
         console.log('Formulario inválido, errores mostrados');

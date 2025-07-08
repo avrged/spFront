@@ -15,6 +15,12 @@
     margin: 0 0 20px 0;
 }
 
+.form p{
+    text-align: center;
+    font-size: 12px;
+    margin: 0 0 20px 0;
+    color: #912F2F;
+}
 .controls {
     width: 100%;
     background: #ffffff;
@@ -63,15 +69,20 @@ label {
 
 .input-error {
   border: 2px solid #d65c5c;
-  background-color: #ffe6e6;
+  background-color: #fff;
+  outline: none;
+  box-shadow: 0 0 0 2px rgba(214,92,92,0.08);
+  transition: border 0.2s, box-shadow 0.2s;
 }
 
 .error-msg {
   color: #d65c5c;
-  font-size: 0.9em;
+  font-size: 0.85em;
   margin-top: 2px;
   margin-bottom: 6px;
   display: block;
+  font-weight: 400;
+  letter-spacing: 0.01em;
 }
 
 .modal {
