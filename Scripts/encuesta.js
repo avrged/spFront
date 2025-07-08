@@ -1,67 +1,77 @@
-document.addEventListener('DOMContentLoaded', function() {
+
+function initEncuestaForm() {
     const form = document.getElementById('encuestaForm');
     const atraccion = document.getElementById('atraccion');
     const origen = document.getElementById('origen');
 
+    if (!form || !atraccion || !origen) {
+        return;
+    }
+
     form.addEventListener('submit', function(e) {
-        e.preventDefault();
-        
         if (!validateForm()) {
+            e.preventDefault();
             return;
         }
-        
-        handleSuccessfulSubmit();
         if (typeof cerrarModalEncuesta === "function") {
             cerrarModalEncuesta();
+            e.preventDefault();
         }
     });
 
     function validateForm() {
         let isValid = true;
-        
         if (!atraccion.value) {
             showError(atraccion, 'Por favor selecciona una respuesta');
             isValid = false;
         } else {
             removeError(atraccion);
         }
-        
         if (!origen.value) {
             showError(origen, 'Por favor selecciona una respuesta');
             isValid = false;
         } else {
             removeError(origen);
         }
-        
         return isValid;
     }
 
     function showError(element, message) {
         removeError(element);
-        
         element.classList.add('error');
-        
-        const errorDiv = document.createElement('div');
-        errorDiv.className = 'error-message';
-        errorDiv.textContent = message;
-        
-        element.parentNode.insertBefore(errorDiv, element.nextSibling);
+        let errorSpan = null;
+        if (element.id === 'atraccion') {
+            errorSpan = document.getElementById('error-atraccion');
+        } else if (element.id === 'origen') {
+            errorSpan = document.getElementById('error-origen');
+        }
+        if (errorSpan) {
+            errorSpan.textContent = message;
+        }
     }
 
     function removeError(element) {
         element.classList.remove('error');
-        const errorMessage = element.parentNode.querySelector('.error-message');
-        if (errorMessage) {
-            errorMessage.remove();
+        let errorSpan = null;
+        if (element.id === 'atraccion') {
+            errorSpan = document.getElementById('error-atraccion');
+        } else if (element.id === 'origen') {
+            errorSpan = document.getElementById('error-origen');
+        }
+        if (errorSpan) {
+            errorSpan.textContent = '';
         }
     }
 
     function handleSuccessfulSubmit() {
-
+        // Aquí puedes poner lógica después de enviar la encuesta
     }
 
     function getOptionText(selectElement) {
         const selectedOption = selectElement.options[selectElement.selectedIndex];
         return selectedOption.text;
     }
-});
+}
+
+// Hacer la función global para que pueda llamarse desde el modal
+window.initEncuestaForm = initEncuestaForm;

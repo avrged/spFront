@@ -38,7 +38,7 @@
             <section class="formulario-edicion">
                 <div class="linea-interna">
                     <label class="campo-titulo">Restaurante: La misión<span></span></label>
-                    <button class="btn-estadisticas">
+                    <button class="btn-estadisticas" onclick="window.location.href='estadisticas.html'">
                         <img src="../images/estadisticas.png" alt="estadisticas" class="icon-20">Estadísticas
                     </button>
                 </div>
@@ -78,9 +78,10 @@
 
                         <div class="area menu-area">
                             <label class="campo-titulo">Menú:</label>
-                            <button class="btn-menu">
-                            <img src="../images/subir.png" alt="Menú" class="icon-20">Subir menú
-                            </button>
+                            <label class="btn-menu" style="display: inline-flex; align-items: center; cursor: pointer;">
+                                <img src="../images/subir.png" alt="Menú" class="icon-20">Subir menú
+                                <input type="file" accept="application/pdf" style="display: none;">
+                            </label>
                         </div>
                     </div>
                 </div>

@@ -1,16 +1,8 @@
-document.addEventListener("DOMContentLoaded", function () {
+function initializeMembresiaForm() {
   const form = document.getElementById("membresiaForm");
-
-  function validarCampoVacio(campo, spanError, mensaje) {
-    if (campo.value.trim() === "") {
-      campo.classList.add("input-error");
-      spanError.textContent = mensaje;
-      return false;
-    } else {
-      campo.classList.remove("input-error");
-      spanError.textContent = "";
-      return true;
-    }
+  if (!form) {
+    console.log("Formulario de membresía no encontrado");
+    return;
   }
 
   form.addEventListener("submit", function (event) {
@@ -21,25 +13,70 @@ document.addEventListener("DOMContentLoaded", function () {
     const contrasena = document.getElementById("contrasena");
     const motivo = document.getElementById("motivo");
 
-    const errorContrasena = document.getElementById("error-contrasena");
-    const errorMotivo = document.getElementById("error-motivo");
     const errorCorreo = document.getElementById("error-correo");
     const errorNumero = document.getElementById("error-numero");
+    const errorContrasena = document.getElementById("error-contrasena");
+    const errorMotivo = document.getElementById("error-motivo");
 
-    // Usa && para validación
     let formularioValido = true;
-    formularioValido = validarCampoVacio(contrasena, errorContrasena, "*Este campo es obligatorio.") && formularioValido;
-    formularioValido = validarCampoVacio(motivo, errorMotivo, "*Este campo es obligatorio.") && formularioValido;
-    formularioValido = validarCampoVacio(correo, errorCorreo, "*Este campo es obligatorio.") && formularioValido;
-    formularioValido = validarCampoVacio(numero, errorNumero, "*Este campo es obligatorio.") && formularioValido;
 
-    if (formularioValido && typeof cerrarModalMembresia === "function") {
-      cerrarModalMembresia();
-      form.reset();
-      mostrarAlerta();
+    errorCorreo.textContent = "";
+    errorNumero.textContent = "";
+    errorContrasena.textContent = "";
+    errorMotivo.textContent = "";
+
+    correo.classList.remove("input-error");
+    numero.classList.remove("input-error");
+    contrasena.classList.remove("input-error");
+    motivo.classList.remove("input-error");
+
+    if (correo.value.trim() === "") {
+      errorCorreo.textContent = "*Este campo es obligatorio.";
+      correo.classList.add("input-error");
+      formularioValido = false;
+    } else if (!isValidEmail(correo.value)) {
+      errorCorreo.textContent = "*Ingrese un correo electrónico válido.";
+      correo.classList.add("input-error");
+      formularioValido = false;
+    }
+
+    if (numero.value.trim() === "") {
+      errorNumero.textContent = "*Este campo es obligatorio.";
+      numero.classList.add("input-error");
+      formularioValido = false;
+    }
+
+    if (contrasena.value.trim() === "") {
+      errorContrasena.textContent = "*Este campo es obligatorio.";
+      contrasena.classList.add("input-error");
+      formularioValido = false;
+    } else if (contrasena.value.length < 6) {
+      errorContrasena.textContent = "*La contraseña debe tener al menos 6 caracteres.";
+      contrasena.classList.add("input-error");
+      formularioValido = false;
+    }
+
+    if (motivo.value.trim() === "") {
+      errorMotivo.textContent = "*Este campo es obligatorio.";
+      motivo.classList.add("input-error");
+      formularioValido = false;
+    }
+
+    if (formularioValido) {
+      closeMembresiaModal();
+      setTimeout(() => {
+        mostrarAlerta();
+        form.reset();
+      }, 350);
     }
   });
 
+  function isValidEmail(email) {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return emailRegex.test(email);
+  }
+
+  // Alerta de éxito (opcional)
   const modalAviso = document.getElementById("modalAviso");
   const cerrarAviso = document.getElementById("cerrarAviso");
 
@@ -57,4 +94,10 @@ document.addEventListener("DOMContentLoaded", function () {
       if (e.target === modalAviso) modalAviso.style.display = "none";
     };
   }
-});
+}
+
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', initializeMembresiaForm);
+} else {
+  initializeMembresiaForm();
+}

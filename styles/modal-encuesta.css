@@ -1,0 +1,112 @@
+
+.modal-overlay {
+  display: none;
+  position: fixed;
+  z-index: 9999;
+  left: 0;
+  top: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(0,0,0,0.5);
+  justify-content: center;
+  align-items: center;
+}
+
+.modal-content {
+  background: #fff;
+  padding: 32px 28px;
+  border-radius: 12px;
+  max-width: 400px;
+  width: 90%;
+  box-shadow: 0 4px 12px rgba(182,64,64,0.18);
+  border: 2px solid #912F2F;
+  font-family: 'rubik', sans-serif;
+  color: #912F2F;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.modal-content h2 {
+  font-size: 1.4rem;
+  margin-bottom: 18px;
+  font-weight: 700;
+  text-align: center;
+}
+
+.modal-content label {
+  display: block;
+  margin-bottom: 6px;
+  color: #912F2F;
+  font-weight: 500;
+  font-family: 'rubik', sans-serif;
+  text-align: left;
+  width: 100%;
+}
+
+.modal-content select {
+  width: 100%;
+  padding: 10px 10px 10px 12px;
+  border: 1.5px solid #B64040;
+  border-radius: 20px;
+  font-size: 1rem;
+  color: #912F2F;
+  background: #fff;
+  appearance: none;
+  outline: none;
+  margin-bottom: 10px;
+  cursor: pointer;
+  font-family: 'rubik', sans-serif;
+}
+
+.modal-content select.error {
+  border: 2px solid #e74c3c;
+  background-color: #fdf2f2;
+}
+
+.modal-content .button {
+  width: 100%;
+  background: #6A1E1E;
+  border: none;
+  padding: 12px;
+  color: #fff;
+  margin: 18px 0 0 0;
+  font-size: 1rem;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 600;
+  letter-spacing: 1px;
+  transition: background 0.2s, transform 0.2s;
+}
+
+.modal-content .button:hover, .modal-content .button:focus {
+  background: #B64040;
+  transform: translateY(-2px) scale(1.03);
+}
+
+.modal-content .error-message {
+  color: #e74c3c;
+  font-size: 12px;
+  margin-top: 2px;
+  margin-bottom: 6px;
+  display: block;
+  font-weight: 400;
+  letter-spacing: 0.01em;
+}
+
+.close-modal {
+  position: absolute;
+  top: 10px;
+  right: 16px;
+  font-size: 24px;
+  font-weight: bold;
+  color: #912F2F;
+  background: none;
+  border: none;
+  cursor: pointer;
+  transition: color 0.2s;
+}
+.close-modal:hover {
+  color: #B64040;
+}

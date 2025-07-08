@@ -1,3 +1,86 @@
+function openEncuestaModal() {
+    fetch('encuesta.html')
+        .then(response => response.text())
+        .then(html => {
+            // Extrae solo el formulario del HTML
+            const parser = new DOMParser();
+            const doc = parser.parseFromString(html, 'text/html');
+            const form = doc.querySelector('form');
+            if (form) {
+                document.getElementById('encuestaContent').innerHTML = form.outerHTML;
+                // Cargar el script solo si no está cargado
+                if (!window.initEncuestaForm) {
+                    const script = document.createElement('script');
+                    script.src = '../Scripts/encuesta.js';
+                    script.onload = function() {
+                        if (window.initEncuestaForm) window.initEncuestaForm();
+                    };
+                    document.body.appendChild(script);
+                } else {
+                    window.initEncuestaForm();
+                }
+            }
+            const modal = document.getElementById('encuestaModal');
+            modal.style.display = 'flex';
+            setTimeout(() => {
+                modal.classList.add('show');
+            }, 10);
+        });
+}
+
+function closeEncuestaModal() {
+    const modal = document.getElementById('encuestaModal');
+    if (modal) {
+        modal.classList.remove('show');
+        setTimeout(() => {
+            modal.style.display = 'none';
+        }, 300);
+    }
+}
+
+function openMembresiaModal() {
+    fetch('solicitudMembresia.html')
+        .then(response => response.text())
+        .then(html => {
+            const parser = new DOMParser();
+            const doc = parser.parseFromString(html, 'text/html');
+            const formSection = doc.querySelector('section.form');
+            if (formSection) {
+                document.getElementById('membresiaContent').innerHTML = formSection.outerHTML;
+                loadModalCSS('membresia');
+                const modal = document.getElementById('membresiaModal');
+                modal.style.display = 'flex';
+                setTimeout(() => {
+                    modal.classList.add('show');
+                }, 10);
+                loadMembresiaScript();
+            }
+        })
+        .catch(error => console.error('Error cargando membresía:', error));
+}
+
+function closeMembresiaModal() {
+    const modal = document.getElementById('membresiaModal');
+    modal.classList.remove('show');
+    setTimeout(() => {
+        modal.style.display = 'none';
+        document.getElementById('membresiaContent').innerHTML = '';
+        const membresiaCSS = document.getElementById('modal-membresia-css');
+        if (membresiaCSS) {
+            membresiaCSS.remove();
+            loadedCSS.delete('modal-membresia-css');
+        }
+    }, 300);
+}
+
+function loadMembresiaScript() {
+    loadScript('../Scripts/membresia.js');
+    setTimeout(() => {
+        if (typeof initializeMembresiaForm === 'function') {
+            initializeMembresiaForm();
+        }
+    }, 100);
+}
 let loadedCSS = new Set();
 
 function openRegistroModal() {
@@ -297,8 +380,12 @@ function loadScript(src, callback) {
     }
 }
 
+
 document.addEventListener('click', function(event) {
     if (event.target.classList.contains('modal-overlay')) {
+        if (event.target.id === 'encuestaModal') {
+            closeEncuestaModal();
+        }
         if (event.target.id === 'registroModal') {
             closeRegistroModal();
         } else if (event.target.id === 'loginModal') {
@@ -307,7 +394,12 @@ document.addEventListener('click', function(event) {
             closeLoginAdminModal();
         } else if (event.target.id === 'loginRestModal') {
             closeLoginRestModal();
+        } else if (event.target.id === 'membresiaModal') {
+            closeMembresiaModal();
         }
+    }
+    if (event.target.id === 'modalAviso') {
+        event.target.style.display = 'none';
     }
 });
 

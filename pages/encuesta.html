@@ -7,32 +7,29 @@
     <link rel="stylesheet" href="../styles/encuesta.css">
 </head>
 <body>
-    <form class="form" id="encuestaForm">
-        <img src="../images/logo_sp_rojo.png" class="logo" width="100">
-        <h4>¿Qué te atrajo del restaurante?</h4>
-        <div class="select-container">
-            <select class="selec-filtro" id="atraccion">
-                <option value="" disabled selected>Selecciona una opción</option>
-                <option value="colores">Los colores</option>
-                <option value="ubicacion">La ubicación</option>
-                <option value="caracteristicas">Las etiquetas</option>
-            </select>
-            <img class="keyboard-arrow-down-icon" alt="" src="../images/flecha-hacia-abajo-para-navegar.png">
-        </div>
 
-        <h4>¿De dónde nos visitas?</h4>
-        <div class="select-container">
-            <select class="selec-filtro" id="origen">
-                <option value="" disabled selected>Selecciona una opción</option>
-                <option value="local">Local</option>
-                <option value="extranjero">Extranjero</option>
-            </select>
-            <img class="keyboard-arrow-down-icon" alt="" src="../images/flecha-hacia-abajo-para-navegar.png">
-        </div>
-
-        <input class="button" type="submit" value="Enviar">
+    <form id="encuestaForm" class="form">
+      <h2>Encuesta</h2>
+      <label for="atraccion">¿Qué te atrajo del restaurante?</label>
+      <select id="atraccion" name="atraccion">
+        <option value="" disabled selected>Selecciona una opción</option>
+        <option value="comida">La comida</option>
+        <option value="ambiente">El ambiente</option>
+        <option value="ubicacion">La ubicación</option>
+        <option value="recomendacion">Recomendación</option>
+      </select>
+      <span class="error-message" id="error-atraccion"></span>
+      <label for="origen">¿De dónde nos visitas?</label>
+      <select id="origen" name="origen">
+        <option value="" disabled selected>Selecciona una opción</option>
+        <option value="local">Local</option>
+        <option value="nacional">Nacional</option>
+        <option value="extranjero">Extranjero</option>
+      </select>
+      <span class="error-message" id="error-origen"></span>
+      <button type="submit" class="button">Enviar</button>
     </form>
 
-<script src="../Scripts/encuesta.js"></script>
+
 </body>
 </html>

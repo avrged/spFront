@@ -55,6 +55,7 @@ html, body {
     font-family: 'Rubik', sans-serif;
 }
 
+
 .form-section .sub-text {
     text-align: center;
     font-size: 0.95rem;
@@ -280,7 +281,7 @@ label {
   top: 0; left: 0; right: 0; bottom: 0;
   background: rgba(0,0,0,0.5);
   z-index: 2000;
-  display: flex;
+  display: none; /* Oculto por defecto */
   align-items: center;
   justify-content: center;
 }
@@ -299,6 +300,7 @@ label {
 .modal-contenido p {
   font-size: 1rem;
   line-height: 1.6;
+  color:#912f2f;
 }
 
 .cerrar {
