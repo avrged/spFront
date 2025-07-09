@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="initial-scale=1, width=device-width">
+    <link rel="stylesheet" href="../styles/vistaPrincipalAdmin.css"/>
+    <title>Edición de restaurante con membresía</title>
+</head>
+<body>
+<div class="vista-principal">
+    <header class="header-principal">
+        <div class="rectangle-parent">
+            <div class="logo-blanco-parent">
+                <img class="logo-blanco" alt="Logo Sazón Patrimonial" src="../images/logo_sp_blanco.png">
+                <div class="catlogo-de-restaurantes">Catálogo de Restaurantes <br>en San Cristóbal</div>
+            </div>
+            <nav class="acciones-usuario">
+                <button class="log-out-parent" type="button">
+                    <img class="log out" alt="Cerrar sesion" src="../images/logout.png">
+                    <span class="log-out">Cerrar sesión</span>
+                </button>
+            </nav>
+        </div>
+    </header>
+
+    <div class="admin-panel">
+        <aside class="sidebar">
+            <h1>Tablero de Administrador</h1>
+            <button class="sidebar-item" type="button" data-vista="restaurantes">
+                <img class="restaurantes" alt="restaurantes" src="../images/restaurantes.png">
+                <span class="restaurantes">Restaurantes</span>
+            </button>
+        <button class="sidebar-item" type="button" data-vista="etiquetas">
+            <img class="etiquetas" alt="etiquetas" src="../images/etiquetas.png">
+            <span class="etiquetas">Etiquetas</span>
+        </button>
+        <button class="sidebar-item" type="button" data-vista="solicitudes">
+            <img class="usuarios" alt="usuarios" src="../images/usuarios.png">
+            <span class="usuarios">Usuarios</span>
+        </button>
+        </aside>
+        <main class="contenido">
+            <section id="vista-restaurantes" class="vista-admin">
+                <h2>Administrar Restaurantes</h2>
+                <!-- Aquí va el contenido de administrar restaurantes -->
+            </section>
+            <section id="vista-etiquetas" class="vista-admin" style="display:none;">
+                <h2>Administrar Etiquetas</h2>
+                <!-- Aquí va el contenido de administrar etiquetas -->
+            </section>
+            <section id="vista-solicitudes" class="vista-admin" style="display:none;">
+                <h2>Administrar Solicitudes de Usuarios</h2>
+                <!-- Aquí va el contenido de administrar solicitudes de usuarios -->
+            </section>
+        </main>
+    </div>
+
+    <footer class="rectangle-container">
+       <div class="footer-contactos-redes">
+            <div class="contctanos">Contáctanos</div>
+            <div class="contactos-grid">
+                <div class="gmail-1-1-parent">
+                    <img class="llamada-telefonica-2-icon" alt="Correo" src="../images/gmail_logo.png">
+                    <div class="sazonpatrimonialgmailcom">sazonpatrimonial@gmail.com</div>
+                </div>
+                <div class="llamada-telefonica-2-parent">
+                    <img class="llamada-telefonica-2-icon" alt="Teléfono" src="../images/call_logo.png">
+                    <div class="sazonpatrimonialgmailcom">+52 961 652 2093</div>
+                </div>
+                <div class="logotipo-de-instagram-2-parent">
+                    <img class="llamada-telefonica-2-icon" alt="Instagram" src="../images/insta_logo.png">
+                    <div class="sazonpatrimonialgmailcom">@sazonpatrimonial</div>
+                </div>
+                <div class="facebook-1-1-parent">
+                    <img class="llamada-telefonica-2-icon" alt="Facebook" src="../images/face_logo.png">
+                    <div class="sazonpatrimonialgmailcom">@sazonpatrimonial</div>
+                </div>
+            </div>
+        </div>
+        <div class="footer-logos">
+            <img class="logo-blanco-2" alt="Logo Sazón Patrimonial" src="../images/logo_sp_blanco.png">
+            <img class="logo-equipo" alt="Logo Devbox" src="../images/devbox_logo.png">
+            <img class="logo-universidad" alt="Logo UP" src="../images/logo_uni.png">
+        </div>
+    </footer>
+</div>
+
+<script src="../Scripts/vistaPrincipalAdmin.js"></script>
+<script src="../Scripts/logoutRestaurantero.js"></script>
+</body>
+</html>

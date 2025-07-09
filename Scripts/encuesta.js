@@ -64,7 +64,6 @@ function initEncuestaForm() {
     }
 
     function handleSuccessfulSubmit() {
-        // Aquí puedes poner lógica después de enviar la encuesta
     }
 
     function getOptionText(selectElement) {
@@ -73,5 +72,4 @@ function initEncuestaForm() {
     }
 }
 
-// Hacer la función global para que pueda llamarse desde el modal
 window.initEncuestaForm = initEncuestaForm;

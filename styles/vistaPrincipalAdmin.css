@@ -1,0 +1,234 @@
+html, body {
+    width: 100%;
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    overflow-x: hidden;
+}
+
+*, *::before, *::after {
+    box-sizing: inherit;
+}
+
+.vista-principal {
+    width: 100%;
+}
+
+.header-principal {
+    position: fixed;
+    top: 0;
+    z-index: 1000;
+    width: 100%;
+    background: #6b1e1e;
+    color: #fff;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+}
+
+.rectangle-parent {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    height: 110px;
+    padding-left: 40px;
+    padding-right: 40px;
+    gap: 32px;
+}
+
+.logo-blanco-parent {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.logo-blanco {
+    margin-left: 0;
+    height: 90px;
+    width: auto;
+}
+
+.catlogo-de-restaurantes {
+    font-size: 2rem;
+    font-weight: 500;
+    color: #fff;
+    font-family: 'Montserrat', sans-serif;
+}
+
+.acciones-usuario {
+    margin-left: auto;
+    display: flex;
+    gap: 18px;
+}
+
+.log-out-parent {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: #6A1E1E;
+    border: none;
+    border-radius: 50px;
+    color: #fff;
+    padding: 12px 22px;
+    font-size: 1rem;
+    font-family: 'Montserrat', sans-serif;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.log-out-parent:hover {
+    background: #912f2f;
+}
+
+.log-out-parent img {
+    height: 22px;
+    width: 22px;
+}
+
+.admin-panel {
+    display: flex;
+    min-height: 70vh;
+    margin-top: 110px; 
+    font-family: 'Montserrat', sans-serif;
+}
+
+.sidebar {
+    background: #6b1e1e;
+    min-width: 220px;
+    padding: 32px 0 32px 0;
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 18px;
+    box-shadow: 2px 0 8px rgba(0,0,0,0.04);
+}
+
+.sidebar-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: #6A1E1E;
+    border: none;
+    border-radius: 50px;
+    color: #fff;
+    padding: 12px 22px;
+    font-size: 1rem;
+    font-family: 'Montserrat', sans-serif;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+
+.sidebar-item.active,
+.sidebar-item:hover {
+    background: #912f2f;
+}
+
+.sidebar-item img {
+    height: 22px;
+    width: 22px;
+}
+
+.contenido {
+    flex: 1;
+    background: #fff;
+    padding: 24px 48px 40px 48px;
+    border-top-right-radius: 18px;
+    border-bottom-right-radius: 18px;
+    min-height: 600px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+}
+
+.sidebar h1 {
+    font-size: 1.5rem;
+    color: #fff;
+    margin: 20px;
+    text-align: center;
+    font-weight: 600;
+    max-width: 162px;    
+    white-space: normal;  
+    line-height: 1.2;
+    word-break: break-word;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.vista-admin {
+    display: block;
+    animation: fadeIn 0.3s;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+.vista-admin h2 {
+    color: #6b1e1e;
+    font-size: 2rem;
+    margin-bottom: 28px;
+    font-weight: 600;
+    letter-spacing: 1px;
+}
+
+.rectangle-container {
+    width: 100%;
+    background: #912f2f;
+    color: #fff;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-start;
+    justify-content: space-between;
+    padding: 32px 40px 20px 40px;
+    box-sizing: border-box;
+    gap: 32px;
+    font-family: 'Montserrat', sans-serif;
+}
+
+
+.contctanos {
+    font-size: 1.2rem;
+    font-weight: 600;
+    margin-bottom: 16px;
+    grid-column: 1 / -1;
+}
+
+.contactos-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 18px 40px;
+}
+
+.gmail-1-1-parent,
+.llamada-telefonica-2-parent,
+.logotipo-de-instagram-2-parent,
+.facebook-1-1-parent {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 1rem;
+}
+
+.llamada-telefonica-2-icon {
+    width: 26px;
+    height: 26px;
+    object-fit: contain;
+}
+
+.sazonpatrimonialgmailcom {
+    font-size: 1rem;
+    color: #fff;
+}
+
+.footer-logos {
+    display: flex;
+    align-items: center;
+    gap: 18px;
+}
+
+.logo-blanco-2,
+.logo-equipo,
+.logo-universidad {
+    height: 120px;
+    width: auto;
+    object-fit: contain;
+    border-radius: 8px;
+}

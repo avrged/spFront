@@ -2,13 +2,11 @@ function openEncuestaModal() {
     fetch('encuesta.html')
         .then(response => response.text())
         .then(html => {
-            // Extrae solo el formulario del HTML
             const parser = new DOMParser();
             const doc = parser.parseFromString(html, 'text/html');
             const form = doc.querySelector('form');
             if (form) {
                 document.getElementById('encuestaContent').innerHTML = form.outerHTML;
-                // Cargar el script solo si no está cargado
                 if (!window.initEncuestaForm) {
                     const script = document.createElement('script');
                     script.src = '../Scripts/encuesta.js';
