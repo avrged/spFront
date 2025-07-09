@@ -1,3 +1,26 @@
+document.addEventListener('DOMContentLoaded', function() {
+    document.querySelectorAll('input[type="file"]').forEach(function(input) {
+        input.addEventListener('change', function(event) {
+            const fileList = event.target.files;
+            let fileNameSpan = input.nextElementSibling;
+            if (!fileNameSpan || !fileNameSpan.classList.contains('file-name')) {
+                fileNameSpan = document.createElement('span');
+                fileNameSpan.className = 'file-name';
+                input.parentNode.insertBefore(fileNameSpan, input.nextSibling);
+            }
+            if (fileList.length > 0) {
+                if (input.hasAttribute('multiple')) {
+                    const names = Array.from(fileList).map(f => f.name).join(', ');
+                    fileNameSpan.textContent = `Archivos seleccionados: ${names}`;
+                } else {
+                    fileNameSpan.textContent = `Archivo seleccionado: ${fileList[0].name}`;
+                }
+            } else {
+                fileNameSpan.textContent = '';
+            }
+        });
+    });
+});
 document.addEventListener("DOMContentLoaded", function () {
   const form = document.getElementById("registroForm");
   const modal = document.getElementById("modal");
