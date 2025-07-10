@@ -13,12 +13,11 @@
 
 .modal-content {
   background: #fff;
-  padding: 32px 28px;
+  padding: 20px 20px;
   border-radius: 12px;
   max-width: 400px;
   width: 90%;
-  box-shadow: 0 4px 12px rgba(182,64,64,0.18);
-  border: 2px solid #912F2F;
+  box-shadow: 7px 7px 5px #B64040;
   font-family: 'rubik', sans-serif;
   color: #912F2F;
   position: relative;
@@ -32,6 +31,11 @@
   margin-bottom: 18px;
   font-weight: 700;
   text-align: center;
+}
+
+.modal-content img.logo {
+  display: block;
+  margin: 0 auto 0 auto;
 }
 
 .modal-content label {
