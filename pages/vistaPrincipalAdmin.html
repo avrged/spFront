@@ -12,7 +12,7 @@
         <div class="rectangle-parent">
             <div class="logo-blanco-parent">
                 <img class="logo-blanco" alt="Logo Sazón Patrimonial" src="../images/logo_sp_blanco.png">
-                <div class="catlogo-de-restaurantes">Catálogo de Restaurantes <br>en San Cristóbal</div>
+                <div class="catlogo-de-restaurantes">Restaurantes San Cristóbal</div>
             </div>
             <nav class="acciones-usuario">
                 <button class="log-out-parent" type="button">
@@ -24,8 +24,8 @@
     </header>
 
     <div class="admin-panel">
+      
         <aside class="sidebar">
-            <h1>Tablero de Administrador</h1>
             <button class="sidebar-item" type="button" data-vista="restaurantes">
                 <img class="restaurantes" alt="restaurantes" src="../images/restaurantes.png">
                 <span class="restaurantes">Restaurantes</span>
@@ -42,15 +42,91 @@
         <main class="contenido">
             <section id="vista-restaurantes" class="vista-admin">
                 <h2>Administrar Restaurantes</h2>
-                <!-- Aquí va el contenido de administrar restaurantes -->
+                <table class="tabla-admin">
+                  <thead>
+                    <tr>
+                      <th>Nombre</th>
+                      <th>Ubicación</th>
+                      <th>Etiquetas</th>
+                      <th>Acciones</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td>Nombre 1</td>
+                      <td>Ubicación 1</td>
+                      <td>Etiqueta 1</td>
+                      <td>
+                        <button class="btn-editar" title="Editar"><img src="../images/edicion.png" alt="Editar"></button>
+                        <button class="btn-eliminar" title="Eliminar"><img src="../images/eliminar.png" alt="Eliminar"></button>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
             </section>
             <section id="vista-etiquetas" class="vista-admin" style="display:none;">
-                <h2>Administrar Etiquetas</h2>
-                <!-- Aquí va el contenido de administrar etiquetas -->
+                <div class="header-etiquetas">
+                  <h2>Administrar Etiquetas</h2>
+                  <button class="btn-agregar-etiqueta" type="button" data-vista="agregarEtiqueta">
+                      <img class="agregarEtiqueta" alt="agregarEtiqueta" src="../images/agregarEtiqueta.png">
+                      <span class="agregarEtiqueta">Agregar etiquetas</span>
+                  </button>
+                </div>
+                <table class="tabla-admin">
+                  <thead>
+                    <tr>
+                      <th>Nombre</th>
+                      <th>Acciones</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td>Etiqueta 1</td>
+                      <td>
+                        <button class="btn-editar" title="Editar"><img src="../images/edicion.png" alt="Editar"></button>
+                        <button class="btn-eliminar" title="Eliminar"><img src="../images/eliminar.png" alt="Eliminar"></button>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
             </section>
             <section id="vista-solicitudes" class="vista-admin" style="display:none;">
                 <h2>Administrar Solicitudes de Usuarios</h2>
-                <!-- Aquí va el contenido de administrar solicitudes de usuarios -->
+                <table class="tabla-admin">
+                  <thead>
+                    <tr>
+                      <th>Restaurante</th>
+                      <th>Propietario</th>
+                      <th>Correo</th>
+                      <th>Celular</th>
+                      <th>Dirección</th>
+                      <th>Horario</th>
+                      <th>Imágenes</th>
+                      <th>Comprobante</th>
+                      <th>Acciones</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td>Restaurante 1</td>
+                      <td>Propietario 1</td>
+                      <td>correo1@ejemplo.com</td>
+                      <td>1234567890</td>
+                      <td>Dirección 1</td>
+                      <td>Horario 1</td>
+                      <td>
+                        <button class="btn-ver-imagenes" title="Ver imágenes"><img src="../images/imagen.png" alt="Ver"></button>
+                      </td>
+                      <td>
+                        <button class="btn-ver-comprobante" title="Ver comprobante"><img src="../images/comprobante.png" alt="Ver"></button>
+                      </td>
+                      <td>
+                        <button class="btn-aceptar" title="Aceptar"><img src="../images/aceptar.png" alt="Aceptar"></button>
+                        <button class="btn-rechazar" title="Rechazar"><img src="../images/rechazar.png" alt="Rechazar"></button>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
             </section>
         </main>
     </div>

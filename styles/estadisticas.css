@@ -28,7 +28,7 @@ html, body {
     display: flex;
     align-items: center;
     justify-content: flex-start;
-    height: 110px;
+    height: 100px;
     padding-left: 40px;
     padding-right: 40px;
     gap: 32px;
@@ -41,16 +41,16 @@ html, body {
 }
 
 .logo-blanco {
-    margin-left: 0;
-    height: 90px;
+    height: 80px;
     width: auto;
 }
 
 .catlogo-de-restaurantes {
-    font-size: 2rem;
-    font-weight: 500;
+    font-size: 1.6rem;
+    font-weight: 400;
     color: #fff;
     font-family: 'Montserrat', sans-serif;
+    max-width: 200px;
 }
 
 .acciones-usuario {
