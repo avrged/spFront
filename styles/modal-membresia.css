@@ -1,5 +1,5 @@
 .form{
-    width:400px;
+    width:500px;
     background: #ffffff;
     padding : 30px;
     margin: auto;
@@ -37,7 +37,7 @@
     border: none;
     padding: 12px;
     color: #ffffff;
-    margin: 16px 0;
+    margin: 0 0;
     font-size: 16px;
     border-radius: 8px;
     cursor: pointer;
@@ -45,7 +45,7 @@
 
 .form img {
     display: block;
-    margin: 0 auto 20px auto;
+    margin: 0 auto 0 auto;
 }
 
 .controls::placeholder {
