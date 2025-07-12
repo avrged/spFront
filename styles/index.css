@@ -186,116 +186,99 @@ html, body {
     background: linear-gradient(90deg, #6A1E1E 60%, #912F2F 100%);
 }
 
+.barra-filtros-horizontal {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+    gap: 16px;
+    padding: 16px;
+    border-radius: 30px;
+
+    width: 90%;
+    max-width: 950px;
+}
+
+.filtro-item {
+    display: flex;
+    align-items: center;
+    background: #fff;
+    border: 1px solid #912f2f;
+    border-radius: 30px;
+    padding: 6px 14px;
+    gap: 8px;
+    min-width: 170px;
+}
+
+.icono-filtro {
+    width: 20px;
+    height: 20px;
+    opacity: 0.85;
+}
+
+.filtro-select {
+    border: none;
+    outline: none;
+    background: transparent;
+    color: #912f2f;
+    font-family: 'Rubik', sans-serif;
+    font-size: 0.95rem;
+    width: 100%;
+    cursor: pointer;
+}
+
+.btn-filtrar {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    background: linear-gradient(90deg, #912F2F 60%, #6A1E1E 100%);
+    color: #fff;
+    border: none;
+    border-radius: 30px;
+    padding: 10px 24px;
+    font-size: 1rem;
+    font-family: 'Montserrat', sans-serif;
+    font-weight: bold;
+    cursor: pointer;
+    transition: transform 0.2s, box-shadow 0.3s;
+}
+
+.btn-filtrar:hover {
+    transform: scale(1.03);
+    box-shadow: 0 6px 18px rgba(145, 47, 47, 0.2);
+}
+
+.icono-boton {
+    width: 18px;
+    height: 18px;
+}
+
+.filtros-abajo {
+    position: absolute;
+    bottom: 30px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 3;
+}
+
+.line-parent {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 32px;
+    width: 100%;
+    justify-content: center;
+}
 
 .contenido-principal {
     display: flex;
-    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: center;
+    padding: 32px 40px;
     width: 100%;
     margin: 0;
     padding: 32px 0;
     box-sizing: border-box;
     gap: 40px;
-}
-
-.rectangle-group {
-    box-shadow: 0 6px 24px rgba(0, 0, 0, 0.1);
-    padding: 36px 28px 28px 28px;
-    gap: 32px;
-    border: 1.5px solid #f3dede;
-}
-
-.filtrar-por {
-    font-size: 1.3rem;
-    font-family: 'rubik', sans-serif;
-    font-weight: 700;
-    color: #912f2f;
-    margin-bottom: 18px;
-    letter-spacing: 0.5px;
-    text-align: center;
-}
-
-.component-2,
-.component-4,
-.component-6,
-.component-8 {
-    position: relative;
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    background: #fff;
-    border-radius: 20px;
-    padding: 10px 12px;
-    margin-bottom: 18px;
-}
-
-.filtro-select {
-    width: 100%;
-    padding: 10px 40px 10px 20px;
-    border: 1px solid #912f2f;
-    border-radius: 20px;
-    font-size: 1rem;
-    color: #912f2f;
-    background: #fff;
-    appearance: none;
-    outline: none;
-    cursor: pointer;
-    font-family: 'rubik', sans-serif;
-}
-
-.reloj-icon {
-    left: 12px;
-    width: 22px;
-    height: 22px;
-    opacity: 0.85;
-}
-
-.keyboard-arrow-down-icon1 {
-    position: absolute;
-    right: 32px;
-    top: 53%;
-    transform: translateY(-50%);
-    pointer-events: none;
-    width: 18px;
-    height: 18px;
-}
-
-.component-11 {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}
-
-
-.buscar1 {
-    background: linear-gradient(90deg, #912F2F 60%, #6A1E1E 100%);
-    color: #fff;
-    border: none;
-    text-align: center;
-    border-radius: 12px;
-    padding: 12px 44px;
-    font-size: 1.15rem;
-    font-family: 'Montserrat', sans-serif;
-    font-weight: 600;
-    box-shadow: 0 2px 12px rgba(145, 47, 47, 0.10);
-    cursor: pointer;
-    transition: background 0.8s, box-shadow 0.8s;
-    width: 80%;
-}
-
-.buscar1:hover {
-    background: linear-gradient(90deg, #6A1E1E 60%, #912F2F 100%);
-    box-shadow: 0 4px 18px rgba(145, 47, 47, 0.18);
-    transform: translateY(-2px) scale(1.03);
-}
-
-.line-parent {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    gap: 32px;
-    align-items: flex-start;
-    justify-content: flex-start;
-    width: 100%;
 }
 
 .restaurante-card {
@@ -307,7 +290,7 @@ html, body {
     padding: 4px 4px 4px 4px;
     cursor: pointer;
     transition: box-shadow 0.3s ease, transform 0.3s ease;
-    width: 200px;
+    width: 300px;
 }
 
 .restaurante-card:hover,
@@ -319,7 +302,7 @@ html, body {
 
 .restaurante-img {
     width: 100%;
-    height: 170px;
+    height: 200px;
     border-radius: 4px;
     object-fit: cover;
     box-shadow: 0 2px 6px rgba(0,0,0,0.1);
