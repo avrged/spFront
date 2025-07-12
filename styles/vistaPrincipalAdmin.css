@@ -165,7 +165,7 @@ html, body {
 .btn-agregar-etiqueta {
     display: flex;
     align-items: center;
-    background: #6b1e1e;
+    background: linear-gradient(90deg, #912F2F 60%, #6A1E1E 100%);
     color: #fff;
     border: none;
     border-radius: 8px;
@@ -182,7 +182,7 @@ html, body {
 }
 
 .btn-agregar-etiqueta:hover, btn-agregar-etiqueta:focus {
-    background: #912f2f;
+    background: linear-gradient(90deg, #6A1E1E 60%, #912F2F 100%);
     transform: scale(1.05);
 }
 

@@ -126,7 +126,7 @@ label {
 
 .button {
     width: 100%;
-    background: #6A1E1E;
+    background: linear-gradient(90deg, #912F2F 60%, #6A1E1E 100%);
     border: none;
     padding: 14px;
     color: #fff;
@@ -140,7 +140,7 @@ label {
 }
 
 .button:hover, .button:focus {
-    background: #B64040;
+    background: linear-gradient(90deg, #6A1E1E 60%, #912F2F 100%);
     transform: translateY(-2px) scale(1.03);
 }
 

@@ -182,7 +182,7 @@ html, body {
 }
 
 .barra-busqueda .buscar {
-    background: #6A1E1E;
+    background: linear-gradient(90deg, #912F2F 60%, #6A1E1E 100%);
     color: #fff;
     border: none;
     border-radius: 20px;
@@ -190,11 +190,11 @@ html, body {
     font-size: 1rem;
     margin-left: 10px;
     cursor: pointer;
-    transition: background 0.2s;
+    transition: background 0.8s;
 }
 
 .barra-busqueda .buscar:hover {
-    background: #912F2F;
+    background: linear-gradient(90deg, #6A1E1E 60%, #912F2F 100%);
 }
 
 
@@ -209,24 +209,19 @@ html, body {
 }
 
 .rectangle-group {
-    width: 260px;
-    min-width: 200px;
-    background: #fff;
-    border-radius: 18px;
-    box-shadow: 0 2px 12px rgba(0,0,0,0.07);
-    padding: 28px 20px 20px 20px;
-    display: flex;
-    flex-direction: column;
-    gap: 28px;
-    align-items: stretch;
+    box-shadow: 0 6px 24px rgba(0, 0, 0, 0.1);
+    padding: 36px 28px 28px 28px;
+    gap: 32px;
+    border: 1.5px solid #f3dede;
 }
 
 .filtrar-por {
-    font-size: 1.2rem;
+    font-size: 1.3rem;
     font-family: 'rubik', sans-serif;
-    font-weight: 600;
+    font-weight: 700;
     color: #912f2f;
-    margin-bottom: 10px;
+    margin-bottom: 18px;
+    letter-spacing: 0.5px;
     text-align: center;
 }
 
@@ -234,7 +229,6 @@ html, body {
 .component-4,
 .component-6,
 .component-8 {
-    font-family: 'rubik', sans-serif;
     position: relative;
     display: flex;
     align-items: center;
@@ -247,7 +241,7 @@ html, body {
 
 .filtro-select {
     width: 100%;
-    padding: 10px 38px 10px 36px;
+    padding: 10px 40px 10px 20px;
     border: 1px solid #912f2f;
     border-radius: 20px;
     font-size: 1rem;
@@ -255,23 +249,21 @@ html, body {
     background: #fff;
     appearance: none;
     outline: none;
-    margin-bottom: 0;
     cursor: pointer;
     font-family: 'rubik', sans-serif;
 }
 
 .reloj-icon {
-    position: absolute;
-    left: 18px;
-    width: 24px;
-    height: 24px;
-    pointer-events: none;
+    left: 12px;
+    width: 22px;
+    height: 22px;
+    opacity: 0.85;
 }
 
 .keyboard-arrow-down-icon1 {
     position: absolute;
-    right: 18px;
-    top: 50%;
+    right: 32px;
+    top: 53%;
     transform: translateY(-50%);
     pointer-events: none;
     width: 18px;
@@ -282,24 +274,29 @@ html, body {
     display: flex;
     justify-content: center;
     align-items: center;
-    margin-top: 16px;
 }
 
 
 .buscar1 {
-    background: #6A1E1E;
+    background: linear-gradient(90deg, #912F2F 60%, #6A1E1E 100%);
     color: #fff;
     border: none;
-    border-radius: 8px;
-    padding: 10px 36px;
-    font-size: 1.1rem;
+    text-align: center;
+    border-radius: 12px;
+    padding: 12px 44px;
+    font-size: 1.15rem;
     font-family: 'Montserrat', sans-serif;
+    font-weight: 600;
+    box-shadow: 0 2px 12px rgba(145, 47, 47, 0.10);
     cursor: pointer;
-    transition: background 0.2s;
+    transition: background 0.8s, box-shadow 0.8s;
+    width: 80%;
 }
 
 .buscar1:hover {
-    background: #912F2F;
+    background: linear-gradient(90deg, #6A1E1E 60%, #912F2F 100%);
+    box-shadow: 0 4px 18px rgba(145, 47, 47, 0.18);
+    transform: translateY(-2px) scale(1.03);
 }
 
 .line-parent {
@@ -317,7 +314,7 @@ html, body {
     flex-direction: column;
     align-items: center;
     background: #fff;
-    border-radius: 8px;
+    border-radius: 4px;
     padding: 4px 4px 4px 4px;
     cursor: pointer;
     transition: box-shadow 0.3s ease, transform 0.3s ease;
@@ -326,18 +323,18 @@ html, body {
 
 .restaurante-card:hover,
 .restaurante-card:focus {
-    box-shadow: 0 6px 18px rgba(145, 47, 47, 0.25);
+    box-shadow: 0 6px 18px rgba(4, 4, 4, 0.166);
     border-color: #912f2f;
     transform: translateY(-4px) scale(1.03);
 }
 
 .restaurante-img {
     width: 100%;
-    height: auto;
-    border-radius: 8px;
+    height: 170px;
+    border-radius: 4px;
     object-fit: cover;
     box-shadow: 0 2px 6px rgba(0,0,0,0.1);
-    margin-bottom: 16px;
+    margin-bottom: 8px;
 }
 
 .restaurante-info {

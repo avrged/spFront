@@ -14,7 +14,7 @@
     border-radius: 4px;
     font-family: 'Rubik', sans-serif;
     color: #912F2F;
-    box-shadow: 7px 7px 5px #B64040;
+    box-shadow: 7px 7px 5px #6A1E1E;
 }
 
 .form h4 {
@@ -53,7 +53,7 @@ label {
 
 .button {
     width: 100%;
-    background: #6A1E1E;
+    background: linear-gradient(90deg, #912F2F 60%, #6A1E1E 100%);
     border: none;
     padding: 12px;
     color: #ffffff;
@@ -64,7 +64,7 @@ label {
 }
 
 .button:hover, .button:focus {
-    background: #B64040;
+    background: linear-gradient(90deg, #6A1E1E 60%, #912F2F 100%);
     transform: translateY(-2px) scale(1.03);
     transition: background 0.2s, transform 0.2s;
 }

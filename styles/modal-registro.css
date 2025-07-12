@@ -6,7 +6,7 @@
     border-radius: 4px;
     font-family: 'Rubik', sans-serif;
     color: #912F2F;
-    box-shadow: 7px 7px 5px #B64040;
+    box-shadow: 5px 5px 5px #6A1E1E;
     transform: scale(0.8) translateY(-30px);
     transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275), opacity 0.3s ease;
     opacity: 0;
@@ -67,7 +67,7 @@
 
 #registroModal .botons {
     width: 100%;
-    background: #6A1E1E;
+    background: linear-gradient(90deg, #912F2F 60%, #6A1E1E 100%);
     border: none;
     padding: 12px;
     color: #ffffff;
@@ -82,7 +82,7 @@
 }
 
 #registroModal .botons:hover, #registroModal .botons:focus {
-    background: #B64040;
+    background: linear-gradient(90deg, #6A1E1E 60%, #912F2F 100%);
     transform: translateY(-2px) scale(1.03);
 }
 
