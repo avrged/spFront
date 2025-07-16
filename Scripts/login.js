@@ -97,16 +97,19 @@ function initializeLoginForm() {
     }
 
     if (formularioValido) {
-      // Detectar el rol según el archivo HTML actual
-      let rol = '';
-      const path = window.location.pathname;
-      if (path.includes('loginAdmin')) {
-        rol = 'administrador';
-      } else if (path.includes('loginRest')) {
-        rol = 'restaurantero';
-      } else {
-        // fallback: intentar leer de un input oculto o default a restaurantero
-        rol = 'restaurantero';
+
+
+      let rol = 'restaurantero'; 
+      let parent = newForm.parentElement;
+      while (parent) {
+        if (parent.id === 'loginAdminContent') {
+          rol = 'administrador';
+          break;
+        } else if (parent.id === 'loginRestContent') {
+          rol = 'restaurantero';
+          break;
+        }
+        parent = parent.parentElement;
       }
 
       fetch('http://localhost:7070/login', {
