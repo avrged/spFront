@@ -97,15 +97,36 @@ function initializeLoginForm() {
     }
 
     if (formularioValido) {
-        if (typeof closeLoginAdminModal === 'function' && document.getElementById('loginAdminModal')?.style.display === 'flex') {
-            closeLoginAdminModal();
+      // --- Aquí va la conexión con el back-end ---
+      fetch('http://localhost:3000/api/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          correo: correo.value,
+          contrasena: contrasena.value
+        })
+      })
+      .then(res => res.json())
+      .then(data => {
+        if (data.success) {
+          // Puedes guardar el token si tu back lo envía
+          // localStorage.setItem('token', data.token);
+
+          // Redirige según el tipo de usuario (ajusta según tu lógica)
+          if (data.rol === 'admin') {
             window.location.href = 'vistaPrincipalAdmin.html';
-        } else if (typeof closeLoginRestModal === 'function' && document.getElementById('loginRestModal')?.style.display === 'flex') {
-            closeLoginRestModal();
+          } else {
             window.location.href = 'vistaPrincipalRestaurantero.html';
+          }
+        } else {
+          errorContrasena.textContent = data.message || "Credenciales incorrectas";
         }
+      })
+      .catch(() => {
+        errorContrasena.textContent = "Error de conexión con el servidor";
+      });
     } else {
-        console.log('Formulario inválido, errores mostrados');
+      console.log('Formulario inválido, errores mostrados');
     }
   });
 
