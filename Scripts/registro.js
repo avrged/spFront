@@ -68,21 +68,29 @@ function initializeRegistroForm() {
     }
 
 if (formularioValido) {
-    fetch('http://localhost:3000/api/registro', {
+    fetch('http://localhost:7070/users', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
             nombre: nombre.value,
             correo: correo.value,
-            contrasena: contrasena.value
+            contrasena: contrasena.value,
+            tipo: "restaurantero"
         })
     })
-    .then(res => res.json())
-    .then(data => {
-        if (data.success) {
+    .then(async res => {
+        let data;
+        try {
+            data = await res.json();
+        } catch {
+            data = {};
+        }
+        if (res.ok && data.success) {
             window.location.href = "solicitudRestaurante.html";
+        } else if (data.message) {
+            alert(data.message);
         } else {
-            alert(data.message || "Error en el registro");
+            alert("Error en el registro");
         }
     })
     .catch(() => alert("Error de conexión con el servidor"));

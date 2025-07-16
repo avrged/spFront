@@ -97,8 +97,7 @@ function initializeLoginForm() {
     }
 
     if (formularioValido) {
-      // --- Aquí va la conexión con el back-end ---
-      fetch('http://localhost:3000/api/login', {
+      fetch('http://localhost:7070', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -109,10 +108,6 @@ function initializeLoginForm() {
       .then(res => res.json())
       .then(data => {
         if (data.success) {
-          // Puedes guardar el token si tu back lo envía
-          // localStorage.setItem('token', data.token);
-
-          // Redirige según el tipo de usuario (ajusta según tu lógica)
           if (data.rol === 'admin') {
             window.location.href = 'vistaPrincipalAdmin.html';
           } else {

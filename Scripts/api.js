@@ -8,7 +8,6 @@ const API_CONFIG = {
     }
 };
 
-// Clase para manejar todas las llamadas a la API
 class SazonAPI {
     static async request(endpoint, options = {}) {
         const url = `${API_CONFIG.BASE_URL}${endpoint}`;
