@@ -67,10 +67,26 @@ function initializeRegistroForm() {
         formularioValido = false;
     }
 
-    if (formularioValido) {
-        closeRegistroModal();
-        window.location.href = "solicitudRestaurante.html";
-    }
+if (formularioValido) {
+    fetch('http://localhost:3000/api/registro', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+            nombre: nombre.value,
+            correo: correo.value,
+            contrasena: contrasena.value
+        })
+    })
+    .then(res => res.json())
+    .then(data => {
+        if (data.success) {
+            window.location.href = "solicitudRestaurante.html";
+        } else {
+            alert(data.message || "Error en el registro");
+        }
+    })
+    .catch(() => alert("Error de conexión con el servidor"));
+}
   });
 }
 
