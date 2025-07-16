@@ -1,4 +1,3 @@
-
 function initEncuestaForm() {
     const form = document.getElementById('encuestaForm');
     const atraccion = document.getElementById('atraccion');

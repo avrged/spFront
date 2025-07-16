@@ -1,4 +1,3 @@
-// Manejo completo de restauranteros
 class RestauranterosManager {
     static currentRestauranteros = [];
     static currentEditingId = null;
@@ -102,7 +101,6 @@ class RestauranterosManager {
             this.fillForm(restaurantero);
             this.currentEditingId = id;
             
-            // Scroll al formulario
             const form = document.getElementById('restaurantero-form-container');
             if (form) {
                 form.scrollIntoView({ behavior: 'smooth' });
@@ -124,7 +122,6 @@ class RestauranterosManager {
         if (correoField) correoField.value = restaurantero.correo || '';
         if (rfcField) rfcField.value = restaurantero.rfc || '';
         
-        // Cambiar texto del botón
         const submitBtn = form.querySelector('button[type="submit"]');
         if (submitBtn) {
             submitBtn.textContent = 'Actualizar Restaurantero';
@@ -159,7 +156,6 @@ class RestauranterosManager {
                 tipo: 'restaurantero'
             };
 
-            // Validaciones
             if (!formData.nombreU || !formData.correo || !formData.contrasena) {
                 UIUtils.showError('Nombre, correo y contraseña son obligatorios');
                 return;
@@ -177,7 +173,6 @@ class RestauranterosManager {
             }
         });
 
-        // Botón cancelar
         const cancelBtn = document.getElementById('cancel-btn');
         if (cancelBtn) {
             cancelBtn.addEventListener('click', () => {
@@ -187,9 +182,7 @@ class RestauranterosManager {
     }
 }
 
-// Inicializar cuando el DOM esté listo
 document.addEventListener('DOMContentLoaded', function() {
-    // Verificar autenticación si es necesario
     if (document.body.classList.contains('require-auth')) {
         if (!AuthManager.requireAuth()) return;
     }

@@ -55,7 +55,6 @@ document.addEventListener('DOMContentLoaded', function () {
                     alert('Editar ' + tipo + ': ' + nombre);
                 }
             }
-            // Eliminar
             if (e.target.closest('.btn-eliminar')) {
                 const fila = e.target.closest('tr');
                 const nombre = fila ? fila.children[0].textContent : '';
@@ -122,7 +121,6 @@ document.addEventListener('DOMContentLoaded', function () {
             if (e.target.closest('.btn-aceptar')) {
                 const fila = e.target.closest('tr');
                 if (!fila) return;
-                // Obtener datos relevantes
                 const tds = fila.querySelectorAll('td');
                 const nombre = tds[0]?.textContent || '';
                 const ubicacion = tds[4]?.textContent || '';

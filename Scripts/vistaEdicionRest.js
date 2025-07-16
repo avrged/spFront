@@ -21,7 +21,6 @@ document.addEventListener('DOMContentLoaded', function() {
         input.addEventListener('change', function(event) {
             const fileList = event.target.files;
             const label = input.closest('label.btn-menu');
-            // Oculta solo el ícono (img) del label, no el texto
             Array.from(label.children).forEach(function(child) {
                 if (child.tagName === 'IMG') {
                     child.style.display = (fileList.length > 0) ? 'none' : '';
@@ -41,7 +40,6 @@ document.addEventListener('DOMContentLoaded', function() {
             } else {
                 fileNameSpan.textContent = '';
                 fileNameSpan.style.display = 'none';
-                // Si se elimina el archivo, vuelve a mostrar el ícono
                 Array.from(label.children).forEach(function(child) {
                     if (child.tagName === 'IMG') {
                         child.style.display = '';

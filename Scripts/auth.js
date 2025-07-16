@@ -1,4 +1,3 @@
-// Manejo de autenticación y registro
 class AuthManager {
     static currentUser = null;
 
@@ -33,7 +32,6 @@ class AuthManager {
         try {
             UIUtils.showLoading(true);
 
-            // Validaciones básicas
             if (!userData.nombreU || !userData.correo || !userData.contrasena) {
                 throw new Error('Todos los campos son obligatorios');
             }
@@ -89,7 +87,6 @@ class AuthManager {
     }
 }
 
-// Formulario de login
 function initLoginForm() {
     const loginForm = document.getElementById('login-form');
     if (loginForm) {
@@ -101,7 +98,6 @@ function initLoginForm() {
 
             const success = await AuthManager.login(email, password);
             if (success) {
-                // Redirigir según el tipo de usuario
                 const user = AuthManager.getCurrentUser();
                 if (user.tipo === 'restaurantero') {
                     window.location.href = 'vistaPrincipalRestaurantero.html';
@@ -115,7 +111,6 @@ function initLoginForm() {
     }
 }
 
-// Formulario de registro
 function initRegisterForm() {
     const registerForm = document.getElementById('register-form');
     if (registerForm) {
@@ -140,12 +135,10 @@ function initRegisterForm() {
     }
 }
 
-// Inicializar cuando el DOM esté listo
 document.addEventListener('DOMContentLoaded', function() {
     initLoginForm();
     initRegisterForm();
-    
-    // Verificar si hay un usuario logueado y mostrar info
+
     const user = AuthManager.getCurrentUser();
     if (user) {
         const userInfo = document.getElementById('user-info');

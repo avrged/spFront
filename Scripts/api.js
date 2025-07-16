@@ -1,4 +1,3 @@
-// Configuración de la API
 const API_CONFIG = {
     BASE_URL: 'http://localhost:7070',
     ENDPOINTS: {
@@ -36,7 +35,6 @@ class SazonAPI {
         }
     }
 
-    // RESTAURANTEROS
     static async getAllRestauranteros() {
         return this.request(API_CONFIG.ENDPOINTS.RESTAURANTEROS);
     }
@@ -65,7 +63,6 @@ class SazonAPI {
         });
     }
 
-    // USUARIOS
     static async getAllUsuarios() {
         return this.request(API_CONFIG.ENDPOINTS.USUARIOS);
     }
@@ -85,15 +82,12 @@ class SazonAPI {
     }
 }
 
-// Utilidades para manejar errores y mostrar mensajes
 class UIUtils {
     static showMessage(message, type = 'info') {
-        // Crear el mensaje toast
         const toast = document.createElement('div');
         toast.className = `toast toast-${type}`;
         toast.textContent = message;
-        
-        // Estilos inline para el toast
+
         Object.assign(toast.style, {
             position: 'fixed',
             top: '20px',
@@ -108,7 +102,6 @@ class UIUtils {
 
         document.body.appendChild(toast);
 
-        // Remover después de 3 segundos
         setTimeout(() => {
             if (toast.parentNode) {
                 toast.parentNode.removeChild(toast);
@@ -162,7 +155,6 @@ class UIUtils {
     }
 }
 
-// Agregar CSS para animaciones
 const style = document.createElement('style');
 style.textContent = `
     @keyframes spin {
