@@ -97,18 +97,31 @@ function initializeLoginForm() {
     }
 
     if (formularioValido) {
-      fetch('http://localhost:7070', {
+      // Detectar el rol según el archivo HTML actual
+      let rol = '';
+      const path = window.location.pathname;
+      if (path.includes('loginAdmin')) {
+        rol = 'administrador';
+      } else if (path.includes('loginRest')) {
+        rol = 'restaurantero';
+      } else {
+        // fallback: intentar leer de un input oculto o default a restaurantero
+        rol = 'restaurantero';
+      }
+
+      fetch('http://localhost:7070/login', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           correo: correo.value,
-          contrasena: contrasena.value
+          contrasena: contrasena.value,
+          rol: rol
         })
       })
       .then(res => res.json())
       .then(data => {
         if (data.success) {
-          if (data.rol === 'admin') {
+          if (data.rol === 'administrador') {
             window.location.href = 'vistaPrincipalAdmin.html';
           } else {
             window.location.href = 'vistaPrincipalRestaurantero.html';
