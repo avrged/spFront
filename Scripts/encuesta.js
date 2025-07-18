@@ -7,14 +7,48 @@ function initEncuestaForm() {
         return;
     }
 
-    form.addEventListener('submit', function(e) {
+    form.addEventListener('submit', async function(e) {
         if (!validateForm()) {
             e.preventDefault();
             return;
         }
-        if (typeof cerrarModalEncuesta === "function") {
-            cerrarModalEncuesta();
-            e.preventDefault();
+        e.preventDefault();
+
+        // Obtén el id del restaurante desde la URL
+        const params = new URLSearchParams(window.location.search);
+        const restauranteId = params.get('id');
+
+        // Prepara los datos a enviar
+        const data = {
+            atraccion: atraccion.value,
+            origen: origen.value,
+            restauranteId: restauranteId
+        };
+
+        try {
+            // Envía la encuesta al backend
+            const response = await fetch('/api/encuesta', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(data)
+            });
+            const result = await response.json();
+
+            if (result.pdfUrl) {
+                // Descarga el PDF como archivo
+                const link = document.createElement('a');
+                link.href = result.pdfUrl;
+                link.download = `menu_${restauranteId}.pdf`;
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+            }
+
+            if (typeof cerrarModalEncuesta === "function") {
+                cerrarModalEncuesta();
+            }
+        } catch (error) {
+            alert('Ocurrió un error al enviar la encuesta o descargar el menú.');
         }
     });
 

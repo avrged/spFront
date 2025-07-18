@@ -63,11 +63,34 @@ function initializeMembresiaForm() {
     }
 
     if (formularioValido) {
-      closeMembresiaModal();
-      setTimeout(() => {
-        mostrarAlerta();
-        form.reset();
-      }, 350);
+      // Prepara los datos a enviar
+      const data = {
+        correo: correo.value,
+        numero: numero.value,
+        contrasena: contrasena.value,
+        motivo: motivo.value
+      };
+
+      // Envía la solicitud al backend
+      fetch('/api/solicitud-membresia', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data)
+      })
+      .then(res => {
+        if (!res.ok) throw new Error('Error en el servidor');
+        return res.json();
+      })
+      .then(() => {
+        closeMembresiaModal();
+        setTimeout(() => {
+          mostrarAlerta();
+          form.reset();
+        }, 350);
+      })
+      .catch(() => {
+        alert('No se pudo enviar la solicitud. Intenta de nuevo.');
+      });
     }
   });
 
