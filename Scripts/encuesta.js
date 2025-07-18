@@ -71,4 +71,14 @@ function initEncuestaForm() {
     }
 }
 
+function descargarMenuPDF(restauranteId) {
+    const pdfUrl = `../menus/menu_${restauranteId}.pdf`;
+    const link = document.createElement('a');
+    link.href = pdfUrl;
+    link.download = `menu_${restauranteId}.pdf`;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+}
+
 window.initEncuestaForm = initEncuestaForm;

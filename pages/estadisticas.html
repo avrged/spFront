@@ -39,16 +39,16 @@
                     <h3>DESCARGAS DE MENÚ</h3>
                     <p>Esta semana<br><strong></strong></p>
                     <p>Total acumulados<br><strong></strong></p>
-                    <p class="porcentaje-subida">+%</p>
+                    <p class="porcentaje-subida"></p>
                 </div>
 
                 <div class="tarjeta estadistica-origen efecto-brillante">
                     <img src="../images/visitas.png" alt="Origen" class="icono-tarjeta">
                     <h3>INTERÉS POR ORIGEN</h3>
-                    <p><span class="locales">● Locales</span> %</p>
-                    <p><span class="extranjeros">● Extranjeros</span> %</p>
+                    <p><span class="locales">● Locales</span></p>
+                    <p><span class="extranjeros">● Extranjeros</span></p>
                     <div class="grafico-pastel">
-
+                        <canvas id="graficoOrigen"></canvas>
                     </div>
                 </div>
 
@@ -56,9 +56,7 @@
                     <img src="../images/aspectos.png" alt="Aspectos" class="icono-tarjeta">
                     <h3>ASPECTOS DESTACADOS</h3>
                     <div class="barras-aspectos">
-                        <div class="barra ambiente"> %</div>
-                        <div class="barra comida">%</div>
-                        <div class="barra higiene">%</div>
+                        <canvas id="graficoAspectos"></canvas>
                     </div>
                 </div>
             </div>
@@ -95,5 +93,7 @@
         </div>
     </footer>
 </div>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="../Scripts/estadisticas.js"></script>
 </body>
 </html>

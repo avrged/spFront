@@ -152,7 +152,7 @@ html, body {
     border: 2px solid #912f2f;
     border-radius: 12px;
     padding: 20px;
-    width: 300px;
+    width: 350px;
     font-family: 'Montserrat', sans-serif;
     text-align: center;
     color: #912f2f;
@@ -292,5 +292,14 @@ html, body {
     width: auto;
     object-fit: contain;
     border-radius: 8px;
+}
+
+#graficoOrigen {
+    width: 180px;
+    height: 180px;
+    max-width: 180px;
+    max-height: 180px;
+    display: block;
+    margin: 0 auto;
 }
 
