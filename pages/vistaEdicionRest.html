@@ -16,7 +16,7 @@
                 <div class="catlogo-de-restaurantes">Restaurantes San Cristóbal</div>
             </div>
             <nav class="acciones-usuario">
-                <button class="subscripcion-parent" type="button" onclick="openMembresiaModal()">
+                <button class="subscripcion-parent" id="btnHeaderSubscripcion" type="button" onclick="openMembresiaModal()">
                     <img class="subscripcion" alt="subscripcion" src="../images/subscripcion.png">
                     <span class="subscripcion">Subscripción</span>
                 </button>
@@ -42,6 +42,12 @@
             <section class="formulario-edicion">
                 <div class="linea-interna">
                     <label class="campo-titulo">Restaurante: <span>La Mansión</span></label>
+                    <div class="membresia-status">
+                        <div id="membresiaMensaje" class="membresia-mensaje"></div>
+                        <button id="btnEstadisticas" class="btn-estadisticas" onclick="window.location.href='estadisticas.html'">
+                            <img src="../images/estadisticas.png" alt="estadisticas" class="icon-20">Estadísticas
+                        </button>
+                    </div>
                 </div>
 
                 <div class="linea-interna">

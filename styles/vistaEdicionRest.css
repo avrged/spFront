@@ -134,6 +134,30 @@ html, body {
     letter-spacing: 1px;
 }
 
+.btn-estadisticas {
+  display: flex;
+  justify-content: center;
+  align-items: center;     
+  gap: 8px;
+  background: linear-gradient(90deg, #912F2F 60%, #6A1E1E 100%);
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  width: 20%;           
+  padding: 12px 0;        
+  font-size: 1.1rem;
+  font-weight: 600;
+  cursor: pointer;
+  margin: 0 auto;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+  transition: background 0.2s;
+}
+.btn-estadisticas:hover, .btn-estadisticas:focus {
+    background: linear-gradient(90deg, #6A1E1E 60%, #912F2F 100%);
+    transform: translateY(-2px) scale(1.03);
+    transition: background 0.2s, transform 0.2s;
+}
+
 .restaurante-divider {
     border: none;
     border-top: 4px solid #912f2f;
@@ -471,4 +495,12 @@ input[type="text"] {
 .close-modal:hover {
     background: rgba(255, 255, 255, 1);
     color: #B64040;
+}
+
+.membresia-status {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
 }

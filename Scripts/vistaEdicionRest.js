@@ -48,4 +48,27 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         });
     });
+    // --- Lógica de membresía ---
+    // Simula el estado de membresía: "inactiva", "pendiente", "activa"
+    // En producción, obtén este valor del backend
+    const estadoMembresia = window.estadoMembresiaRestaurante || "activa"; // Cambia según pruebas
+
+    const btnHeaderSubscripcion = document.getElementById('btnHeaderSubscripcion');
+    const btnEstadisticas = document.getElementById('btnEstadisticas');
+    const mensaje = document.getElementById('membresiaMensaje');
+
+    if (btnEstadisticas && mensaje) {
+        if (estadoMembresia === "activa") {
+            btnEstadisticas.style.display = "inline-block";
+            btnEstadisticas.disabled = false;
+            if (btnHeaderSubscripcion) btnHeaderSubscripcion.style.display = "none";
+        } else if (estadoMembresia === "pendiente") {
+            btnEstadisticas.style.display = "none";
+            if (btnHeaderSubscripcion) btnHeaderSubscripcion.style.display = "inline-block";
+        } else {
+            btnEstadisticas.style.display = "none";
+            mensaje.textContent = "";
+            if (btnHeaderSubscripcion) btnHeaderSubscripcion.style.display = "inline-block";
+        }
+    }
 });

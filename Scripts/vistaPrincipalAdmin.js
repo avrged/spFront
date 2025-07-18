@@ -3,7 +3,8 @@ document.addEventListener('DOMContentLoaded', function () {
     const vistas = {
         restaurantes: document.getElementById('vista-restaurantes'),
         etiquetas: document.getElementById('vista-etiquetas'),
-        solicitudes: document.getElementById('vista-solicitudes')
+        solicitudes: document.getElementById('vista-solicitudes'),
+        membresias: document.getElementById('vista-membresias')
     };
 
     botones.forEach(boton => {
@@ -19,8 +20,41 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     });
 
+
     if (botones && botones.length > 0) {
         botones[0].click();
+    }
+
+    function cargarMembresias() {
+        // Simulación, reemplaza con tu API real
+        const membresias = [
+            { restaurante: "La Mansión", propietario: "Juan Pérez", correo: "juan@mail.com", fecha: "2025-07-17", estado: "pendiente" },
+            { restaurante: "El Sazón", propietario: "Ana López", correo: "ana@mail.com", fecha: "2025-07-16", estado: "activa" }
+        ];
+        const tbody = document.querySelector('#vista-membresias tbody');
+        tbody.innerHTML = '';
+        membresias.forEach(m => {
+            const tr = document.createElement('tr');
+            let acciones = '';
+            if (m.estado.toLowerCase() !== 'activa') {
+                acciones += `<button class="btn-aceptar" title="Aceptar"><img src="../images/aceptar.png" alt="Aceptar"></button>`;
+            }
+            acciones += `<button class="btn-rechazar" title="Rechazar"><img src="../images/rechazar.png" alt="Rechazar"></button>`;
+            tr.innerHTML = `
+                <td>${m.restaurante}</td>
+                <td>${m.propietario}</td>
+                <td>${m.correo}</td>
+                <td>${m.fecha}</td>
+                <td>${m.estado.charAt(0).toUpperCase() + m.estado.slice(1)}</td>
+                <td>${acciones}</td>
+            `;
+            tbody.appendChild(tr);
+        });
+    }
+
+    const btnSidebarMembresias = document.querySelector('[data-vista="membresias"]');
+    if (btnSidebarMembresias) {
+        btnSidebarMembresias.addEventListener('click', cargarMembresias);
     }
 
     function agregarEventosTabla(selectorTabla, tipo, editable = false) {

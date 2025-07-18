@@ -38,6 +38,10 @@
             <img class="usuarios" alt="usuarios" src="../images/usuarios.png">
             <span class="usuarios">Usuarios</span>
         </button>
+        <button class="sidebar-item" type="button" data-vista="membresias">
+            <img class="subscripcion" alt="subscripcion" src="../images/subscripcion.png">
+            <span class="subscripcion">Membresías</span>
+        </button>
         </aside>
         <main class="contenido">
             <section id="vista-restaurantes" class="vista-admin">
@@ -123,6 +127,25 @@
                       </td>
                     </tr>
                   </tbody>
+                </table>
+            </section>
+
+            <section id="vista-membresias" class="vista-admin" style="display:none;">
+                <h2>Solicitudes de Membresía</h2>
+                <table class="tabla-admin">
+                    <thead>
+                        <tr>
+                            <th>Restaurante</th>
+                            <th>Propietario</th>
+                            <th>Correo</th>
+                            <th>Fecha de solicitud</th>
+                            <th>Estado</th>
+                            <th>Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <!-- Aquí se llenan dinámicamente las solicitudes -->
+                    </tbody>
                 </table>
             </section>
         </main>
