@@ -38,7 +38,7 @@ document.addEventListener("DOMContentLoaded", function () {
     }
   }
 
-  form.addEventListener("submit", function (event) {
+  form.addEventListener("submit", async function (event) {
     event.preventDefault();
 
     const restaurante = document.getElementById("restaurante");
@@ -97,8 +97,22 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 
     if (formularioValido) {
-      modal.style.display = "flex";
-      form.reset();
+      const formData = new FormData(form);
+
+      try {
+        const response = await fetch('http://localhost:7070/solicitudes', {
+          method: 'POST',
+          body: formData
+        });
+        if (response.ok) {
+          modal.style.display = "flex";
+          form.reset();
+        } else {
+          alert("Error al enviar la solicitud.");
+        }
+      } catch (error) {
+        alert("Error de conexión.");
+      }
     }
   });
 

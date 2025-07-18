@@ -143,4 +143,45 @@ document.addEventListener('DOMContentLoaded', function () {
             }
         });
     }
+
+    async function cargarSolicitudes() {
+        try {
+            const response = await fetch('URL_DE_TU_API/solicitudes');
+            const solicitudes = await response.json();
+
+            const tbody = document.querySelector('#vista-solicitudes tbody');
+            tbody.innerHTML = '';
+
+            solicitudes.forEach(solicitud => {
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td>${solicitud.restaurante}</td>
+                    <td>${solicitud.propietario}</td>
+                    <td>${solicitud.correo}</td>
+                    <td>${solicitud.numero}</td>
+                    <td>${solicitud.direccion}</td>
+                    <td>${solicitud.horario}</td>
+                    <td>
+                    <button class="btn-ver-imagenes" title="Ver imágenes" onclick="verImagenes('${solicitud.imagenes.join(',')}')">
+                        <img src="../images/imagen.png" alt="Ver">
+                    </button>
+                    </td>
+                    <td>
+                    <button class="btn-ver-comprobante" title="Ver comprobante" onclick="verComprobante('${solicitud.comprobante}')">
+                        <img src="../images/comprobante.png" alt="Ver">
+                    </button>
+                    </td>
+                    <td>
+                    <button class="btn-aceptar" title="Aceptar"><img src="../images/aceptar.png" alt="Aceptar"></button>
+                    <button class="btn-rechazar" title="Rechazar"><img src="../images/rechazar.png" alt="Rechazar"></button>
+                    </td>
+                `;
+                tbody.appendChild(tr);
+            });
+        } catch (error) {
+            alert("Error al cargar solicitudes.");
+        }
+    }
+
+    // Llama a cargarSolicitudes() cuando se muestre la vista de solicitudes
 });
