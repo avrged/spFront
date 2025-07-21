@@ -215,11 +215,13 @@ document.addEventListener("DOMContentLoaded", function () {
 
   cerrarModal.addEventListener("click", function () {
     modal.style.display = "none";
+    window.location.href = "index.html";
   });
 
   window.addEventListener("click", function (event) {
     if (event.target === modal) {
       modal.style.display = "none";
+      window.location.href = "index.html";
     }
   });
 });
