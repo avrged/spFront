@@ -170,14 +170,34 @@ document.addEventListener('DOMContentLoaded', function () {
                 const fila = e.target.closest('tr');
                 if (!fila) return;
                 const tds = fila.querySelectorAll('td');
+                // Extraer todos los datos de la solicitud
                 const nombre = tds[0]?.textContent || '';
-                const ubicacion = tds[4]?.textContent || '';
+                const propietario = tds[1]?.textContent || '';
+                const correo = tds[2]?.textContent || '';
+                const celular = tds[3]?.textContent || '';
+                const direccion = tds[4]?.textContent || '';
+                const horario = tds[5]?.textContent || '';
+                const imagenesBtn = tds[6]?.querySelector('.btn-ver-imagenes');
+                const comprobanteBtn = tds[7]?.querySelector('.btn-ver-comprobante');
+                const imagenes = imagenesBtn ? imagenesBtn.getAttribute('data-imagenes') : null;
+                const comprobante = comprobanteBtn ? comprobanteBtn.getAttribute('data-comprobante') : null;
                 const nuevaFila = document.createElement('tr');
                 nuevaFila.innerHTML = `
                   <td>${nombre}</td>
-                  <td>${ubicacion}</td>
+                  <td>${propietario}</td>
+                  <td>${correo}</td>
+                  <td>${celular}</td>
+                  <td>${direccion}</td>
+                  <td>${horario}</td>
                   <td>
-                    <button class="btn-eliminar" title="Eliminar"><img src="../images/eliminar.png" alt="Eliminar"></button>
+                    ${imagenes ? `<button class="btn-ver-imagenes" title="Ver imágenes" data-imagenes='${imagenes}'><img src="../images/imagen.png" alt="Ver"></button>` : 'Sin imágenes'}
+                  </td>
+                  <td>
+                    ${comprobante ? `<button class="btn-ver-comprobante" title="Ver comprobante" data-comprobante='${comprobante}'><img src="../images/comprobante.png" alt="Ver"></button>` : 'Sin comprobante'}
+                  </td>
+                  <td>
+                    <button class="btn-aceptar" title="Aceptar"><img src="../images/aceptar.png" alt="Aceptar"></button>
+                    <button class="btn-rechazar" title="Rechazar"><img src="../images/rechazar.png" alt="Rechazar"></button>
                   </td>
                 `;
                 tablaRestaurantesBody.appendChild(nuevaFila);
