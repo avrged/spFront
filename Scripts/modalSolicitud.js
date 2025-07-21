@@ -49,7 +49,7 @@ document.addEventListener("DOMContentLoaded", function () {
     const horario = document.getElementById("horario");
 
     const imagen1 = document.getElementsByName("imagen1")[0];
-    const imagen2 = document.getElementsByName("imagen2")[0];
+    const comprobante = document.getElementsByName("comprobante")[0];
 
     const errorRestaurante = document.getElementById("error-nombre-restaurante");
     const errorPropietario = document.getElementById("error-nombre-propietario");
@@ -58,7 +58,7 @@ document.addEventListener("DOMContentLoaded", function () {
     const errorDireccion = document.getElementById("error-direccion");
     const errorHorario = document.getElementById("error-horario");
     const errorImagen1 = document.getElementById("error-images");
-    const errorImagen2 = document.getElementById("error-comprobante");
+    const errorComprobante = document.getElementById("error-comprobante");
 
     let formularioValido = true;
 
@@ -89,11 +89,11 @@ document.addEventListener("DOMContentLoaded", function () {
       }
     }
 
-    if (!imagen2.files || imagen2.files.length === 0) {
-      errorImagen2.textContent = "*Suba un comprobante de domicilio.";
+    if (!comprobante.files || comprobante.files.length === 0) {
+      errorComprobante.textContent = "*Suba un comprobante de domicilio.";
       formularioValido = false;
     } else {
-      errorImagen2.textContent = "";
+      errorComprobante.textContent = "";
     }
 
     if (formularioValido) {
