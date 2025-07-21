@@ -123,7 +123,59 @@ function initializeLoginForm() {
       })
       .then(res => res.json())
       .then(data => {
+        console.log('Respuesta completa del servidor:', data);
+        
         if (data.success) {
+          // Intentar guardar datos del usuario de diferentes formas posibles
+          let usuarioData = null;
+          
+          // Opción 1: data.usuario (estructura esperada)
+          if (data.usuario) {
+            usuarioData = data.usuario;
+          }
+          // Opción 2: data contiene directamente los datos del usuario
+          else if (data.id) {
+            usuarioData = {
+              id: data.id,
+              correo: data.correo || correo.value,
+              rol: data.rol,
+              nombre: data.nombre || '',
+              telefono: data.telefono || ''
+            };
+          }
+          // Opción 3: crear objeto básico con datos disponibles
+          else {
+            usuarioData = {
+              id: data.id || data.userId || Date.now(), // usar timestamp como fallback
+              correo: correo.value,
+              rol: data.rol || rol,
+              nombre: data.nombre || '',
+              telefono: data.telefono || ''
+            };
+          }
+          
+          // Guardar datos en sessionStorage
+          if (usuarioData) {
+            sessionStorage.setItem('id', usuarioData.id);
+            sessionStorage.setItem('correo', usuarioData.correo);
+            sessionStorage.setItem('rol', usuarioData.rol);
+            sessionStorage.setItem('nombre', usuarioData.nombre);
+            sessionStorage.setItem('telefono', usuarioData.telefono || '');
+            
+            console.log('✅ Datos guardados en sessionStorage:', {
+              id: usuarioData.id,
+              correo: usuarioData.correo,
+              rol: usuarioData.rol,
+              nombre: usuarioData.nombre,
+              telefono: usuarioData.telefono
+            });
+          } else {
+            console.warn('⚠️ No se pudieron extraer datos del usuario, guardando datos básicos');
+            sessionStorage.setItem('correo', correo.value);
+            sessionStorage.setItem('rol', data.rol || rol);
+            sessionStorage.setItem('loginSuccess', 'true');
+          }
+          
           if (data.rol === 'administrador') {
             window.location.href = 'vistaPrincipalAdmin.html';
           } else {
