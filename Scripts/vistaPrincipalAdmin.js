@@ -238,25 +238,22 @@ document.addEventListener('DOMContentLoaded', function () {
         if (!modal) {
             modal = document.createElement('div');
             modal.id = 'modal-visualizador';
-            modal.style.position = 'fixed';
-            modal.style.top = '0';
-            modal.style.left = '0';
-            modal.style.width = '100vw';
-            modal.style.height = '100vh';
-            modal.style.background = 'rgba(0,0,0,0.7)';
-            modal.style.display = 'flex';
-            modal.style.alignItems = 'center';
-            modal.style.justifyContent = 'center';
-            modal.style.zIndex = '9999';
+            modal.className = 'modal-visualizador';
             document.body.appendChild(modal);
         }
-        modal.innerHTML = `<div style="background:#fff;padding:20px;border-radius:8px;max-width:90vw;max-height:90vh;overflow:auto;position:relative;">
-            <button id="cerrar-modal-visualizador" style="position:absolute;top:10px;right:10px;font-size:1.5em;background:none;border:none;cursor:pointer;">&times;</button>
+        modal.innerHTML = `<div id="modal-contenido-visualizador" class="modal-contenido-visualizador">
+            <button id="cerrar-modal-visualizador" class="cerrar-modal-visualizador">&times;</button>
             ${contenidoHtml}
         </div>`;
         modal.style.display = 'flex';
         document.getElementById('cerrar-modal-visualizador').onclick = function() {
             modal.style.display = 'none';
+        };
+        // Cerrar modal al hacer clic fuera del contenido
+        modal.onclick = function(e) {
+            if (e.target === modal) {
+                modal.style.display = 'none';
+            }
         };
     }
 
