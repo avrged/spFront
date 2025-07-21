@@ -38,7 +38,7 @@ document.addEventListener("DOMContentLoaded", function () {
     }
   }
 
-  // Función para comprimir imágenes (compresión más agresiva)
+  // Función para comprimir imágenes
   function comprimirImagen(file, maxWidth = 400, quality = 0.3) {
     return new Promise((resolve) => {
       const canvas = document.createElement('canvas');
@@ -46,15 +46,11 @@ document.addEventListener("DOMContentLoaded", function () {
       const img = new Image();
       
       img.onload = function() {
-        // Calcular nuevas dimensiones manteniendo aspect ratio
         const ratio = Math.min(maxWidth / img.width, maxWidth / img.height);
         canvas.width = img.width * ratio;
         canvas.height = img.height * ratio;
         
-        // Dibujar imagen redimensionada
         ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
-        
-        // Convertir a blob comprimido
         canvas.toBlob(resolve, 'image/jpeg', quality);
       };
       
@@ -130,7 +126,6 @@ document.addEventListener("DOMContentLoaded", function () {
       formData.append('propietario', document.getElementById('propietario').value.trim());
       formData.append('numero', document.getElementById('numero').value.replace(/\D/g, ''));
       formData.append('horario', document.getElementById('horario').value.trim());
-      // formData.append('id_restaurantero', '55'); // No enviamos id_restaurantero para solicitudes nuevas
       formData.append('estado', 'pendiente');
       
       // Archivos (comprimidos)
@@ -139,21 +134,13 @@ document.addEventListener("DOMContentLoaded", function () {
       
       // Agregar las 3 imágenes comprimidas
       if (imagen1Input?.files && imagen1Input.files.length >= 3) {
-        try {
-          console.log('Comprimiendo imágenes...');
-          const imagen1Comprimida = await comprimirImagen(imagen1Input.files[0]);
-          const imagen2Comprimida = await comprimirImagen(imagen1Input.files[1]);
-          const imagen3Comprimida = await comprimirImagen(imagen1Input.files[2]);
-          
-          formData.append('imagen1', imagen1Comprimida, 'imagen1.jpg');
-          formData.append('imagen2', imagen2Comprimida, 'imagen2.jpg');
-          formData.append('imagen3', imagen3Comprimida, 'imagen3.jpg');
-          console.log('Imágenes comprimidas exitosamente');
-        } catch (error) {
-          console.error('Error al comprimir imágenes:', error);
-          alert('Error al procesar las imágenes');
-          return;
-        }
+        const imagen1Comprimida = await comprimirImagen(imagen1Input.files[0]);
+        const imagen2Comprimida = await comprimirImagen(imagen1Input.files[1]);
+        const imagen3Comprimida = await comprimirImagen(imagen1Input.files[2]);
+        
+        formData.append('imagen1', imagen1Comprimida, 'imagen1.jpg');
+        formData.append('imagen2', imagen2Comprimida, 'imagen2.jpg');
+        formData.append('imagen3', imagen3Comprimida, 'imagen3.jpg');
       }
       
       // Agregar comprobante (también comprimido si es imagen)
@@ -161,16 +148,8 @@ document.addEventListener("DOMContentLoaded", function () {
       if (comprobante) {
         // Si el comprobante es una imagen, comprimirla también
         if (comprobante.type.startsWith('image/')) {
-          try {
-            console.log('Comprimiendo comprobante...');
-            const comprobanteComprimido = await comprimirImagen(comprobante, 800, 0.4);
-            formData.append('comprobante', comprobanteComprimido, 'comprobante.jpg');
-            console.log('Comprobante comprimido exitosamente');
-          } catch (error) {
-            console.error('Error al comprimir comprobante:', error);
-            // Si falla la compresión, usar el archivo original
-            formData.append('comprobante', comprobante);
-          }
+          const comprobanteComprimido = await comprimirImagen(comprobante, 800, 0.4);
+          formData.append('comprobante', comprobanteComprimido, 'comprobante.jpg');
         } else {
           // Si no es imagen, usar directamente
           formData.append('comprobante', comprobante);
@@ -179,22 +158,10 @@ document.addEventListener("DOMContentLoaded", function () {
 
       try {
         console.log('Enviando solicitud...');
-        console.log('Datos del FormData:');
-        let totalSize = 0;
-        for (let [key, value] of formData.entries()) {
-          if (value instanceof File || value instanceof Blob) {
-            console.log(`${key}: [File] ${value.name || 'blob'} (${value.size} bytes)`);
-            totalSize += value.size;
-          } else {
-            console.log(`${key}: "${value}"`);
-            totalSize += new Blob([value]).size;
-          }
-        }
-        console.log(`Tamaño total aproximado: ${(totalSize / 1024 / 1024).toFixed(2)} MB`);
         
         const response = await fetch('http://localhost:7070/solicitudes/with-files', {
           method: 'POST',
-          body: formData // Sin Content-Type header - el navegador lo establece automáticamente para FormData
+          body: formData
         });
         
         if (response.ok) {
