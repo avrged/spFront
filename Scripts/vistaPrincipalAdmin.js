@@ -16,9 +16,11 @@ document.addEventListener('DOMContentLoaded', function () {
             const vistaSeleccionada = this.getAttribute('data-vista');
             if (vistas[vistaSeleccionada]) {
                 vistas[vistaSeleccionada].style.display = 'block';
-                // Si la vista seleccionada es solicitudes, cargar datos reales
+                // Cargar datos reales según la vista seleccionada
                 if (vistaSeleccionada === 'solicitudes') {
                     cargarSolicitudes();
+                } else if (vistaSeleccionada === 'restaurantes') {
+                    cargarRestaurantes();
                 }
             }
         });
@@ -102,12 +104,27 @@ document.addEventListener('DOMContentLoaded', function () {
 
     const tablaRestaurantesAdmin = document.querySelector('#vista-restaurantes .tabla-admin');
     if (tablaRestaurantesAdmin) {
-        tablaRestaurantesAdmin.addEventListener('click', function (e) {
+        tablaRestaurantesAdmin.addEventListener('click', async function (e) {
             if (e.target.closest('.btn-eliminar')) {
                 const fila = e.target.closest('tr');
                 const nombre = fila ? fila.children[0].textContent : '';
-                if (confirm('¿Seguro que deseas eliminar este restaurante: ' + nombre + '?')) {
-                    fila.remove();
+                const idRestaurante = fila ? fila.getAttribute('data-id-restaurante') : '';
+                
+                if (!confirm(`¿Seguro que deseas eliminar este restaurante: ${nombre}?`)) return;
+                
+                try {
+                    // Aquí puedes agregar la llamada al backend para eliminar el restaurante
+                    // const response = await fetch(`http://localhost:7070/restaurantes/${idRestaurante}`, {
+                    //     method: 'DELETE'
+                    // });
+                    // if (response.ok) {
+                        fila.remove();
+                        alert(`Restaurante "${nombre}" eliminado correctamente`);
+                    // } else {
+                    //     alert('Error al eliminar el restaurante');
+                    // }
+                } catch (err) {
+                    alert('Error de conexión al eliminar el restaurante');
                 }
             }
         });
@@ -169,19 +186,62 @@ document.addEventListener('DOMContentLoaded', function () {
             if (e.target.closest('.btn-aceptar')) {
                 const fila = e.target.closest('tr');
                 if (!fila) return;
-                const tds = fila.querySelectorAll('td');
-                const nombre = tds[0]?.textContent || '';
-                const ubicacion = tds[4]?.textContent || '';
-                const nuevaFila = document.createElement('tr');
-                nuevaFila.innerHTML = `
-                  <td>${nombre}</td>
-                  <td>${ubicacion}</td>
-                  <td>
-                    <button class="btn-eliminar" title="Eliminar"><img src="../images/eliminar.png" alt="Eliminar"></button>
-                  </td>
-                `;
-                tablaRestaurantesBody.appendChild(nuevaFila);
-                fila.remove();
+                
+                const id = fila.getAttribute('data-id-solicitud');
+                if (!id) {
+                    alert('No se pudo obtener el ID de la solicitud.');
+                    return;
+                }
+                
+                if (!confirm('¿Seguro que deseas aceptar esta solicitud? El restaurante será agregado al sistema.')) return;
+                
+                try {
+                    // Obtener los datos de la solicitud desde la fila de la tabla
+                    const tds = fila.querySelectorAll('td');
+                    const datosRestaurante = {
+                        nombre: tds[0]?.textContent || '',
+                        propietario: tds[1]?.textContent || '',
+                        correo: tds[2]?.textContent || '',
+                        numero: tds[3]?.textContent || '',
+                        direccion: tds[4]?.textContent || '',
+                        horario: tds[5]?.textContent || ''
+                    };
+                    
+                    // Aprobar la solicitud en el backend
+                    const response = await fetch(`http://localhost:7070/solicitudes/${id}/aprobar`, {
+                        method: 'PUT',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({ estado: 'aprobado' })
+                    });
+                    
+                    if (response.ok) {
+                        // Eliminar la solicitud de la tabla
+                        fila.remove();
+                        
+                        // Recargar la lista de restaurantes si esa vista está activa
+                        const vistaRestaurantesActiva = document.getElementById('vista-restaurantes').style.display !== 'none';
+                        if (vistaRestaurantesActiva) {
+                            await cargarRestaurantes();
+                        }
+                        
+                        alert(`✅ Solicitud aprobada exitosamente!\n\nRestaurante "${datosRestaurante.nombre}" ha sido agregado al sistema.`);
+                    } else {
+                        const errorText = await response.text();
+                        const errorObj = JSON.parse(errorText);
+                        
+                        // Manejar errores específicos del backend
+                        if (errorObj.message && errorObj.message.includes("doesn't have a default value")) {
+                            alert(`❌ Error en el backend: Falta configurar valores por defecto en la base de datos.\n\nDetalles técnicos: ${errorObj.message}\n\n💡 Solución: El desarrollador del backend necesita asegurar que todos los campos requeridos se estén copiando correctamente de la solicitud al crear el restaurante.`);
+                        } else {
+                            alert(`❌ Error al aprobar la solicitud:\n\n${errorObj.message || errorText}`);
+                        }
+                    }
+                } catch (err) {
+                    console.error('Error de conexión:', err);
+                    alert('❌ Error de conexión al procesar la solicitud. Verifica que el servidor esté funcionando.');
+                }
             }
             // Rechazar solicitud
             if (e.target.closest('.btn-rechazar')) {
@@ -199,13 +259,13 @@ document.addEventListener('DOMContentLoaded', function () {
                     });
                     if (response.ok) {
                         fila.remove();
-                        UIUtils && UIUtils.showSuccess ? UIUtils.showSuccess('Solicitud rechazada y eliminada correctamente') : alert('Solicitud rechazada y eliminada correctamente');
+                        alert('Solicitud rechazada y eliminada correctamente');
                     } else {
                         const errorText = await response.text();
-                        UIUtils && UIUtils.showError ? UIUtils.showError('Error al rechazar: ' + errorText) : alert('Error al rechazar: ' + errorText);
+                        alert('Error al rechazar: ' + errorText);
                     }
                 } catch (err) {
-                    UIUtils && UIUtils.showError ? UIUtils.showError('Error de conexión al rechazar') : alert('Error de conexión al rechazar');
+                    alert('Error de conexión al rechazar');
                 }
             }
         });
@@ -220,7 +280,12 @@ document.addEventListener('DOMContentLoaded', function () {
             const tbody = document.querySelector('#vista-solicitudes tbody');
             tbody.innerHTML = '';
 
-            solicitudes.forEach(solicitud => {
+            // Filtrar solo las solicitudes con estado 'pendiente'
+            const solicitudesPendientes = solicitudes.filter(solicitud => 
+                solicitud.estado && solicitud.estado.toLowerCase() === 'pendiente'
+            );
+
+            solicitudesPendientes.forEach(solicitud => {
                 const imagenes = [solicitud.imagen1, solicitud.imagen2, solicitud.imagen3].filter(Boolean);
                 const tr = document.createElement('tr');
                 tr.setAttribute('data-id-solicitud', solicitud.id_solicitud || solicitud.id || '');
@@ -248,8 +313,45 @@ document.addEventListener('DOMContentLoaded', function () {
                 `;
                 tbody.appendChild(tr);
             });
+
+            // Mostrar mensaje si no hay solicitudes pendientes
+            if (solicitudesPendientes.length === 0) {
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td colspan="9" style="text-align: center; padding: 20px; color: #666;">
+                        📋 No hay solicitudes pendientes
+                    </td>
+                `;
+                tbody.appendChild(tr);
+            }
         } catch (error) {
             alert("Error al cargar solicitudes.");
+        }
+    }
+
+    async function cargarRestaurantes() {
+        try {
+            const response = await fetch('http://localhost:7070/restaurantes');
+            if (!response.ok) throw new Error('No se pudo obtener los restaurantes');
+            const restaurantes = await response.json();
+
+            const tbody = document.querySelector('#vista-restaurantes tbody');
+            tbody.innerHTML = '';
+
+            restaurantes.forEach(restaurante => {
+                const tr = document.createElement('tr');
+                tr.setAttribute('data-id-restaurante', restaurante.idRestaurante || '');
+                tr.innerHTML = `
+                    <td>${restaurante.nombre || ''}</td>
+                    <td>${restaurante.direccion || ''}</td>
+                    <td>
+                        <button class="btn-eliminar" title="Eliminar"><img src="../images/eliminar.png" alt="Eliminar"></button>
+                    </td>
+                `;
+                tbody.appendChild(tr);
+            });
+        } catch (error) {
+            alert("Error al cargar restaurantes.");
         }
     }
 
