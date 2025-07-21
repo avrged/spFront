@@ -150,19 +150,31 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     }
 
- 
     const tablaSolicitudes = document.querySelector('#vista-solicitudes .tabla-admin tbody');
     const tablaRestaurantesBody = document.querySelector('#vista-restaurantes .tabla-admin tbody');
     if (tablaSolicitudes && tablaRestaurantesBody) {
         tablaSolicitudes.addEventListener('click', function (e) {
-
+            // Ver imágenes
+            const btnImg = e.target.closest('.btn-ver-imagenes');
+            if (btnImg) {
+                const imagenes = JSON.parse(btnImg.getAttribute('data-imagenes'));
+                verImagenes(imagenes);
+                return;
+            }
+            // Ver comprobante
+            const btnComp = e.target.closest('.btn-ver-comprobante');
+            if (btnComp) {
+                const comprobante = btnComp.getAttribute('data-comprobante');
+                verComprobante(comprobante);
+                return;
+            }
+            // Aceptar solicitud
             if (e.target.closest('.btn-aceptar')) {
                 const fila = e.target.closest('tr');
                 if (!fila) return;
                 const tds = fila.querySelectorAll('td');
                 const nombre = tds[0]?.textContent || '';
                 const ubicacion = tds[4]?.textContent || '';
-        
                 const nuevaFila = document.createElement('tr');
                 nuevaFila.innerHTML = `
                   <td>${nombre}</td>
@@ -174,7 +186,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 tablaRestaurantesBody.appendChild(nuevaFila);
                 fila.remove();
             }
-
+            // Rechazar solicitud
             if (e.target.closest('.btn-rechazar')) {
                 const fila = e.target.closest('tr');
                 if (fila) fila.remove();
@@ -192,7 +204,6 @@ document.addEventListener('DOMContentLoaded', function () {
             tbody.innerHTML = '';
 
             solicitudes.forEach(solicitud => {
-                // Imágenes: puede venir como imagen1, imagen2, imagen3
                 const imagenes = [solicitud.imagen1, solicitud.imagen2, solicitud.imagen3].filter(Boolean);
                 const tr = document.createElement('tr');
                 tr.innerHTML = `
@@ -203,14 +214,18 @@ document.addEventListener('DOMContentLoaded', function () {
                     <td>${solicitud.direccion || ''}</td>
                     <td>${solicitud.horario || ''}</td>
                     <td>
-                        ${imagenes.length > 0 ? `<button class=\"btn-ver-imagenes\" title=\"Ver imágenes\" onclick=\"verImagenes('${imagenes.join(',')}')\">\n                            <img src=\"../images/imagen.png\" alt=\"Ver\">\n                        </button>` : 'Sin imágenes'}
+                        ${imagenes.length > 0 ? `<button class="btn-ver-imagenes" title="Ver imágenes" data-imagenes='${JSON.stringify(imagenes)}'>
+                            <img src="../images/imagen.png" alt="Ver">
+                        </button>` : 'Sin imágenes'}
                     </td>
                     <td>
-                        ${solicitud.comprobante ? `<button class=\"btn-ver-comprobante\" title=\"Ver comprobante\" onclick=\"verComprobante('${solicitud.comprobante}')\">\n                            <img src=\"../images/comprobante.png\" alt=\"Ver\">\n                        </button>` : 'Sin comprobante'}
+                        ${solicitud.comprobante ? `<button class="btn-ver-comprobante" title="Ver comprobante" data-comprobante='${solicitud.comprobante}'>
+                            <img src="../images/comprobante.png" alt="Ver">
+                        </button>` : 'Sin comprobante'}
                     </td>
                     <td>
-                        <button class=\"btn-aceptar\" title=\"Aceptar\"><img src=\"../images/aceptar.png\" alt=\"Aceptar\"></button>
-                        <button class=\"btn-rechazar\" title=\"Rechazar\"><img src=\"../images/rechazar.png\" alt=\"Rechazar\"></button>
+                        <button class="btn-aceptar" title="Aceptar"><img src="../images/aceptar.png" alt="Aceptar"></button>
+                        <button class="btn-rechazar" title="Rechazar"><img src="../images/rechazar.png" alt="Rechazar"></button>
                     </td>
                 `;
                 tbody.appendChild(tr);
@@ -220,5 +235,56 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     }
 
-    // Llama a cargarSolicitudes() cuando se muestre la vista de solicitudes
+    // Modal para mostrar imágenes y comprobantes
+    function crearModal(contenidoHtml) {
+        let modal = document.getElementById('modal-visualizador');
+        if (!modal) {
+            modal = document.createElement('div');
+            modal.id = 'modal-visualizador';
+            modal.style.position = 'fixed';
+            modal.style.top = '0';
+            modal.style.left = '0';
+            modal.style.width = '100vw';
+            modal.style.height = '100vh';
+            modal.style.background = 'rgba(0,0,0,0.7)';
+            modal.style.display = 'flex';
+            modal.style.alignItems = 'center';
+            modal.style.justifyContent = 'center';
+            modal.style.zIndex = '9999';
+            document.body.appendChild(modal);
+        }
+        modal.innerHTML = `<div style="background:#fff;padding:20px;border-radius:8px;max-width:90vw;max-height:90vh;overflow:auto;position:relative;">
+            <button id="cerrar-modal-visualizador" style="position:absolute;top:10px;right:10px;font-size:1.5em;background:none;border:none;cursor:pointer;">&times;</button>
+            ${contenidoHtml}
+        </div>`;
+        modal.style.display = 'flex';
+        document.getElementById('cerrar-modal-visualizador').onclick = function() {
+            modal.style.display = 'none';
+        };
+    }
+
+    // Visualizar imágenes
+    window.verImagenes = function(imagenes) {
+        if (!Array.isArray(imagenes)) imagenes = [imagenes];
+        let html = '<h3>Imágenes</h3><div style="display:flex;gap:10px;flex-wrap:wrap;">';
+        imagenes.forEach(url => {
+            html += `<img src="${url}" alt="Imagen" style="max-width:300px;max-height:300px;border:1px solid #ccc;">`;
+        });
+        html += '</div>';
+        crearModal(html);
+    }
+
+    // Visualizar comprobante
+    window.verComprobante = function(url) {
+        let html = '<h3>Comprobante</h3>';
+        if (url && url.endsWith('.pdf')) {
+            html += `<iframe src="${url}" style="width:600px;height:600px;border:none;"></iframe>`;
+        } else if (url) {
+            html += `<a href="${url}" target="_blank">Abrir comprobante</a>`;
+        } else {
+            html += '<p>No hay comprobante disponible.</p>';
+        }
+        crearModal(html);
+    }
+
 });
