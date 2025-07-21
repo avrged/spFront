@@ -31,10 +31,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     function cargarMembresias() {
         // Simulación, reemplaza con tu API real
-        const membresias = [
-            { restaurante: "La Mansión", propietario: "Juan Pérez", correo: "juan@mail.com", fecha: "2025-07-17", estado: "pendiente" },
-            { restaurante: "El Sazón", propietario: "Ana López", correo: "ana@mail.com", fecha: "2025-07-16", estado: "activa" }
-        ];
+
         const tbody = document.querySelector('#vista-membresias tbody');
         tbody.innerHTML = '';
         membresias.forEach(m => {
@@ -277,6 +274,14 @@ document.addEventListener('DOMContentLoaded', function () {
     // Visualizar comprobante
     window.verComprobante = function(url) {
         let html = '<h3>Comprobante</h3>';
+        // Si la url no es absoluta, prepender la ruta del backend
+        if (url && !/^https?:\/\//.test(url) && url.endsWith('.pdf')) {
+            // Si ya incluye /uploads/documents/ no lo dupliques
+            if (!url.includes('/uploads/documents/')) {
+                url = '/uploads/documents/' + url;
+            }
+            url = 'http://localhost:7070' + url;
+        }
         if (url && url.endsWith('.pdf')) {
             html += `<iframe src="${url}" style="width:600px;height:600px;border:none;"></iframe>`;
         } else if (url) {
