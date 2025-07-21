@@ -150,7 +150,7 @@ document.addEventListener('DOMContentLoaded', function () {
     const tablaSolicitudes = document.querySelector('#vista-solicitudes .tabla-admin tbody');
     const tablaRestaurantesBody = document.querySelector('#vista-restaurantes .tabla-admin tbody');
     if (tablaSolicitudes && tablaRestaurantesBody) {
-        tablaSolicitudes.addEventListener('click', function (e) {
+        tablaSolicitudes.addEventListener('click', async function (e) {
             // Ver imágenes
             const btnImg = e.target.closest('.btn-ver-imagenes');
             if (btnImg) {
@@ -186,7 +186,27 @@ document.addEventListener('DOMContentLoaded', function () {
             // Rechazar solicitud
             if (e.target.closest('.btn-rechazar')) {
                 const fila = e.target.closest('tr');
-                if (fila) fila.remove();
+                if (!fila) return;
+                const id = fila.getAttribute('data-id-solicitud');
+                if (!id) {
+                    alert('No se pudo obtener el ID de la solicitud.');
+                    return;
+                }
+                if (!confirm('¿Seguro que deseas rechazar esta solicitud?')) return;
+                try {
+                    const response = await fetch(`http://localhost:7070/solicitudes/${id}`, {
+                        method: 'DELETE'
+                    });
+                    if (response.ok) {
+                        fila.remove();
+                        UIUtils && UIUtils.showSuccess ? UIUtils.showSuccess('Solicitud rechazada y eliminada correctamente') : alert('Solicitud rechazada y eliminada correctamente');
+                    } else {
+                        const errorText = await response.text();
+                        UIUtils && UIUtils.showError ? UIUtils.showError('Error al rechazar: ' + errorText) : alert('Error al rechazar: ' + errorText);
+                    }
+                } catch (err) {
+                    UIUtils && UIUtils.showError ? UIUtils.showError('Error de conexión al rechazar') : alert('Error de conexión al rechazar');
+                }
             }
         });
     }
@@ -203,6 +223,7 @@ document.addEventListener('DOMContentLoaded', function () {
             solicitudes.forEach(solicitud => {
                 const imagenes = [solicitud.imagen1, solicitud.imagen2, solicitud.imagen3].filter(Boolean);
                 const tr = document.createElement('tr');
+                tr.setAttribute('data-id-solicitud', solicitud.id_solicitud || solicitud.id || '');
                 tr.innerHTML = `
                     <td>${solicitud.restaurante || ''}</td>
                     <td>${solicitud.propietario || ''}</td>
