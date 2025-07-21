@@ -51,17 +51,33 @@ document.addEventListener('DOMContentLoaded', function() {
     // --- Lógica de autenticación y carga de datos del restaurante ---
     
     // Función para verificar si el backend está disponible
-    async function verificarBackend() {
-        try {
-            const response = await fetch('http://localhost:7070/solicitudes', {
-                method: 'GET',
-                headers: { 'Content-Type': 'application/json' }
-            });
-            return true;
-        } catch (error) {
-            console.error('Backend no disponible:', error.message);
-            return false;
+    async function verificarBackend(reintentos = 3) {
+        for (let i = 0; i < reintentos; i++) {
+            try {
+                const response = await fetch('http://localhost:7070/solicitudes', {
+                    method: 'GET',
+                    headers: { 'Content-Type': 'application/json' },
+                    timeout: 10000 // 10 segundos timeout
+                });
+                
+                // Si obtenemos cualquier respuesta del servidor, está disponible
+                if (response.status < 500) {
+                    return true;
+                }
+                
+                // Si es error 500, el servidor está corriendo pero hay problemas
+                console.warn(`Intento ${i + 1}: Servidor responde pero con error ${response.status}`);
+                if (i < reintentos - 1) {
+                    await new Promise(resolve => setTimeout(resolve, 2000)); // Esperar 2 segundos
+                }
+            } catch (error) {
+                console.warn(`Intento ${i + 1}: Error de conexión:`, error.message);
+                if (i < reintentos - 1) {
+                    await new Promise(resolve => setTimeout(resolve, 2000)); // Esperar 2 segundos
+                }
+            }
         }
+        return false;
     }
 
     // Obtener datos del restaurante del usuario autenticado
@@ -115,6 +131,9 @@ document.addEventListener('DOMContentLoaded', function() {
                             if (telefonoUsuario) {
                                 sessionStorage.setItem('telefono', telefonoUsuario);
                             }
+                            
+                            // Guardar datos completos de la solicitud para uso posterior
+                            window.solicitudUsuario = solicitudUsuario;
                         }
                     }
                 } catch (errorSolicitudes) {
@@ -197,8 +216,28 @@ document.addEventListener('DOMContentLoaded', function() {
                         // Guardar globalmente para uso posterior
                         window.restauranteActual = restauranteUsuario;
                         
-                        // Cargar datos en el formulario
-                        cargarDatosEnFormulario(restauranteUsuario);
+                        // Debug: Mostrar qué datos tenemos disponibles
+                        console.log('✅ Datos del restaurante encontrado:', restauranteUsuario);
+                        console.log('🔍 ID del restaurante encontrado:', {
+                            id: restauranteUsuario.id,
+                            idRestaurante: restauranteUsuario.idRestaurante,
+                            restauranteId: restauranteUsuario.restauranteId,
+                            id_restaurante: restauranteUsuario.id_restaurante
+                        });
+                        console.log('🔑 Foreign Keys del restaurante:', {
+                            id_solicitud_aprobada: restauranteUsuario.id_solicitud_aprobada,
+                            id_zona: restauranteUsuario.id_zona
+                        });
+                        if (window.solicitudUsuario) {
+                            console.log('📄 Datos de la solicitud encontrada:', window.solicitudUsuario);
+                            console.log('🔍 ID de la solicitud:', {
+                                id: window.solicitudUsuario.id,
+                                id_solicitud: window.solicitudUsuario.id_solicitud
+                            });
+                        }
+                        
+                        // Cargar datos en el formulario con datos combinados
+                        cargarDatosEnFormulario(restauranteUsuario, window.solicitudUsuario);
                         
                         // Cargar etiquetas si las tiene
                         if (restauranteUsuario.etiquetas) {
@@ -207,6 +246,16 @@ document.addEventListener('DOMContentLoaded', function() {
                         
                         return; // Éxito, salir de la función
                     } else {
+                        // Debug: Mostrar qué restaurantes están disponibles
+                        console.log('No se encontró restaurante específico para el usuario');
+                        console.log('Restaurantes disponibles:', restaurantes.map(r => ({
+                            id: r.id || r.idRestaurante || r.restauranteId,
+                            nombre: r.nombre,
+                            telefono: r.telefono || r.numero,
+                            correo: r.correo
+                        })));
+                        console.log('Datos del usuario buscado:', { correoUsuario, idUsuario, telefonoUsuario });
+                        
                         throw new Error('No se encontró ningún restaurante asociado al usuario');
                     }
                 } else {
@@ -234,29 +283,167 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
 
-    // Función para cargar datos en el formulario
-    function cargarDatosEnFormulario(restaurante) {
+    // Función para cargar datos en el formulario combinando datos del restaurante y solicitud
+    function cargarDatosEnFormulario(restaurante, solicitud = null) {
         // Actualizar nombre del restaurante en la página
         const nombreElement = document.querySelector('.restaurante-nombre');
         if (nombreElement) {
-            nombreElement.textContent = restaurante.nombre || 'Mi Restaurante';
+            // Prioridad: restaurante.nombre > solicitud.restaurante > 'Mi Restaurante'
+            const nombre = restaurante.nombre || 
+                          (solicitud && solicitud.restaurante) || 
+                          'Mi Restaurante';
+            nombreElement.textContent = nombre;
         }
 
-        // Cargar otros campos del formulario
+        // Cargar dirección - prioridad: restaurante > solicitud
         const inputUbicacion = document.querySelector('input[placeholder="Ingrese la dirección"]');
-        if (inputUbicacion && restaurante.direccion) {
-            inputUbicacion.value = restaurante.direccion;
+        if (inputUbicacion) {
+            const direccion = restaurante.direccion || 
+                             (solicitud && solicitud.direccion) ||
+                             '';
+            inputUbicacion.value = direccion;
         }
 
+        // Cargar teléfono - prioridad: restaurante > solicitud.numero > solicitud.telefono
         const inputTelefono = document.querySelector('input[placeholder="Ingrese su número celular"]');
-        if (inputTelefono && restaurante.telefono) {
-            inputTelefono.value = restaurante.telefono;
+        if (inputTelefono) {
+            const telefono = restaurante.telefono || 
+                            restaurante.numero ||
+                            (solicitud && solicitud.numero) ||
+                            (solicitud && solicitud.telefono) ||
+                            '';
+            inputTelefono.value = telefono;
         }
 
-        // Cargar horarios si existen
+        // Cargar horarios - prioridad: restaurante > solicitud
         const horariosInputs = document.querySelectorAll('.horarios-inputs input');
-        if (restaurante.horario && horariosInputs.length > 0) {
-            horariosInputs[0].value = restaurante.horario;
+        if (horariosInputs.length > 0) {
+            const horario = restaurante.horario || 
+                           (solicitud && solicitud.horario) ||
+                           '';
+            horariosInputs[0].value = horario;
+        }
+
+        // Cargar descripción si existe el campo
+        const inputDescripcion = document.querySelector('textarea[placeholder*="descripción"], input[placeholder*="descripción"]');
+        if (inputDescripcion) {
+            const descripcion = restaurante.descripcion || 
+                               (solicitud && solicitud.descripcion) ||
+                               '';
+            inputDescripcion.value = descripcion;
+        }
+
+        // Cargar propietario si existe el campo
+        const inputPropietario = document.querySelector('input[placeholder*="propietario"], input[placeholder*="dueño"]');
+        if (inputPropietario) {
+            const propietario = restaurante.propietario || 
+                               (solicitud && solicitud.propietario) ||
+                               '';
+            inputPropietario.value = propietario;
+        }
+
+        // Cargar imágenes si existen - mostrar URLs de las imágenes del restaurante o solicitud
+        cargarImagenesExistentes(restaurante, solicitud);
+    }
+
+    // Función para cargar imágenes existentes del restaurante o solicitud
+    function cargarImagenesExistentes(restaurante, solicitud) {
+        // Buscar las imágenes disponibles en orden de prioridad
+        const imagenesDisponibles = [
+            restaurante.imagen1 || (solicitud && solicitud.imagen1),
+            restaurante.imagen2 || (solicitud && solicitud.imagen2), 
+            restaurante.imagen3 || (solicitud && solicitud.imagen3),
+            restaurante.imagenPrincipal || (solicitud && solicitud.imagenPrincipal),
+            restaurante.imagenSecundaria || (solicitud && solicitud.imagenSecundaria)
+        ].filter(img => img); // Filtrar valores null/undefined
+
+        // Obtener todos los slots de imagen
+        const imageSlots = document.querySelectorAll('label.imagen-slot img');
+        
+        // Cargar las imágenes disponibles en los slots
+        imagenesDisponibles.forEach((imagenUrl, index) => {
+            if (index < imageSlots.length && imagenUrl) {
+                const imgElement = imageSlots[index];
+                imgElement.src = imagenUrl;
+                imgElement.style.objectFit = 'cover';
+                imgElement.style.width = '100%';
+                imgElement.style.height = '100%';
+                
+                // Agregar indicador visual de que es una imagen existente
+                const parentLabel = imgElement.closest('label.imagen-slot');
+                if (parentLabel && !parentLabel.querySelector('.imagen-existente-indicator')) {
+                    const indicator = document.createElement('div');
+                    indicator.className = 'imagen-existente-indicator';
+                    indicator.style.cssText = `
+                        position: absolute;
+                        top: 5px;
+                        right: 5px;
+                        background: rgba(0,0,0,0.7);
+                        color: white;
+                        padding: 2px 6px;
+                        border-radius: 3px;
+                        font-size: 10px;
+                        z-index: 10;
+                    `;
+                    indicator.textContent = 'Actual';
+                    parentLabel.style.position = 'relative';
+                    parentLabel.appendChild(indicator);
+                }
+            }
+        });
+
+        // Cargar PDF del menú si existe
+        cargarMenuExistente(restaurante, solicitud);
+    }
+
+    // Función para cargar el menú PDF existente
+    function cargarMenuExistente(restaurante, solicitud) {
+        const menuUrl = restaurante.menu || 
+                       restaurante.menuPdf ||
+                       (solicitud && solicitud.comprobante) ||
+                       (solicitud && solicitud.menu);
+        
+        if (menuUrl) {
+            const menuLabels = document.querySelectorAll('label.btn-menu');
+            if (menuLabels.length > 0) {
+                const menuLabel = menuLabels[0];
+                
+                // Ocultar imagen de placeholder
+                const imgElements = menuLabel.querySelectorAll('img');
+                imgElements.forEach(img => img.style.display = 'none');
+                
+                // Mostrar nombre del archivo existente
+                let fileNameSpan = menuLabel.querySelector('.file-name');
+                if (!fileNameSpan) {
+                    fileNameSpan = document.createElement('span');
+                    fileNameSpan.className = 'file-name';
+                    fileNameSpan.style.marginLeft = '10px';
+                    fileNameSpan.style.fontWeight = 'normal';
+                    menuLabel.appendChild(fileNameSpan);
+                }
+                
+                // Extraer nombre del archivo de la URL
+                const fileName = menuUrl.split('/').pop() || 'menu-actual.pdf';
+                fileNameSpan.textContent = `Archivo actual: ${fileName}`;
+                fileNameSpan.style.display = 'inline-block';
+                
+                // Agregar enlace para descargar/ver el archivo actual
+                if (!menuLabel.querySelector('.link-archivo-actual')) {
+                    const linkDescarga = document.createElement('a');
+                    linkDescarga.className = 'link-archivo-actual';
+                    linkDescarga.href = menuUrl;
+                    linkDescarga.target = '_blank';
+                    linkDescarga.style.cssText = `
+                        display: block;
+                        margin-top: 5px;
+                        color: #007bff;
+                        font-size: 12px;
+                        text-decoration: underline;
+                    `;
+                    linkDescarga.textContent = '📄 Ver archivo actual';
+                    menuLabel.appendChild(linkDescarga);
+                }
+            }
         }
     }
 
@@ -408,51 +595,98 @@ document.addEventListener('DOMContentLoaded', function() {
 
             const etiquetasSeleccionadas = obtenerEtiquetasSeleccionadas();
             
-            // Recopilar todos los datos del formulario
+            // Recopilar solo los datos que el backend acepta, incluyendo id_solicitud_aprobada
             const datosActualizados = {
-                nombre: window.restauranteActual.nombre, // No se cambia desde esta vista
+                nombre: document.querySelector('.restaurante-nombre')?.textContent || window.restauranteActual.nombre,
                 direccion: document.querySelector('input[placeholder="Ingrese la dirección"]')?.value || '',
                 telefono: document.querySelector('input[placeholder="Ingrese su número celular"]')?.value || '',
                 horario: document.querySelector('.horarios-inputs input')?.value || '',
-                etiquetas: etiquetasSeleccionadas,
-                // Otros campos que tengas en el formulario
+                etiquetas: etiquetasSeleccionadas
+                // Campo requerido por la foreign key constraint:
             };
+            
+            // Agregar id_solicitud_aprobada si está disponible (requerido por foreign key)
+            if (window.restauranteActual.id_solicitud_aprobada) {
+                datosActualizados.id_solicitud_aprobada = window.restauranteActual.id_solicitud_aprobada;
+            } else if (window.solicitudUsuario && window.solicitudUsuario.id_solicitud) {
+                datosActualizados.id_solicitud_aprobada = window.solicitudUsuario.id_solicitud;
+            } else if (window.solicitudUsuario && window.solicitudUsuario.id) {
+                datosActualizados.id_solicitud_aprobada = window.solicitudUsuario.id;
+            }
+            
+            // Agregar id_zona si está disponible (puede ser requerido)
+            if (window.restauranteActual.id_zona) {
+                datosActualizados.id_zona = window.restauranteActual.id_zona;
+            }
 
             try {
                 const idUsuario = sessionStorage.getItem('id') || localStorage.getItem('id');
                 const correoUsuario = sessionStorage.getItem('correo') || localStorage.getItem('correo');
                 
-                if (!window.restauranteActual.id) {
-                    alert('❌ No se puede actualizar: No se tiene el ID del restaurante');
+                // Buscar el ID del restaurante en diferentes campos posibles (tu backend usa id_restaurante)
+                const idRestaurante = window.restauranteActual.id_restaurante || 
+                                    window.restauranteActual.id ||
+                                    window.restauranteActual.idRestaurante ||
+                                    window.restauranteActual.restauranteId ||
+                                    window.restauranteActual.ID ||
+                                    window.restauranteActual.Id;
+                
+                console.log('🔍 Debug - IDs disponibles:', {
+                    id_restaurante: window.restauranteActual.id_restaurante,
+                    id: window.restauranteActual.id,
+                    idRestaurante: window.restauranteActual.idRestaurante,
+                    restauranteId: window.restauranteActual.restauranteId,
+                    idFinal: idRestaurante
+                });
+                
+                if (!idRestaurante) {
+                    console.error('Datos completos del restaurante:', window.restauranteActual);
+                    alert('❌ No se puede actualizar: No se encontró el ID del restaurante. Revise la consola para más detalles.');
                     return;
                 }
                 
-                // Usar endpoint PUT /restaurantes/{id}
-                const endpointUrl = `http://localhost:7070/restaurantes/${window.restauranteActual.id}`;
+                // Usar endpoint PUT /restaurantes/{id} - compatible con tu backend
+                const endpointUrl = `http://localhost:7070/restaurantes/${idRestaurante}`;
+                console.log('🚀 Enviando actualización a:', endpointUrl);
+                console.log('📦 Datos a enviar (con foreign keys):', datosActualizados);
+                console.log('🔑 Foreign Keys enviadas:', {
+                    id_solicitud_aprobada: datosActualizados.id_solicitud_aprobada,
+                    id_zona: datosActualizados.id_zona
+                });
+                console.log('📋 Campos válidos en tu backend: direccion, horario, id_restaurante, id_solicitud_aprobada, nombre, id_zona, etiquetas, telefono');
                 
-                // Enviar actualización al backend
+                // Enviar actualización al backend (headers mínimos para máxima compatibilidad)
                 const response = await fetch(endpointUrl, {
                     method: 'PUT',
                     headers: {
-                        'Content-Type': 'application/json',
-                        'X-User-Email': correoUsuario || '',
-                        'X-User-ID': idUsuario || '',
+                        'Content-Type': 'application/json'
                     },
                     body: JSON.stringify(datosActualizados)
                 });
 
                 if (response.ok) {
+                    const responseData = await response.json();
+                    console.log('✅ Respuesta del servidor:', responseData);
                     alert('✅ Datos del restaurante actualizados correctamente');
                     // Recargar datos para reflejar cambios
                     await cargarDatosRestauranteUsuario();
                 } else {
                     const errorText = await response.text();
-                    alert(`❌ Error al actualizar: ${errorText}`);
+                    console.error('❌ Error del servidor:', response.status, errorText);
+                    alert(`❌ Error al actualizar (${response.status}): ${errorText}`);
                 }
 
             } catch (error) {
-                console.error('Error al guardar:', error);
-                alert('❌ Error de conexión al guardar los datos');
+                console.error('❌ Error al guardar:', error);
+                
+                // Diagnóstico específico del error
+                if (error.name === 'TypeError' && error.message.includes('fetch')) {
+                    alert('❌ Error de conexión: Verifique que el backend esté ejecutándose en http://localhost:7070');
+                } else if (error.message.includes('CORS')) {
+                    alert('❌ Error CORS: El backend no permite conexiones desde este origen');
+                } else {
+                    alert(`❌ Error de conexión al guardar los datos: ${error.message}`);
+                }
             }
         });
     }
