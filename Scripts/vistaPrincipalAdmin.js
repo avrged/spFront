@@ -2,7 +2,6 @@ document.addEventListener('DOMContentLoaded', function () {
     const botones = document.querySelectorAll('.sidebar-item');
     const vistas = {
         restaurantes: document.getElementById('vista-restaurantes'),
-        etiquetas: document.getElementById('vista-etiquetas'),
         solicitudes: document.getElementById('vista-solicitudes'),
         membresias: document.getElementById('vista-membresias')
     };
@@ -129,40 +128,9 @@ document.addEventListener('DOMContentLoaded', function () {
             }
         });
     }
-    agregarEventosTabla('#vista-etiquetas .tabla-admin', 'etiqueta', true);
     agregarEventosTabla('#vista-solicitudes .tabla-admin', 'solicitud de usuario');
 
-    const btnAgregarEtiqueta = document.querySelector('.btn-agregar-etiqueta');
-    if (btnAgregarEtiqueta) {
-        btnAgregarEtiqueta.addEventListener('click', function () {
-            const tabla = document.querySelector('#vista-etiquetas .tabla-admin tbody');
-            if (!tabla) return;
-            const nuevaFila = document.createElement('tr');
-            const celdaNombre = document.createElement('td');
-            const input = document.createElement('input');
-            input.type = 'text';
-            input.placeholder = 'Nueva etiqueta';
-            input.style.width = '80%';
-            celdaNombre.appendChild(input);
-            input.focus();
-            input.addEventListener('blur', function () {
-                celdaNombre.textContent = input.value || 'Etiqueta nueva';
-            });
-            input.addEventListener('keydown', function (ev) {
-                if (ev.key === 'Enter') {
-                    input.blur();
-                }
-            });
-            nuevaFila.appendChild(celdaNombre);
-            const celdaAcciones = document.createElement('td');
-            celdaAcciones.innerHTML = `
-                <button class="btn-editar" title="Editar"><img src="../images/edicion.png" alt="Editar"></button>
-                <button class="btn-eliminar" title="Eliminar"><img src="../images/eliminar.png" alt="Eliminar"></button>
-            `;
-            nuevaFila.appendChild(celdaAcciones);
-            tabla.appendChild(nuevaFila);
-        });
-    }
+    
 
     const tablaSolicitudes = document.querySelector('#vista-solicitudes .tabla-admin tbody');
     const tablaRestaurantesBody = document.querySelector('#vista-restaurantes .tabla-admin tbody');
