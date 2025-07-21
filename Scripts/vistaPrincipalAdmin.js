@@ -16,6 +16,10 @@ document.addEventListener('DOMContentLoaded', function () {
             const vistaSeleccionada = this.getAttribute('data-vista');
             if (vistas[vistaSeleccionada]) {
                 vistas[vistaSeleccionada].style.display = 'block';
+                // Si la vista seleccionada es solicitudes, cargar datos reales
+                if (vistaSeleccionada === 'solicitudes') {
+                    cargarSolicitudes();
+                }
             }
         });
     });
@@ -180,34 +184,33 @@ document.addEventListener('DOMContentLoaded', function () {
 
     async function cargarSolicitudes() {
         try {
-            const response = await fetch('URL_DE_TU_API/solicitudes');
+            const response = await fetch('http://localhost:7070/solicitudes');
+            if (!response.ok) throw new Error('No se pudo obtener las solicitudes');
             const solicitudes = await response.json();
 
             const tbody = document.querySelector('#vista-solicitudes tbody');
             tbody.innerHTML = '';
 
             solicitudes.forEach(solicitud => {
+                // Imágenes: puede venir como imagen1, imagen2, imagen3
+                const imagenes = [solicitud.imagen1, solicitud.imagen2, solicitud.imagen3].filter(Boolean);
                 const tr = document.createElement('tr');
                 tr.innerHTML = `
-                    <td>${solicitud.restaurante}</td>
-                    <td>${solicitud.propietario}</td>
-                    <td>${solicitud.correo}</td>
-                    <td>${solicitud.numero}</td>
-                    <td>${solicitud.direccion}</td>
-                    <td>${solicitud.horario}</td>
+                    <td>${solicitud.restaurante || ''}</td>
+                    <td>${solicitud.propietario || ''}</td>
+                    <td>${solicitud.correo || ''}</td>
+                    <td>${solicitud.numero || ''}</td>
+                    <td>${solicitud.direccion || ''}</td>
+                    <td>${solicitud.horario || ''}</td>
                     <td>
-                    <button class="btn-ver-imagenes" title="Ver imágenes" onclick="verImagenes('${solicitud.imagenes.join(',')}')">
-                        <img src="../images/imagen.png" alt="Ver">
-                    </button>
+                        ${imagenes.length > 0 ? `<button class=\"btn-ver-imagenes\" title=\"Ver imágenes\" onclick=\"verImagenes('${imagenes.join(',')}')\">\n                            <img src=\"../images/imagen.png\" alt=\"Ver\">\n                        </button>` : 'Sin imágenes'}
                     </td>
                     <td>
-                    <button class="btn-ver-comprobante" title="Ver comprobante" onclick="verComprobante('${solicitud.comprobante}')">
-                        <img src="../images/comprobante.png" alt="Ver">
-                    </button>
+                        ${solicitud.comprobante ? `<button class=\"btn-ver-comprobante\" title=\"Ver comprobante\" onclick=\"verComprobante('${solicitud.comprobante}')\">\n                            <img src=\"../images/comprobante.png\" alt=\"Ver\">\n                        </button>` : 'Sin comprobante'}
                     </td>
                     <td>
-                    <button class="btn-aceptar" title="Aceptar"><img src="../images/aceptar.png" alt="Aceptar"></button>
-                    <button class="btn-rechazar" title="Rechazar"><img src="../images/rechazar.png" alt="Rechazar"></button>
+                        <button class=\"btn-aceptar\" title=\"Aceptar\"><img src=\"../images/aceptar.png\" alt=\"Aceptar\"></button>
+                        <button class=\"btn-rechazar\" title=\"Rechazar\"><img src=\"../images/rechazar.png\" alt=\"Rechazar\"></button>
                     </td>
                 `;
                 tbody.appendChild(tr);
