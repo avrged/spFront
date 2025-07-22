@@ -161,18 +161,18 @@ document.addEventListener("DOMContentLoaded", function () {
         formData.append('imagen3', imagen3Comprimida, 'imagen3.jpg');
       }
       
-      const comprobante = comprobanteInput?.files[0];
-      if (comprobante) {
-        if (comprobante.type.startsWith('image/')) {
-          const comprobanteComprimido = await comprimirImagen(comprobante, 800, 0.4);
+      const comprobanteArchivo = comprobante?.files[0];
+      if (comprobanteArchivo) {
+        if (comprobanteArchivo.type.startsWith('image/')) {
+          const comprobanteComprimido = await comprimirImagen(comprobanteArchivo, 800, 0.4);
           formData.append('comprobante', comprobanteComprimido, 'comprobante.jpg');
         } else {
-          formData.append('comprobante', comprobante);
+          formData.append('comprobante', comprobanteArchivo);
         }
       }
 
-      if (menuInput?.files && menuInput.files.length > 0) {
-        const menuComprimido = await comprimirImagen(menuInput.files[0], 800, 0.4);
+      if (menu?.files && menu.files.length > 0) {
+        const menuComprimido = await comprimirImagen(menu.files[0], 800, 0.4);
         formData.append('menu', menuComprimido, 'menu.jpg');
       }
 
@@ -193,8 +193,6 @@ document.addEventListener("DOMContentLoaded", function () {
             // Si no es JSON, continuar igual
           }
 
-          // Preparar datos para la tabla restaurante
-          // Usar las URLs devueltas por el backend si existen, si no, dejar vacío
           const datosRestaurante = {
             nombre: document.getElementById('restaurante').value.trim(),
             direccion: document.getElementById('direccion').value.trim(),
@@ -206,7 +204,6 @@ document.addEventListener("DOMContentLoaded", function () {
             // Puedes agregar más campos si tu tabla restaurante los requiere
           };
 
-          // Enviar datos a la tabla restaurante
           try {
             await fetch('http://localhost:7070/restaurantes', {
               method: 'POST',
