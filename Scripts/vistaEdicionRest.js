@@ -124,7 +124,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
             try {
                 // PASO 2: Obtener todos los restaurantes y buscar por los datos del usuario
-                response = await fetch('http://localhost:7070/restaurantes', {
+                response = await fetch('http://localhost:7070/solicitudes', {
                     method: 'GET',
                     headers: { 'Content-Type': 'application/json' }
                 });
@@ -236,28 +236,46 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Función para cargar datos en el formulario
     function cargarDatosEnFormulario(restaurante) {
+        // Mostrar en consola los datos recibidos del backend
+        console.log('Datos del restaurante recibidos:', restaurante);
+        console.log('imagen1:', restaurante.imagen1);
+        console.log('imagen2:', restaurante.imagen2);
+        console.log('imagen3:', restaurante.imagen3);
         // Actualizar nombre del restaurante en la página
-        const nombreElement = document.querySelector('.restaurante-nombre');
+        const nombreElement = document.getElementById('restauranteNombre');
         if (nombreElement) {
-            nombreElement.textContent = restaurante.nombre || 'Mi Restaurante';
+            nombreElement.textContent = restaurante.restaurante || 'Mi Restaurante';
         }
 
-        // Cargar otros campos del formulario
-        const inputUbicacion = document.querySelector('input[placeholder="Ingrese la dirección"]');
-        if (inputUbicacion && restaurante.direccion) {
-            inputUbicacion.value = restaurante.direccion;
+        // Cargar dirección
+        const inputDireccion = document.getElementById('direccionInput');
+        if (inputDireccion && restaurante.direccion) {
+            inputDireccion.value = restaurante.direccion;
         }
 
-        const inputTelefono = document.querySelector('input[placeholder="Ingrese su número celular"]');
+        // Cargar teléfono
+        const inputTelefono = document.getElementById('telefonoInput');
         if (inputTelefono && restaurante.telefono) {
             inputTelefono.value = restaurante.telefono;
         }
 
         // Cargar horarios si existen
-        const horariosInputs = document.querySelectorAll('.horarios-inputs input');
-        if (restaurante.horario && horariosInputs.length > 0) {
-            horariosInputs[0].value = restaurante.horario;
+        const horarioLVInput = document.getElementById('horarioLVInput');
+        if (horarioLVInput && restaurante.horarioLV) {
+            horarioLVInput.value = restaurante.horarioLV;
         }
+        const horarioSDInput = document.getElementById('horarioSDInput');
+        if (horarioSDInput && restaurante.horarioSD) {
+            horarioSDInput.value = restaurante.horarioSD;
+        }
+
+        // Cargar imágenes en la galería usando ids únicos
+        const img1 = document.getElementById('imgGaleria1');
+        if (img1) img1.src = restaurante.imagen1 || '../images/imagen.png';
+        const img2 = document.getElementById('imgGaleria2');
+        if (img2) img2.src = restaurante.imagen2 || '../images/imagen.png';
+        const img3 = document.getElementById('imgGaleria3');
+        if (img3) img3.src = restaurante.imagen3 || '../images/imagen.png';
     }
 
     // --- Lógica de membresía ---
@@ -406,30 +424,43 @@ document.addEventListener('DOMContentLoaded', function() {
                 return;
             }
 
-            const etiquetasSeleccionadas = obtenerEtiquetasSeleccionadas();
-            
-            // Recopilar todos los datos del formulario
+
+            // Recopilar los datos EXACTOS requeridos por el backend
+            // Extraer los datos desde window.restauranteActual y los inputs del formulario
             const datosActualizados = {
-                nombre: window.restauranteActual.nombre, // No se cambia desde esta vista
-                direccion: document.querySelector('input[placeholder="Ingrese la dirección"]')?.value || '',
-                telefono: document.querySelector('input[placeholder="Ingrese su número celular"]')?.value || '',
-                horario: document.querySelector('.horarios-inputs input')?.value || '',
-                etiquetas: etiquetasSeleccionadas,
-                // Otros campos que tengas en el formulario
+                id_restaurantero: window.restauranteActual.id_restaurantero || 72,
+                fecha: window.restauranteActual.fecha || [2025, 7, 20],
+                estado: window.restauranteActual.estado || "aprobado",
+                restaurante: window.restauranteActual.restaurante || '',
+                correo: window.restauranteActual.correo || '',
+                direccion: document.getElementById('direccionInput')?.value || window.restauranteActual.direccion || '',
+                imagen1: window.restauranteActual.imagen1 || '',
+                imagen2: window.restauranteActual.imagen2 || '',
+                imagen3: window.restauranteActual.imagen3 || '',
+                comprobante: window.restauranteActual.comprobante || '',
+                propietario: window.restauranteActual.propietario || '',
+                numero: document.getElementById('telefonoInput')?.value || window.restauranteActual.numero || '',
+                horario: (document.getElementById('horarioLVInput')?.value || '') + (document.getElementById('horarioSDInput')?.value ? ' | ' + document.getElementById('horarioSDInput').value : window.restauranteActual.horario || '')
             };
+
+
+            // Mostrar los datos en consola para guía
+            console.log('Datos que se enviarán al backend:', datosActualizados);
+            // Imprimir el idRestaurante en consola
+            console.log('ID del restaurante a actualizar:', window.restauranteActual.id_solicitud);
 
             try {
                 const idUsuario = sessionStorage.getItem('id') || localStorage.getItem('id');
                 const correoUsuario = sessionStorage.getItem('correo') || localStorage.getItem('correo');
-                
-                if (!window.restauranteActual.id) {
-                    alert('❌ No se puede actualizar: No se tiene el ID del restaurante');
+
+                if (!window.restauranteActual.id_solicitud) {
+                    alert('❌ No se puede actualizar: No se tiene el ID de la solicitud');
                     return;
                 }
-                
-                // Usar endpoint PUT /restaurantes/{id}
-                const endpointUrl = `http://localhost:7070/restaurantes/${window.restauranteActual.id}`;
-                
+
+                // Usar endpoint PUT /solicitudes/{id} (updateWithFiles)
+                const endpointUrl = `http://localhost:7070/solicitudes/${window.restauranteActual.id_solicitud}`;
+
                 // Enviar actualización al backend
                 const response = await fetch(endpointUrl, {
                     method: 'PUT',

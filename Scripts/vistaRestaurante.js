@@ -9,13 +9,23 @@ document.addEventListener('DOMContentLoaded', async function() {
         if (!response.ok) throw new Error('No se pudo cargar la información');
         const restaurante = await response.json();
 
+        // Mostrar en consola la respuesta del backend
+        console.log('Respuesta restaurante:', restaurante);
+
         // Llena los datos en la vista
         document.querySelector('.restaurante-nombre').textContent = restaurante.nombre;
-        document.querySelector('.galeria-principal').src = restaurante.imagenPrincipal;
+        // Mostrar imagen principal (usa imagen1 si existe, si no, imagenPrincipal)
+        const principal = restaurante.imagen1 || restaurante.imagenPrincipal || '';
+        document.querySelector('.galeria-principal').src = principal;
+
+        // Mostrar imágenes secundarias (usa imagen2 e imagen3 si existen)
         const galeriaSecundaria = document.querySelector('.galeria-secundaria');
-        galeriaSecundaria.innerHTML = (restaurante.imagenesSecundarias || []).map(img =>
-            `<img src='${img}' alt='Imagen restaurante' />`
-        ).join('');
+        const imagenesSecundarias = [];
+        if (restaurante.imagen2) imagenesSecundarias.push(restaurante.imagen2);
+        if (restaurante.imagen3) imagenesSecundarias.push(restaurante.imagen3);
+        galeriaSecundaria.innerHTML = imagenesSecundarias.length > 0
+            ? imagenesSecundarias.map(img => `<img src='${img}' alt='Imagen restaurante' />`).join('')
+            : '<span style="color:#888">No hay imágenes adicionales</span>';
 
         // Características/Etiquetas
         const caracteristicas = document.querySelector('.caracteristicas-lista');

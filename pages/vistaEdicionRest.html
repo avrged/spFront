@@ -36,7 +36,7 @@
             <button class="btn-back" aria-label="Regresar" onclick="window.history.back()">
                 <img src="../images/back.png" alt="Regresar" class="icon-rotate-90 icon-32">
             </button>
-            <h1 class="restaurante-nombre">Bienvenido</h1>
+            <h1 class="restaurante-nombre" id="restauranteNombre">Bienvenido</h1>
             <hr class="restaurante-divider">
 
             <section class="formulario-edicion">
@@ -55,15 +55,15 @@
                     <div class="galeria-imagenes">
                         <label class="imagen-slot">
                             <input type="file" hidden multiple accept="image/png, image/jpeg">
-                            <img src="../images/imagen.png" alt="Subir imagen">
+                            <img id="imgGaleria1" src="../images/imagen.png" alt="Subir imagen">
                         </label>
                         <label class="imagen-slot">
                             <input type="file" hidden multiple accept="image/png, image/jpeg">
-                            <img src="../images/imagen.png" alt="Subir imagen">
+                            <img id="imgGaleria2" src="../images/imagen.png" alt="Subir imagen">
                         </label>
                         <label class="imagen-slot">
                             <input type="file" hidden multiple accept="image/png, image/jpeg">
-                            <img src="../images/imagen.png" alt="Subir imagen">
+                            <img id="imgGaleria3" src="../images/imagen.png" alt="Subir imagen">
                         </label>
                     </div>
                 </div>
@@ -73,14 +73,14 @@
                         <div class="area horarios-area">
                             <label class="campo-titulo">Horarios:</label>
                             <div class="horarios-inputs">
-                            <span>Lunes a Viernes: <input type="text" placeholder="Ingrese el horario"></span>
-                            <span>Sábado a Domingo: <input type="text" placeholder="Ingrese el horario"></span>
+                            <span>Lunes a Viernes: <input id="horarioLVInput" type="text" placeholder="Ingrese el horario"></span>
+                            <span>Sábado a Domingo: <input id="horarioSDInput" type="text" placeholder="Ingrese el horario"></span>
                             </div>
                         </div>
 
                         <div class="area ubicacion-area">
                             <label class="campo-titulo">Ubicación:</label>
-                            <input type="text" placeholder="Ingrese la dirección">
+                            <input id="direccionInput" type="text" placeholder="Ingrese la dirección">
                         </div>
 
                         <div class="area menu-area">
@@ -101,15 +101,15 @@
                             <label class="campo-titulo">Contactos:</label>
                             <div class="input-con-icono">
                                 <img src="../images/llamada.png" alt="Teléfono">
-                                <input type="text" placeholder="Ingrese su número celular">
+                                <input id="telefonoInput" type="text" placeholder="Ingrese su número celular">
                             </div>
                             <div class="input-con-icono">
                                 <img src="../images/facebook.png" alt="Facebook">
-                                <input type="text" placeholder="Ingrese su facebook">
+                                <input id="facebookInput" type="text" placeholder="Ingrese su facebook">
                             </div>
                             <div class="input-con-icono">
                                 <img src="../images/instagram.png" alt="Instagram">
-                                <input type="text" placeholder="Ingrese su instagram">
+                                <input id="instagramInput" type="text" placeholder="Ingrese su instagram">
                             </div>
                         </div>
 

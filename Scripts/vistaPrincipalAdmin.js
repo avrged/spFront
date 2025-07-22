@@ -174,9 +174,10 @@ document.addEventListener('DOMContentLoaded', function () {
                         direccion: tds[4]?.textContent || '',
                         horario: tds[5]?.textContent || ''
                     };
-                    
+                    // Imprimir en consola los datos antes de enviarlos
+                    console.log('Datos de la solicitud a aprobar:', datosRestaurante);
                     // Aprobar la solicitud en el backend
-                    const response = await fetch(`http://localhost:7070/solicitudes/${id}/aprobar`, {
+                    const response = await fetch(`http://localhost:7070/solicitudes/aprobar/${id}`, {
                         method: 'PUT',
                         headers: {
                             'Content-Type': 'application/json'
@@ -185,15 +186,47 @@ document.addEventListener('DOMContentLoaded', function () {
                     });
                     
                     if (response.ok) {
+                        // Extraer imágenes y comprobante de la fila si existen
+                        const imagenesBtns = fila.querySelector('.btn-ver-imagenes');
+                        let imagen1 = '', imagen2 = '', imagen3 = '';
+                        if (imagenesBtns && imagenesBtns.dataset.imagenes) {
+                            try {
+                                const imagenesArr = JSON.parse(imagenesBtns.dataset.imagenes);
+                                imagen1 = imagenesArr[0] || '';
+                                imagen2 = imagenesArr[1] || '';
+                                imagen3 = imagenesArr[2] || '';
+                            } catch (e) {}
+                        }
+                        // Preparar objeto para restaurante
+                        const datosRestauranteInsert = {
+                            nombre: datosRestaurante.nombre,
+                            direccion: datosRestaurante.direccion,
+                            horario: datosRestaurante.horario,
+                            telefono: datosRestaurante.numero,
+                            imagen1,
+                            imagen2,
+                            imagen3
+                        };
+                        try {
+                            await fetch('http://localhost:7070/restaurantes', {
+                                method: 'POST',
+                                headers: { 'Content-Type': 'application/json' },
+                                body: JSON.stringify(datosRestauranteInsert)
+                            });
+                            console.log('Restaurante insertado en tabla restaurante:', datosRestauranteInsert);
+                        } catch (e) {
+                            console.error('Error al insertar en restaurante:', e);
+                        }
+
                         // Eliminar la solicitud de la tabla
                         fila.remove();
-                        
+
                         // Recargar la lista de restaurantes si esa vista está activa
                         const vistaRestaurantesActiva = document.getElementById('vista-restaurantes').style.display !== 'none';
                         if (vistaRestaurantesActiva) {
                             await cargarRestaurantes();
                         }
-                        
+
                         alert(`✅ Solicitud aprobada exitosamente!\n\nRestaurante "${datosRestaurante.nombre}" ha sido agregado al sistema.`);
                     } else {
                         const errorText = await response.text();

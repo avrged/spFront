@@ -165,6 +165,39 @@ document.addEventListener("DOMContentLoaded", function () {
         });
         
         if (response.ok) {
+          // Obtener respuesta del backend para extraer URLs de imágenes y comprobante si las devuelve
+          let data = {};
+          try {
+            data = await response.json();
+          } catch (e) {
+            // Si no es JSON, continuar igual
+          }
+
+          // Preparar datos para la tabla restaurante
+          // Usar las URLs devueltas por el backend si existen, si no, dejar vacío
+          const datosRestaurante = {
+            nombre: document.getElementById('restaurante').value.trim(),
+            direccion: document.getElementById('direccion').value.trim(),
+            horario: document.getElementById('horario').value.trim(),
+            telefono: document.getElementById('numero').value.replace(/\D/g, ''),
+            imagen1: data.imagen1 || '',
+            imagen2: data.imagen2 || '',
+            imagen3: data.imagen3 || '',
+            // Puedes agregar más campos si tu tabla restaurante los requiere
+          };
+
+          // Enviar datos a la tabla restaurante
+          try {
+            await fetch('http://localhost:7070/restaurantes', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify(datosRestaurante)
+            });
+            console.log('Datos de restaurante enviados a la tabla restaurante');
+          } catch (e) {
+            console.error('Error al guardar en restaurante:', e);
+          }
+
           modal.style.display = "flex";
           form.reset();
           console.log('Solicitud enviada exitosamente');
