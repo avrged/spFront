@@ -51,17 +51,33 @@ document.addEventListener('DOMContentLoaded', function() {
     // --- Lógica de autenticación y carga de datos del restaurante ---
     
     // Función para verificar si el backend está disponible
-    async function verificarBackend() {
-        try {
-            const response = await fetch('http://localhost:7070/solicitudes', {
-                method: 'GET',
-                headers: { 'Content-Type': 'application/json' }
-            });
-            return true;
-        } catch (error) {
-            console.error('Backend no disponible:', error.message);
-            return false;
+    async function verificarBackend(reintentos = 3) {
+        for (let i = 0; i < reintentos; i++) {
+            try {
+                const response = await fetch('http://localhost:7070/solicitudes', {
+                    method: 'GET',
+                    headers: { 'Content-Type': 'application/json' },
+                    timeout: 10000 // 10 segundos timeout
+                });
+                
+                // Si obtenemos cualquier respuesta del servidor, está disponible
+                if (response.status < 500) {
+                    return true;
+                }
+                
+                // Si es error 500, el servidor está corriendo pero hay problemas
+                console.warn(`Intento ${i + 1}: Servidor responde pero con error ${response.status}`);
+                if (i < reintentos - 1) {
+                    await new Promise(resolve => setTimeout(resolve, 2000)); // Esperar 2 segundos
+                }
+            } catch (error) {
+                console.warn(`Intento ${i + 1}: Error de conexión:`, error.message);
+                if (i < reintentos - 1) {
+                    await new Promise(resolve => setTimeout(resolve, 2000)); // Esperar 2 segundos
+                }
+            }
         }
+        return false;
     }
 
     // Obtener datos del restaurante del usuario autenticado
@@ -115,6 +131,9 @@ document.addEventListener('DOMContentLoaded', function() {
                             if (telefonoUsuario) {
                                 sessionStorage.setItem('telefono', telefonoUsuario);
                             }
+                            
+                            // Guardar datos completos de la solicitud para uso posterior
+                            window.solicitudUsuario = solicitudUsuario;
                         }
                     }
                 } catch (errorSolicitudes) {
@@ -197,8 +216,28 @@ document.addEventListener('DOMContentLoaded', function() {
                         // Guardar globalmente para uso posterior
                         window.restauranteActual = restauranteUsuario;
                         
-                        // Cargar datos en el formulario
-                        cargarDatosEnFormulario(restauranteUsuario);
+                        // Debug: Mostrar qué datos tenemos disponibles
+                        console.log('✅ Datos del restaurante encontrado:', restauranteUsuario);
+                        console.log('🔍 ID del restaurante encontrado:', {
+                            id: restauranteUsuario.id,
+                            idRestaurante: restauranteUsuario.idRestaurante,
+                            restauranteId: restauranteUsuario.restauranteId,
+                            id_restaurante: restauranteUsuario.id_restaurante
+                        });
+                        console.log('🔑 Foreign Keys del restaurante:', {
+                            id_solicitud_aprobada: restauranteUsuario.id_solicitud_aprobada,
+                            id_zona: restauranteUsuario.id_zona
+                        });
+                        if (window.solicitudUsuario) {
+                            console.log('📄 Datos de la solicitud encontrada:', window.solicitudUsuario);
+                            console.log('🔍 ID de la solicitud:', {
+                                id: window.solicitudUsuario.id,
+                                id_solicitud: window.solicitudUsuario.id_solicitud
+                            });
+                        }
+                        
+                        // Cargar datos en el formulario con datos combinados
+                        cargarDatosEnFormulario(restauranteUsuario, window.solicitudUsuario);
                         
                         // Cargar etiquetas si las tiene
                         if (restauranteUsuario.etiquetas) {
@@ -207,6 +246,16 @@ document.addEventListener('DOMContentLoaded', function() {
                         
                         return; // Éxito, salir de la función
                     } else {
+                        // Debug: Mostrar qué restaurantes están disponibles
+                        console.log('No se encontró restaurante específico para el usuario');
+                        console.log('Restaurantes disponibles:', restaurantes.map(r => ({
+                            id: r.id || r.idRestaurante || r.restauranteId,
+                            nombre: r.nombre,
+                            telefono: r.telefono || r.numero,
+                            correo: r.correo
+                        })));
+                        console.log('Datos del usuario buscado:', { correoUsuario, idUsuario, telefonoUsuario });
+                        
                         throw new Error('No se encontró ningún restaurante asociado al usuario');
                     }
                 } else {
@@ -236,37 +285,27 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Función para cargar datos en el formulario
     function cargarDatosEnFormulario(restaurante) {
-        // Mostrar en consola los datos recibidos del backend
-        console.log('Datos del restaurante recibidos:', restaurante);
-        console.log('imagen1:', restaurante.imagen1);
-        console.log('imagen2:', restaurante.imagen2);
-        console.log('imagen3:', restaurante.imagen3);
         // Actualizar nombre del restaurante en la página
         const nombreElement = document.getElementById('restauranteNombre');
         if (nombreElement) {
-            nombreElement.textContent = restaurante.restaurante || 'Mi Restaurante';
+            nombreElement.textContent = restaurante.nombre || 'Mi Restaurante';
         }
 
-        // Cargar dirección
-        const inputDireccion = document.getElementById('direccionInput');
-        if (inputDireccion && restaurante.direccion) {
-            inputDireccion.value = restaurante.direccion;
+        // Cargar otros campos del formulario
+        const inputUbicacion = document.querySelector('input[placeholder="Ingrese la dirección"]');
+        if (inputUbicacion && restaurante.direccion) {
+            inputUbicacion.value = restaurante.direccion;
         }
 
-        // Cargar teléfono
-        const inputTelefono = document.getElementById('telefonoInput');
+        const inputTelefono = document.querySelector('input[placeholder="Ingrese su número celular"]');
         if (inputTelefono && restaurante.telefono) {
             inputTelefono.value = restaurante.telefono;
         }
 
         // Cargar horarios si existen
-        const horarioLVInput = document.getElementById('horarioLVInput');
-        if (horarioLVInput && restaurante.horarioLV) {
-            horarioLVInput.value = restaurante.horarioLV;
-        }
-        const horarioSDInput = document.getElementById('horarioSDInput');
-        if (horarioSDInput && restaurante.horarioSD) {
-            horarioSDInput.value = restaurante.horarioSD;
+        const horariosInputs = document.querySelectorAll('.horarios-inputs input');
+        if (restaurante.horario && horariosInputs.length > 0) {
+            horariosInputs[0].value = restaurante.horario;
         }
 
         // Cargar imágenes en la galería usando ids únicos
@@ -388,18 +427,15 @@ document.addEventListener('DOMContentLoaded', function() {
     // Función para actualizar las opciones disponibles en todos los dropdowns
     function actualizarOpcionesDisponibles() {
         const etiquetasYaSeleccionadas = [];
-        
         // Obtener todas las etiquetas ya seleccionadas
         selectsEtiquetas.forEach(select => {
             if (select.value && select.value !== '') {
                 etiquetasYaSeleccionadas.push(select.value);
             }
         });
-        
         // Para cada dropdown, mostrar/ocultar opciones
         selectsEtiquetas.forEach(select => {
             const etiquetaActual = select.value;
-            
             Array.from(select.options).forEach(option => {
                 if (option.value === '' || option.value === etiquetaActual) {
                     // Siempre mostrar la opción "Seleccionar" y la opción actualmente seleccionada
@@ -424,66 +460,62 @@ document.addEventListener('DOMContentLoaded', function() {
                 return;
             }
 
-
-            // Recopilar los datos EXACTOS requeridos por el backend
-            // Extraer los datos desde window.restauranteActual y los inputs del formulario
+            const etiquetasSeleccionadas = obtenerEtiquetasSeleccionadas();
+            
+            // Recopilar todos los datos del formulario
             const datosActualizados = {
-                id_restaurantero: window.restauranteActual.id_restaurantero || 72,
-                fecha: window.restauranteActual.fecha || [2025, 7, 20],
-                estado: window.restauranteActual.estado || "aprobado",
-                restaurante: window.restauranteActual.restaurante || '',
-                correo: window.restauranteActual.correo || '',
-                direccion: document.getElementById('direccionInput')?.value || window.restauranteActual.direccion || '',
-                imagen1: window.restauranteActual.imagen1 || '',
-                imagen2: window.restauranteActual.imagen2 || '',
-                imagen3: window.restauranteActual.imagen3 || '',
-                comprobante: window.restauranteActual.comprobante || '',
-                propietario: window.restauranteActual.propietario || '',
-                numero: document.getElementById('telefonoInput')?.value || window.restauranteActual.numero || '',
-                horario: (document.getElementById('horarioLVInput')?.value || '') + (document.getElementById('horarioSDInput')?.value ? ' | ' + document.getElementById('horarioSDInput').value : window.restauranteActual.horario || '')
+                nombre: window.restauranteActual.nombre, // No se cambia desde esta vista
+                direccion: document.querySelector('input[placeholder="Ingrese la dirección"]')?.value || '',
+                telefono: document.querySelector('input[placeholder="Ingrese su número celular"]')?.value || '',
+                horario: document.querySelector('.horarios-inputs input')?.value || '',
+                etiquetas: etiquetasSeleccionadas,
+                // Otros campos que tengas en el formulario
             };
-
-
-            // Mostrar los datos en consola para guía
-            console.log('Datos que se enviarán al backend:', datosActualizados);
-            // Imprimir el idRestaurante en consola
-            console.log('ID del restaurante a actualizar:', window.restauranteActual.id_solicitud);
 
             try {
                 const idUsuario = sessionStorage.getItem('id') || localStorage.getItem('id');
                 const correoUsuario = sessionStorage.getItem('correo') || localStorage.getItem('correo');
-
-                if (!window.restauranteActual.id_solicitud) {
-                    alert('❌ No se puede actualizar: No se tiene el ID de la solicitud');
+                
+                if (!window.restauranteActual.id) {
+                    alert('❌ No se puede actualizar: No se tiene el ID del restaurante');
                     return;
                 }
-
-                // Usar endpoint PUT /solicitudes/{id} (updateWithFiles)
-                const endpointUrl = `http://localhost:7070/solicitudes/${window.restauranteActual.id_solicitud}`;
-
+                
+                // Usar endpoint PUT /restaurantes/{id}
+                const endpointUrl = `http://localhost:7070/restaurantes/${window.restauranteActual.id}`;
+                
                 // Enviar actualización al backend
                 const response = await fetch(endpointUrl, {
                     method: 'PUT',
                     headers: {
-                        'Content-Type': 'application/json',
-                        'X-User-Email': correoUsuario || '',
-                        'X-User-ID': idUsuario || '',
+                        'Content-Type': 'application/json'
                     },
                     body: JSON.stringify(datosActualizados)
                 });
 
                 if (response.ok) {
+                    const responseData = await response.json();
+                    console.log('✅ Respuesta del servidor:', responseData);
                     alert('✅ Datos del restaurante actualizados correctamente');
                     // Recargar datos para reflejar cambios
                     await cargarDatosRestauranteUsuario();
                 } else {
                     const errorText = await response.text();
-                    alert(`❌ Error al actualizar: ${errorText}`);
+                    console.error('❌ Error del servidor:', response.status, errorText);
+                    alert(`❌ Error al actualizar (${response.status}): ${errorText}`);
                 }
 
             } catch (error) {
-                console.error('Error al guardar:', error);
-                alert('❌ Error de conexión al guardar los datos');
+                console.error('❌ Error al guardar:', error);
+                
+                // Diagnóstico específico del error
+                if (error.name === 'TypeError' && error.message.includes('fetch')) {
+                    alert('❌ Error de conexión: Verifique que el backend esté ejecutándose en http://localhost:7070');
+                } else if (error.message.includes('CORS')) {
+                    alert('❌ Error CORS: El backend no permite conexiones desde este origen');
+                } else {
+                    alert(`❌ Error de conexión al guardar los datos: ${error.message}`);
+                }
             }
         });
     }
