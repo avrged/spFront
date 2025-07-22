@@ -332,18 +332,22 @@ document.addEventListener('DOMContentLoaded', function () {
 
     async function cargarRestaurantes() {
         try {
-            const response = await fetch('http://localhost:7070/restaurantes');
-            if (!response.ok) throw new Error('No se pudo obtener los restaurantes');
-            const restaurantes = await response.json();
+            // Obtener todas las solicitudes con estado 'aprobado'
+            const response = await fetch('http://localhost:7070/solicitudes');
+            if (!response.ok) throw new Error('No se pudo obtener las solicitudes');
+            const solicitudes = await response.json();
+
+            // Filtrar solo las aprobadas
+            const restaurantesAprobados = solicitudes.filter(s => s.estado && s.estado.toLowerCase() === 'aprobado');
 
             const tbody = document.querySelector('#vista-restaurantes tbody');
             tbody.innerHTML = '';
 
-            restaurantes.forEach(restaurante => {
+            restaurantesAprobados.forEach(restaurante => {
                 const tr = document.createElement('tr');
-                tr.setAttribute('data-id-restaurante', restaurante.idRestaurante || '');
+                tr.setAttribute('data-id-restaurante', restaurante.idSolicitud || '');
                 tr.innerHTML = `
-                    <td>${restaurante.nombre || ''}</td>
+                    <td>${restaurante.restaurante || ''}</td>
                     <td>${restaurante.direccion || ''}</td>
                     <td>
                         <button class="btn-eliminar" title="Eliminar"><img src="../images/eliminar.png" alt="Eliminar"></button>
