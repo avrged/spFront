@@ -27,7 +27,7 @@
                 <form id="registroForm">
                     <h4>Solicitud de validación</h4>
                     <p class="sub-text">
-                        Proporciona la siguiente información para verificar la propiedad de tu restaurante
+                        Proporciona la siguiente información para verificar tu restaurante
                     </p>
 
                     <label for="restaurante">Restaurante</label>
@@ -46,6 +46,14 @@
                     <input class="controls" type="tel" id="numero" placeholder="Ingrese su número de celular">
                     <span class="error-msg" id="error-numero"></span>
 
+                    <label for="facebook">Facebook</label>
+                    <input class="controls" type="text" id="facebook" placeholder="Ingrese su Facebook">
+                    <span class="error-msg" id="error-facebook"></span>
+
+                    <label for="instagram">Instagram</label>
+                    <input class="controls" type="text" id="instagram" placeholder="Ingrese su Instagram">
+                    <span class="error-msg" id="error-instagram"></span>
+
                     <label for="direccion">Dirección</label>
                     <input class="controls" type="text" id="direccion" placeholder="Ingrese la dirección del restaurante">
                     <span class="error-msg" id="error-direccion"></span>
@@ -54,11 +62,11 @@
                     <input class="controls" type="text" id="horario" placeholder="Ingrese el horario">
                     <span class="error-msg" id="error-horario"></span>
 
-                    <label>Imágenes</label>
+                    <label>Archivos (sin caracteres especiales)</label>
                     <div class="imagenes-group">
                         <div class="input-file-group">
                             <label class="input-file">
-                                Seleccionar tres imágenes (JPG, PNG)
+                                Imágenes (3 en JPG o PNG)
                                 <input type="file" name="imagen1" hidden multiple accept="image/png, image/jpeg">
                             </label>
                             <span class="error-msg" id="error-images"></span>
@@ -69,6 +77,13 @@
                                 <input type="file" name="comprobante" hidden accept="application/pdf">
                             </label>
                             <span class="error-msg" id="error-comprobante"></span>
+                        </div>
+                        <div class="input-file-group">
+                            <label class="input-file">
+                                Menú del restaurante (PDF)
+                                <input type="file" name="menu" hidden accept="application/pdf">
+                            </label>
+                            <span class="error-msg" id="error-menu"></span>
                         </div>
                     </div>
 

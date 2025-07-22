@@ -65,20 +65,26 @@ document.addEventListener("DOMContentLoaded", function () {
     const propietario = document.getElementById("propietario");
     const correo = document.getElementById("correo");
     const numero = document.getElementById("numero");
+    const facebook = document.getElementById("facebook");
+    const instagram = document.getElementById("instagram");
     const direccion = document.getElementById("direccion");
     const horario = document.getElementById("horario");
 
     const imagen1 = document.getElementsByName("imagen1")[0];
     const comprobante = document.getElementsByName("comprobante")[0];
+    const menu = document.getElementsByName("menu")[0];
 
     const errorRestaurante = document.getElementById("error-nombre-restaurante");
     const errorPropietario = document.getElementById("error-nombre-propietario");
     const errorCorreo = document.getElementById("error-correo");
     const errorNumero = document.getElementById("error-numero");
+    const errorFacebook = document.getElementById("error-facebook");
+    const errorInstagram = document.getElementById("error-instagram");
     const errorDireccion = document.getElementById("error-direccion");
     const errorHorario = document.getElementById("error-horario");
     const errorImagen1 = document.getElementById("error-images");
     const errorComprobante = document.getElementById("error-comprobante");
+    const errorMenu = document.getElementById("error-menu");
 
     let formularioValido = true;
 
@@ -88,6 +94,8 @@ document.addEventListener("DOMContentLoaded", function () {
     formularioValido &= validarCampoVacio(numero, errorNumero, "*Este campo es obligatorio.");
     formularioValido &= validarCampoVacio(direccion, errorDireccion, "*Este campo es obligatorio.");
     formularioValido &= validarCampoVacio(horario, errorHorario, "*Este campo es obligatorio.");
+    formularioValido &= validarCampoVacio(facebook, errorFacebook, "*Este campo es obligatorio.");
+    formularioValido &= validarCampoVacio(instagram, errorInstagram, "*Este campo es obligatorio.");
 
     if (!imagen1.files || imagen1.files.length !== 3) {
       errorImagen1.textContent = "*Seleccione tres imágenes.";
@@ -116,23 +124,30 @@ document.addEventListener("DOMContentLoaded", function () {
       errorComprobante.textContent = "";
     }
 
+    if (!menu.files || menu.files.length === 0) {
+      errorMenu.textContent = "*Suba el menú del restaurante.";
+      formularioValido = false;
+    } else {
+      errorMenu.textContent = "";
+    }
+
     if (formularioValido) {
       const formData = new FormData();
       
-      // Agregar campos de texto
       formData.append('restaurante', document.getElementById('restaurante').value.trim());
       formData.append('correo', document.getElementById('correo').value.trim());
       formData.append('direccion', document.getElementById('direccion').value.trim());
       formData.append('propietario', document.getElementById('propietario').value.trim());
       formData.append('numero', document.getElementById('numero').value.replace(/\D/g, ''));
+      formData.append('facebook', document.getElementById('facebook').value.trim());
+      formData.append('instagram', document.getElementById('instagram').value.trim());
       formData.append('horario', document.getElementById('horario').value.trim());
       formData.append('estado', 'pendiente');
       
-      // Archivos (comprimidos)
       const imagen1Input = document.getElementsByName("imagen1")[0];
       const comprobanteInput = document.getElementsByName("comprobante")[0];
+      const menuInput = document.getElementsByName("menu")[0];
       
-      // Agregar las 3 imágenes comprimidas
       if (imagen1Input?.files && imagen1Input.files.length >= 3) {
         const imagen1Comprimida = await comprimirImagen(imagen1Input.files[0]);
         const imagen2Comprimida = await comprimirImagen(imagen1Input.files[1]);
@@ -143,17 +158,19 @@ document.addEventListener("DOMContentLoaded", function () {
         formData.append('imagen3', imagen3Comprimida, 'imagen3.jpg');
       }
       
-      // Agregar comprobante (también comprimido si es imagen)
       const comprobante = comprobanteInput?.files[0];
       if (comprobante) {
-        // Si el comprobante es una imagen, comprimirla también
         if (comprobante.type.startsWith('image/')) {
           const comprobanteComprimido = await comprimirImagen(comprobante, 800, 0.4);
           formData.append('comprobante', comprobanteComprimido, 'comprobante.jpg');
         } else {
-          // Si no es imagen, usar directamente
           formData.append('comprobante', comprobante);
         }
+      }
+
+      if (menuInput?.files && menuInput.files.length > 0) {
+        const menuComprimido = await comprimirImagen(menuInput.files[0], 800, 0.4);
+        formData.append('menu', menuComprimido, 'menu.jpg');
       }
 
       try {

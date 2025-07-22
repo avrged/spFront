@@ -28,7 +28,7 @@ html, body {
     display: flex;
     gap: 24px;
     max-width: 100%;
-    margin: 100px 40px 40px 40px;
+    margin: 100px 0 0 0;
     width: 100%;
     flex-wrap: wrap;
     justify-content: center;
@@ -38,7 +38,7 @@ html, body {
 .form-section {
     background: #fff;
     padding: 40px;
-    width: 520px;
+    width: 600px;
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -48,6 +48,7 @@ html, body {
     text-align: center;
     font-size: 2rem;
     margin-bottom: 4px;
+    margin-top: 0;
     color: #912F2F;
     font-weight: 700;
     font-family: 'Rubik', sans-serif;
@@ -145,10 +146,12 @@ label {
 }
 
 .image-section {
+    height: 1000px;
+    min-height: 1000px;
     display: flex;
     align-items: stretch;
     justify-content: center;
-    width: 700px;
+    width: 600px;
     padding: 40px;
     box-sizing: border-box;
 }
