@@ -62,31 +62,48 @@
                     <input class="controls" type="text" id="horario" placeholder="Ingrese el horario">
                     <span class="error-msg" id="error-horario"></span>
 
-                    <label>Archivos (sin caracteres especiales)</label>
+                    <label>Imágenes (JPG o PNG)</label>
                     <div class="imagenes-group">
                         <div class="input-file-group">
                             <label class="input-file">
-                                Imágenes (3 en JPG o PNG)
-                                <input type="file" name="imagen1" hidden multiple accept="image/png, image/jpeg">
+                                Imagen principal
+                                <input type="file" name="imagen1" hidden accept="image/png, image/jpeg">
                             </label>
-                            <span class="error-msg" id="error-images"></span>
+                            <span class="error-msg" id="error-imagen1"></span>
                         </div>
                         <div class="input-file-group">
                             <label class="input-file">
-                                Comprobante de domicilio (PDF)
+                                Imagen secundaria
+                                <input type="file" name="imagen2" hidden accept="image/png, image/jpeg">
+                            </label>
+                            <span class="error-msg" id="error-imagen2"></span>
+                        </div>
+                        <div class="input-file-group">
+                            <label class="input-file">
+                                Imagen de platillo
+                                <input type="file" name="imagen3" hidden accept="image/png, image/jpeg">
+                            </label>
+                            <span class="error-msg" id="error-imagen3"></span>
+                        </div>
+                    </div>
+
+                    <label>Archivos (En PDF sin caracteres especiales)</label>
+                    <div class="imagenes-group">
+                        <div class="input-file-group">
+                            <label class="input-file">
+                                Comprobante de domicilio
                                 <input type="file" name="comprobante" hidden accept="application/pdf">
                             </label>
                             <span class="error-msg" id="error-comprobante"></span>
                         </div>
                         <div class="input-file-group">
                             <label class="input-file">
-                                Menú del restaurante (PDF)
+                                Menú del restaurante
                                 <input type="file" name="menu" hidden accept="application/pdf">
                             </label>
                             <span class="error-msg" id="error-menu"></span>
                         </div>
                     </div>
-
                     <input class="button" type="submit" value="Enviar solicitud">
                 </form>
             </section>

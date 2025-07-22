@@ -71,6 +71,8 @@ document.addEventListener("DOMContentLoaded", function () {
     const horario = document.getElementById("horario");
 
     const imagen1 = document.getElementsByName("imagen1")[0];
+    const imagen2 = document.getElementsByName("imagen2")[0];
+    const imagen3 = document.getElementsByName("imagen3")[0];
     const comprobante = document.getElementsByName("comprobante")[0];
     const menu = document.getElementsByName("menu")[0];
 
@@ -82,7 +84,9 @@ document.addEventListener("DOMContentLoaded", function () {
     const errorInstagram = document.getElementById("error-instagram");
     const errorDireccion = document.getElementById("error-direccion");
     const errorHorario = document.getElementById("error-horario");
-    const errorImagen1 = document.getElementById("error-images");
+    const errorImagen1 = document.getElementById("error-imagen1");
+    const errorImagen2 = document.getElementById("error-imagen2");
+    const errorImagen3 = document.getElementById("error-imagen3");
     const errorComprobante = document.getElementById("error-comprobante");
     const errorMenu = document.getElementById("error-menu");
 
@@ -97,25 +101,24 @@ document.addEventListener("DOMContentLoaded", function () {
     formularioValido &= validarCampoVacio(facebook, errorFacebook, "*Este campo es obligatorio.");
     formularioValido &= validarCampoVacio(instagram, errorInstagram, "*Este campo es obligatorio.");
 
-    if (!imagen1.files || imagen1.files.length !== 3) {
-      errorImagen1.textContent = "*Seleccione tres imágenes.";
-      formularioValido = false;
-    } else {
-      let formatosValidos = true;
-      for (let i = 0; i < imagen1.files.length; i++) {
-      const tipo = imagen1.files[i].type;
-      if (tipo !== "image/png" && tipo !== "image/jpeg") {
-        formatosValidos = false;
-        break;
-      }
-      }
-      if (!formatosValidos) {
-      errorImagen1.textContent = "*Las imágenes deben ser PNG o JPEG.";
-      formularioValido = false;
+    // Validación individual de imágenes
+    function validarImagen(input, errorSpan) {
+      if (!input.files || input.files.length !== 1) {
+        errorSpan.textContent = "*Seleccione una imagen.";
+        formularioValido = false;
       } else {
-      errorImagen1.textContent = "";
+        const tipo = input.files[0].type;
+        if (tipo !== "image/png" && tipo !== "image/jpeg") {
+          errorSpan.textContent = "*La imagen debe ser PNG o JPEG.";
+          formularioValido = false;
+        } else {
+          errorSpan.textContent = "";
+        }
       }
     }
+    validarImagen(imagen1, errorImagen1);
+    validarImagen(imagen2, errorImagen2);
+    validarImagen(imagen3, errorImagen3);
 
     if (!comprobante.files || comprobante.files.length === 0) {
       errorComprobante.textContent = "*Suba un comprobante de domicilio.";
@@ -144,17 +147,17 @@ document.addEventListener("DOMContentLoaded", function () {
       formData.append('horario', document.getElementById('horario').value.trim());
       formData.append('estado', 'pendiente');
       
-      const imagen1Input = document.getElementsByName("imagen1")[0];
-      const comprobanteInput = document.getElementsByName("comprobante")[0];
-      const menuInput = document.getElementsByName("menu")[0];
-      
-      if (imagen1Input?.files && imagen1Input.files.length >= 3) {
-        const imagen1Comprimida = await comprimirImagen(imagen1Input.files[0]);
-        const imagen2Comprimida = await comprimirImagen(imagen1Input.files[1]);
-        const imagen3Comprimida = await comprimirImagen(imagen1Input.files[2]);
-        
+      // Procesar cada imagen individual
+      if (imagen1?.files && imagen1.files.length === 1) {
+        const imagen1Comprimida = await comprimirImagen(imagen1.files[0]);
         formData.append('imagen1', imagen1Comprimida, 'imagen1.jpg');
+      }
+      if (imagen2?.files && imagen2.files.length === 1) {
+        const imagen2Comprimida = await comprimirImagen(imagen2.files[0]);
         formData.append('imagen2', imagen2Comprimida, 'imagen2.jpg');
+      }
+      if (imagen3?.files && imagen3.files.length === 1) {
+        const imagen3Comprimida = await comprimirImagen(imagen3.files[0]);
         formData.append('imagen3', imagen3Comprimida, 'imagen3.jpg');
       }
       
