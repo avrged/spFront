@@ -149,9 +149,9 @@ document.addEventListener("DOMContentLoaded", function () {
       formData.append('estado', 'pendiente');
 
       // Etiquetas por defecto
-      formData.append('etiqueta1', 'Comida Rápida');
-      formData.append('etiqueta2', 'Pet Friendly');
-      formData.append('etiqueta3', 'Familiar');
+      formData.append('etiqueta1', 'Seleccionar');
+      formData.append('etiqueta2', 'Seleccionar');
+      formData.append('etiqueta3', 'Seleccionar');
 
       // Imágenes
       if (imagen1?.files && imagen1.files.length === 1) {

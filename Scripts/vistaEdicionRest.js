@@ -16,38 +16,6 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         });
     });
-
-    document.querySelectorAll('label.btn-menu input[type="file"][accept="application/pdf"]').forEach(function(input) {
-        input.addEventListener('change', function(event) {
-            const fileList = event.target.files;
-            const label = input.closest('label.btn-menu');
-            Array.from(label.children).forEach(function(child) {
-                if (child.tagName === 'IMG') {
-                    child.style.display = (fileList.length > 0) ? 'none' : '';
-                }
-            });
-            let fileNameSpan = label.querySelector('.file-name');
-            if (!fileNameSpan) {
-                fileNameSpan = document.createElement('span');
-                fileNameSpan.className = 'file-name';
-                fileNameSpan.style.marginLeft = '10px';
-                fileNameSpan.style.fontWeight = 'normal';
-                label.appendChild(fileNameSpan);
-            }
-            if (fileList.length > 0) {
-                fileNameSpan.textContent = `Archivo seleccionado: ${fileList[0].name}`;
-                fileNameSpan.style.display = 'inline-block';
-            } else {
-                fileNameSpan.textContent = '';
-                fileNameSpan.style.display = 'none';
-                Array.from(label.children).forEach(function(child) {
-                    if (child.tagName === 'IMG') {
-                        child.style.display = '';
-                    }
-                });
-            }
-        });
-    });
     // --- Lógica de autenticación y carga de datos del restaurante ---
     
     // Función para verificar si el backend está disponible
@@ -327,10 +295,13 @@ document.addEventListener('DOMContentLoaded', function() {
         // Cargar menú
         const btnMenu = document.querySelector('label.btn-menu input[type="file"]');
         if (btnMenu && restaurante.menu) {
-            const fileNameSpan = btnMenu.nextElementSibling;
-            if (fileNameSpan) {
-                fileNameSpan.textContent = `Archivo seleccionado: ${restaurante.menu}`;
-                fileNameSpan.style.display = 'inline-block';
+            const label = btnMenu.closest('label.btn-menu');
+            const menuSpan = label.querySelector('span');
+            
+            if (menuSpan) {
+                // Mostrar el nombre del archivo del menú
+                const nombreArchivo = restaurante.menu.split('/').pop() || restaurante.menu;
+                menuSpan.textContent = nombreArchivo;
             }
         }
     }
@@ -418,6 +389,37 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         });
     };
+
+    // Establecer etiquetas por defecto
+    function establecerEtiquetasPorDefecto() {
+        const etiquetasPorDefecto = ['Seleccionar', 'Seleccionar', 'Seleccionar'];
+        etiquetasPorDefecto.forEach((etiqueta, index) => {
+            if (index < selectsEtiquetas.length) {
+                selectsEtiquetas[index].value = etiqueta;
+            }
+        });
+    }
+
+    // Establecer las etiquetas por defecto al cargar la página
+    establecerEtiquetasPorDefecto();
+
+    // Manejar la selección de archivos PDF
+    const menuInput = document.getElementById('menuInput');
+    if (menuInput) {
+        menuInput.addEventListener('change', function(event) {
+            const file = event.target.files[0];
+            const btnMenu = document.querySelector('.btn-menu');
+            const menuSpan = btnMenu.querySelector('span');
+            
+            if (file) {
+                // Cambiar el texto del span para mostrar el nombre del archivo
+                menuSpan.textContent = file.name;
+            } else {
+                // Restaurar el texto original
+                menuSpan.textContent = 'Seleccionar archivo PDF';
+            }
+        });
+    }
 
     // Evento para evitar seleccionar la misma etiqueta en múltiples dropdowns
     selectsEtiquetas.forEach((select, index) => {
