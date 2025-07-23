@@ -45,6 +45,12 @@ html, body {
     width: auto;
 }
 
+.icono-aumento {
+    width: 100px;
+    height: 100px;
+    margin-top: 10px;
+}
+
 .catlogo-de-restaurantes {
     font-size: 1.6rem;
     font-weight: 400;
