@@ -481,42 +481,96 @@ document.addEventListener('DOMContentLoaded', function() {
             }
 
             const etiquetasSeleccionadas = obtenerEtiquetasSeleccionadas();
-            
-            // Recopilar todos los datos del formulario
-            const datosActualizados = {
-                nombre: window.restauranteActual.nombre, // No se cambia desde esta vista
-                direccion: document.querySelector('input[placeholder="Ingrese la dirección"]')?.value || '',
-                telefono: document.querySelector('input[placeholder="Ingrese su número celular"]')?.value || '',
-                horario: document.querySelector('.horarios-inputs input')?.value || '',
-                etiquetas: etiquetasSeleccionadas,
-                // Otros campos que tengas en el formulario
+
+            // Recopilar datos del formulario
+            const direccion = document.querySelector('input[placeholder="Ingrese la dirección"]')?.value || '';
+            const telefono = document.querySelector('input[placeholder="Ingrese su número celular"]')?.value || '';
+            const horario = document.querySelector('.horarios-inputs input')?.value || '';
+            const instagram = document.querySelector('input[placeholder="Ingrese su instagram"]')?.value || '';
+            const facebook = document.querySelector('input[placeholder="Ingrese su facebook"]')?.value || '';
+
+            // Archivos de imágenes
+            const img1Input = document.getElementById('imgGaleria1Input');
+            const img2Input = document.getElementById('imgGaleria2Input');
+            const img3Input = document.getElementById('imgGaleria3Input');
+
+            // Depuración: mostrar los inputs y archivos seleccionados
+            console.log('img1Input:', img1Input, 'files:', img1Input && img1Input.files);
+            console.log('img2Input:', img2Input, 'files:', img2Input && img2Input.files);
+            console.log('img3Input:', img3Input, 'files:', img3Input && img3Input.files);
+            // Archivo de menú
+            const menuInput = document.getElementById('menuInput');
+
+            // Crear FormData
+            const formData = new FormData();
+            // Campos principales
+            formData.append('restaurante', window.restauranteActual.restaurante || window.restauranteActual.nombre || '');
+            formData.append('correo', window.restauranteActual.correo || '');
+            formData.append('direccion', direccion);
+            formData.append('numero', telefono);
+            formData.append('horario', horario);
+            formData.append('facebook', facebook);
+            formData.append('instagram', instagram);
+
+            // Etiquetas individuales
+            const etiquetasArray = etiquetasSeleccionadas.split(',').map(e => e.trim());
+            formData.append('etiqueta1', etiquetasArray[0] || '');
+            formData.append('etiqueta2', etiquetasArray[1] || '');
+            formData.append('etiqueta3', etiquetasArray[2] || '');
+
+            // Adjuntar imágenes solo si el usuario seleccionó nuevas
+            if (img1Input && img1Input.files && img1Input.files[0]) {
+                formData.append('imagen1', img1Input.files[0]);
+            }
+            if (img2Input && img2Input.files && img2Input.files[0]) {
+                formData.append('imagen2', img2Input.files[0]);
+            }
+            if (img3Input && img3Input.files && img3Input.files[0]) {
+                formData.append('imagen3', img3Input.files[0]);
+            }
+            // Adjuntar menú PDF si se seleccionó
+            if (menuInput && menuInput.files && menuInput.files[0]) {
+                formData.append('menu', menuInput.files[0]);
+            }
+
+    // Imprimir en consola los datos que se enviarán
+    const formDataPreview = {};
+    formData.forEach((value, key) => {
+        if (value instanceof File) {
+            formDataPreview[key] = {
+                name: value.name,
+                size: value.size,
+                type: value.type
             };
+        } else {
+            formDataPreview[key] = value;
+        }
+    });
+    console.log('📦 Datos a enviar al backend:', formDataPreview);
 
             try {
                 const idUsuario = sessionStorage.getItem('id') || localStorage.getItem('id');
                 const correoUsuario = sessionStorage.getItem('correo') || localStorage.getItem('correo');
-                
-                if (!window.restauranteActual.id) {
-                    alert('❌ No se puede actualizar: No se tiene el ID del restaurante');
+                // Usar el id de la solicitud aprobada
+                const idSolicitud = (window.restauranteActual && (window.restauranteActual.id_solicitud || window.restauranteActual.id || window.restauranteActual.idSolicitud))
+                    || (window.solicitudUsuario && (window.solicitudUsuario.id_solicitud || window.solicitudUsuario.id));
+                if (!idSolicitud) {
+                    alert('❌ No se puede actualizar: No se tiene el ID de la solicitud');
                     return;
                 }
-                
-                // Usar endpoint PUT /restaurantes/{id}
-                const endpointUrl = `http://localhost:7070/restaurantes/${window.restauranteActual.id}`;
-                
-                // Enviar actualización al backend
-                const response = await fetch(endpointUrl, {
+                // Usar endpoint PUT /solicitudes/{id}
+                const endpointUrl = `http://localhost:7070/solicitudes/${idSolicitud}`;
+                // Usar endpoint con /with-files para actualización con archivos
+                const endpointUrlWithFiles = `http://localhost:7070/solicitudes/${idSolicitud}/with-files`;
+                const response = await fetch(endpointUrlWithFiles, {
                     method: 'PUT',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify(datosActualizados)
+                    body: formData
                 });
 
                 if (response.ok) {
                     const responseData = await response.json();
                     console.log('✅ Respuesta del servidor:', responseData);
-                    alert('✅ Datos del restaurante actualizados correctamente');
+                    alert('✅ Datos del restaurante actualizados correctamente con archivos');
                     // Recargar datos para reflejar cambios
                     await cargarDatosRestauranteUsuario();
                 } else {
@@ -527,8 +581,6 @@ document.addEventListener('DOMContentLoaded', function() {
 
             } catch (error) {
                 console.error('❌ Error al guardar:', error);
-                
-                // Diagnóstico específico del error
                 if (error.name === 'TypeError' && error.message.includes('fetch')) {
                     alert('❌ Error de conexión: Verifique que el backend esté ejecutándose en http://localhost:7070');
                 } else if (error.message.includes('CORS')) {
