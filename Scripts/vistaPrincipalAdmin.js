@@ -31,7 +31,6 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     function cargarMembresias() {
-        // Simulación, reemplaza con tu API real
 
         const tbody = document.querySelector('#vista-membresias tbody');
         tbody.innerHTML = '';
@@ -112,18 +111,46 @@ document.addEventListener('DOMContentLoaded', function () {
                 if (!confirm(`¿Seguro que deseas eliminar este restaurante: ${nombre}?`)) return;
                 
                 try {
-                    // Aquí puedes agregar la llamada al backend para eliminar el restaurante
-                    // const response = await fetch(`http://52.23.26.163:7070/restaurantes/${idRestaurante}`, {
-                    //     method: 'DELETE'
-                    // });
-                    // if (response.ok) {
+                    console.log('🗑️ Eliminando restaurante:', { nombre, idRestaurante });
+                    
+                    // Llamada al backend para eliminar el restaurante
+                    const response = await fetch(`http://52.23.26.163:7070/solicitudes/${idRestaurante}`, {
+                        method: 'DELETE',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        }
+                    });
+                    
+                    console.log('📡 Respuesta del servidor:', {
+                        status: response.status,
+                        statusText: response.statusText,
+                        ok: response.ok
+                    });
+                    
+                    if (response.ok) {
+                        // Eliminar la fila de la tabla
                         fila.remove();
-                        alert(`Restaurante "${nombre}" eliminado correctamente`);
-                    // } else {
-                    //     alert('Error al eliminar el restaurante');
-                    // }
+                        alert(`✅ Restaurante "${nombre}" eliminado correctamente`);
+                        
+                        // Recargar la lista de restaurantes para asegurar sincronización
+                        await cargarRestaurantes();
+                    } else {
+                        const errorText = await response.text();
+                        console.error('❌ Error del servidor:', errorText);
+                        
+                        let errorMessage = 'Error al eliminar el restaurante';
+                        try {
+                            const errorObj = JSON.parse(errorText);
+                            errorMessage = errorObj.message || errorMessage;
+                        } catch (e) {
+                            errorMessage = errorText || errorMessage;
+                        }
+                        
+                        alert(`❌ ${errorMessage}`);
+                    }
                 } catch (err) {
-                    alert('Error de conexión al eliminar el restaurante');
+                    console.error('❌ Error de conexión:', err);
+                    alert('❌ Error de conexión al eliminar el restaurante. Verifica que el servidor esté funcionando.');
                 }
             }
         });
@@ -332,6 +359,8 @@ document.addEventListener('DOMContentLoaded', function () {
 
     async function cargarRestaurantes() {
         try {
+            console.log('📋 Cargando lista de restaurantes...');
+            
             // Obtener todas las solicitudes con estado 'aprobado'
             const response = await fetch('http://52.23.26.163:7070/solicitudes');
             if (!response.ok) throw new Error('No se pudo obtener las solicitudes');
@@ -339,24 +368,41 @@ document.addEventListener('DOMContentLoaded', function () {
 
             // Filtrar solo las aprobadas
             const restaurantesAprobados = solicitudes.filter(s => s.estado && s.estado.toLowerCase() === 'aprobado');
+            console.log('🍽️ Restaurantes aprobados encontrados:', restaurantesAprobados.length);
 
             const tbody = document.querySelector('#vista-restaurantes tbody');
             tbody.innerHTML = '';
 
+            if (restaurantesAprobados.length === 0) {
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td colspan="3" style="text-align: center; padding: 20px; color: #666;">
+                        🍽️ No hay restaurantes registrados
+                    </td>
+                `;
+                tbody.appendChild(tr);
+                return;
+            }
+
             restaurantesAprobados.forEach(restaurante => {
                 const tr = document.createElement('tr');
-                tr.setAttribute('data-id-restaurante', restaurante.idSolicitud || '');
+                // Usar el ID correcto de la solicitud
+                const idSolicitud = restaurante.id_solicitud || restaurante.id || restaurante.idSolicitud || '';
+                tr.setAttribute('data-id-restaurante', idSolicitud);
                 tr.innerHTML = `
-                    <td>${restaurante.restaurante || ''}</td>
-                    <td>${restaurante.direccion || ''}</td>
+                    <td>${restaurante.restaurante || 'Sin nombre'}</td>
+                    <td>${restaurante.direccion || 'Sin dirección'}</td>
                     <td>
-                        <button class="btn-eliminar" title="Eliminar"><img src="../images/eliminar.png" alt="Eliminar"></button>
+                        <button class="btn-eliminar" title="Eliminar" data-nombre="${restaurante.restaurante || 'Sin nombre'}">
+                            <img src="../images/eliminar.png" alt="Eliminar">
+                        </button>
                     </td>
                 `;
                 tbody.appendChild(tr);
             });
         } catch (error) {
-            alert("Error al cargar restaurantes.");
+            console.error('❌ Error al cargar restaurantes:', error);
+            alert("❌ Error al cargar restaurantes: " + error.message);
         }
     }
 
