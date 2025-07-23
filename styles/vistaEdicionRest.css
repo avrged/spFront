@@ -244,20 +244,14 @@ input[type="text"] {
   grid-template-columns: 1fr 1fr;   
   grid-template-rows: auto auto;    
   grid-template-areas:
-    "horarios horarios"             
-    "ubicacion menu";                  
+    "menu menu"             
+    "ubicacion horarios";                  
   gap: 24px;
 }                          
 
 .horarios-area   { grid-area: horarios; }
 .ubicacion-area  { grid-area: ubicacion; }
 .menu-area       { grid-area: menu; }
-
-.horarios-inputs {
-  display: grid;
-  grid-template-columns: 1fr 1fr; 
-  gap: 16px;
-}
 
 
 .contacto-etiquetas {
@@ -305,15 +299,6 @@ input[type="text"] {
 .contactos .input-con-icono input,
 .etiquetas .input-con-icono input {
     flex: 1;
-}
-
-.restaurante-info-flex {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 24px;
-    width: 100%;
-    max-width: 1100px;
-
 }
 
 .btn-menu {
