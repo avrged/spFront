@@ -37,22 +37,207 @@ function initEncuestaForm() {
         };
 
         try {
-            // Primero, enviar la encuesta (esto se puede enviar a tu endpoint de encuestas)
+            // Enviar la encuesta al endpoint de estadísticas para incrementar contadores
             console.log('📤 Enviando datos de encuesta:', data);
             
-            // Aquí puedes enviar la encuesta a tu backend si tienes un endpoint para eso
-            // const encuestaResponse = await fetch('http://52.23.26.163:7070/encuestas', {
-            //     method: 'POST',
-            //     headers: { 'Content-Type': 'application/json' },
-            //     body: JSON.stringify(data)
-            // });
+            try {
+                // Preparar payload basado en la estructura del modelo Estadistica del backend
+                const estadisticasPayload = {
+                    correo: correo || restaurante?.correo,
+                    accion: 'incrementar' // Indicar que es para incrementar, no reemplazar
+                };
+
+                // Agregar el campo correspondiente basado en la selección de origen
+                if (origen.value === 'nacional') {
+                    estadisticasPayload.incrementar_nacional = 1; // Incrementar contador nacional
+                } else if (origen.value === 'extranjero') {
+                    estadisticasPayload.incrementar_extranjero = 1; // Incrementar contador extranjero
+                }
+
+                // Siempre incrementar contador de descargas
+                estadisticasPayload.incrementar_descargas = 1;
+
+                console.log('📊 Payload PUT para estadísticas:', estadisticasPayload);
+                console.log('🎯 Selección del usuario:', {
+                    origen: origen.value,
+                    atraccion: atraccion.value
+                });
+
+                // Paso 1: Obtener el ID de la estadística basado en el correo
+                console.log('🔍 Obteniendo ID de estadística para correo:', correo || restaurante?.correo);
+                
+                const getResponse = await fetch(`http://52.23.26.163:7070/estadisticas?correo=${encodeURIComponent(correo || restaurante?.correo)}`);
+                
+                console.log('📡 Respuesta GET estadísticas:', {
+                    status: getResponse.status,
+                    statusText: getResponse.statusText,
+                    ok: getResponse.ok,
+                    headers: {
+                        contentType: getResponse.headers.get('content-type')
+                    }
+                });
+                
+                if (!getResponse.ok) {
+                    const errorText = await getResponse.text();
+                    console.error('❌ Error en GET estadísticas:', errorText);
+                    throw new Error(`Error al obtener estadística: ${getResponse.status} - ${errorText}`);
+                }
+                
+                // Leer la respuesta como texto primero para debuggear
+                const responseText = await getResponse.text();
+                console.log('📄 Respuesta cruda del servidor:', responseText);
+                
+                let estadisticaExistente;
+                try {
+                    estadisticaExistente = JSON.parse(responseText);
+                } catch (parseError) {
+                    console.error('❌ Error al parsear JSON:', parseError);
+                    console.error('📄 Texto que causó el error:', responseText);
+                    throw new Error(`Respuesta no es JSON válido: ${responseText.substring(0, 100)}`);
+                }
+                
+                console.log('📋 Estadística existente parseada:', estadisticaExistente);
+                
+                // Extraer ID y valores actuales para incrementar
+                let estadisticaId;
+                let valoresActuales = {
+                    nacional: 0,
+                    extranjero: 0,
+                    descargas: 0,
+                    comida: 0,
+                    vista: 0,
+                    horario: 0,
+                    recomendacion: 0,
+                    ubicacion: 0
+                };
+                
+                if (Array.isArray(estadisticaExistente) && estadisticaExistente.length > 0) {
+                    const estadistica = estadisticaExistente[0];
+                    estadisticaId = estadistica.id_estadistica;
+                    valoresActuales.nacional = estadistica.nacional || 0;
+                    valoresActuales.extranjero = estadistica.extranjero || 0;
+                    valoresActuales.descargas = estadistica.descargas || 0;
+                    valoresActuales.comida = estadistica.comida || 0;
+                    valoresActuales.vista = estadistica.vista || 0;
+                    valoresActuales.horario = estadistica.horario || 0;
+                    valoresActuales.recomendacion = estadistica.recomendacion || 0;
+                    valoresActuales.ubicacion = estadistica.ubicacion || 0;
+                } else if (estadisticaExistente.id_estadistica) {
+                    estadisticaId = estadisticaExistente.id_estadistica;
+                    valoresActuales.nacional = estadisticaExistente.nacional || 0;
+                    valoresActuales.extranjero = estadisticaExistente.extranjero || 0;
+                    valoresActuales.descargas = estadisticaExistente.descargas || 0;
+                    valoresActuales.comida = estadisticaExistente.comida || 0;
+                    valoresActuales.vista = estadisticaExistente.vista || 0;
+                    valoresActuales.horario = estadisticaExistente.horario || 0;
+                    valoresActuales.recomendacion = estadisticaExistente.recomendacion || 0;
+                    valoresActuales.ubicacion = estadisticaExistente.ubicacion || 0;
+                } else {
+                    console.error('❌ Estructura de estadística no reconocida:', estadisticaExistente);
+                    throw new Error('No se encontró id_estadistica en la respuesta');
+                }
+
+                if (!estadisticaId) {
+                    throw new Error('ID de estadística es null o undefined');
+                }
+
+                console.log('📊 Valores actuales:', valoresActuales);
+
+                // Incrementar los valores correspondientes
+                const nuevosValores = {
+                    correo: correo || restaurante?.correo,
+                    nacional: valoresActuales.nacional,
+                    extranjero: valoresActuales.extranjero,
+                    descargas: valoresActuales.descargas + 1, // Siempre incrementar descargas
+                    comida: valoresActuales.comida,
+                    vista: valoresActuales.vista,
+                    horario: valoresActuales.horario,
+                    recomendacion: valoresActuales.recomendacion,
+                    ubicacion: valoresActuales.ubicacion
+                };
+
+                // Incrementar nacional o extranjero según selección
+                if (origen.value === 'nacional') {
+                    nuevosValores.nacional = valoresActuales.nacional + 1;
+                } else if (origen.value === 'extranjero') {
+                    nuevosValores.extranjero = valoresActuales.extranjero + 1;
+                }
+
+                // Incrementar el campo de atracción según selección
+                if (atraccion.value === 'comida') {
+                    nuevosValores.comida = valoresActuales.comida + 1;
+                } else if (atraccion.value === 'vista') {
+                    nuevosValores.vista = valoresActuales.vista + 1;
+                } else if (atraccion.value === 'horario') {
+                    nuevosValores.horario = valoresActuales.horario + 1;
+                } else if (atraccion.value === 'recomendacion') {
+                    nuevosValores.recomendacion = valoresActuales.recomendacion + 1;
+                } else if (atraccion.value === 'ubicacion') {
+                    nuevosValores.ubicacion = valoresActuales.ubicacion + 1;
+                }
+
+                console.log('📈 Valores incrementados:', {
+                    antes: valoresActuales,
+                    despues: nuevosValores,
+                    incremento_origen: origen.value,
+                    incremento_atraccion: atraccion.value
+                });
+
+                console.log('🆔 ID de estadística encontrado:', estadisticaId);
+                console.log('🔗 URL PUT final:', `http://52.23.26.163:7070/estadisticas/${estadisticaId}`);
+
+                // Paso 2: Actualizar la estadística con el ID correcto
+                const encuestaResponse = await fetch(`http://52.23.26.163:7070/estadisticas/${estadisticaId}`, {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(nuevosValores)
+                });
+
+                console.log('📈 Respuesta del servidor de estadísticas:', {
+                    status: encuestaResponse.status,
+                    statusText: encuestaResponse.statusText,
+                    ok: encuestaResponse.ok
+                });
+
+                if (encuestaResponse.ok) {
+                    const resultado = await encuestaResponse.text();
+                    console.log('✅ Respuesta PUT cruda:', resultado);
+                    
+                    try {
+                        const resultadoParsed = JSON.parse(resultado);
+                        console.log('✅ Estadísticas actualizadas:', resultadoParsed);
+                    } catch (parseError) {
+                        console.log('✅ Respuesta PUT (texto):', resultado);
+                    }
+                } else {
+                    // Intentar leer el error del servidor
+                    try {
+                        const errorText = await encuestaResponse.text();
+                        console.error('❌ Error del servidor (estadísticas):', {
+                            status: encuestaResponse.status,
+                            error: errorText
+                        });
+                    } catch (e) {
+                        console.warn('⚠️ Error al actualizar estadísticas:', encuestaResponse.status);
+                    }
+                }
+            } catch (estadisticasError) {
+                console.error('❌ Error al enviar estadísticas:', estadisticasError);
+                // No detener el flujo por este error
+            }
 
             // Después de enviar la encuesta, descargar el menú
             if (restaurante && restaurante.menu) {
                 console.log('📄 Descargando menú desde:', restaurante.menu);
                 
-                // Si el menú es una URL completa, usarla directamente
+                // Convertir localhost a la IP del servidor para evitar CORS
                 let menuUrl = restaurante.menu;
+                
+                // Si contiene localhost, reemplazarlo con la IP del servidor
+                if (menuUrl.includes('localhost:7070')) {
+                    menuUrl = menuUrl.replace('localhost:7070', '52.23.26.163:7070');
+                    console.log('🔄 URL corregida para descarga:', menuUrl);
+                }
                 
                 // Si no es una URL completa, construir la URL del backend
                 if (!menuUrl.startsWith('http')) {
@@ -61,7 +246,16 @@ function initEncuestaForm() {
                 
                 // Descargar el archivo
                 try {
+                    console.log('⬇️ Intentando descargar desde:', menuUrl);
+                    
                     const menuResponse = await fetch(menuUrl);
+                    
+                    console.log('📥 Respuesta de descarga:', {
+                        status: menuResponse.status,
+                        statusText: menuResponse.statusText,
+                        ok: menuResponse.ok
+                    });
+                    
                     if (menuResponse.ok) {
                         const blob = await menuResponse.blob();
                         const downloadUrl = window.URL.createObjectURL(blob);
@@ -83,7 +277,13 @@ function initEncuestaForm() {
                     }
                 } catch (downloadError) {
                     console.error('❌ Error en la descarga:', downloadError);
-                    alert('Error al descargar el menú.');
+                    
+                    // Mensaje más específico basado en el tipo de error
+                    if (downloadError.message.includes('CORS') || downloadError.message.includes('NetworkError')) {
+                        alert('Error de conexión al descargar el menú. El servidor puede no estar disponible.');
+                    } else {
+                        alert('Error al descargar el menú.');
+                    }
                 }
             } else {
                 console.warn('⚠️ No hay menú disponible para este restaurante');

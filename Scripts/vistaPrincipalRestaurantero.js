@@ -347,14 +347,6 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
 
-    // --- Lógica de membresía ---
-    // Simula el estado de membresía: "inactiva", "pendiente", "activa"
-    // En producción, obtén este valor del backend
-    const estadoMembresia = window.estadoMembresiaRestaurante || "activa"; // Cambia según pruebas
-
-    const btnHeaderSubscripcion = document.getElementById('btnHeaderSubscripcion');
-    const btnEstadisticas = document.getElementById('btnEstadisticas');
-    const mensaje = document.getElementById('membresiaMensaje');
 
     if (btnEstadisticas && mensaje) {
         if (estadoMembresia === "activa") {
