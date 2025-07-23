@@ -49,8 +49,8 @@ function mostrarRestaurantes(solicitudes) {
 // Función de búsqueda
 function buscarRestaurantes(termino) {
     if (!termino.trim()) {
-        // Si no hay término de búsqueda, mostrar todos los restaurantes
-        mostrarRestaurantes(todasLasSolicitudes);
+        // Si no hay término de búsqueda, aplicar filtros actuales
+        aplicarFiltros();
         return;
     }
 
@@ -63,7 +63,74 @@ function buscarRestaurantes(termino) {
     mostrarRestaurantes(restaurantesFiltrados);
 }
 
-// Configurar eventos de búsqueda
+// Función para verificar si un restaurante tiene una etiqueta específica
+function restauranteTieneEtiqueta(restaurante, etiqueta) {
+    if (!etiqueta || etiqueta === '') return true;
+    
+    const etiquetasRestaurante = [
+        restaurante.etiqueta1,
+        restaurante.etiqueta2,
+        restaurante.etiqueta3
+    ].filter(e => e && e !== '' && e !== 'Seleccionar');
+    
+    return etiquetasRestaurante.some(e => 
+        e && e.toLowerCase() === etiqueta.toLowerCase()
+    );
+}
+
+// Función para aplicar todos los filtros activos
+function aplicarFiltros() {
+    // Obtener valores de los filtros
+    const filtroTipoComida = document.getElementById('filtroTipoComida')?.value || '';
+    const filtroAmbiente = document.getElementById('filtroAmbiente')?.value || '';
+    const filtroServicios = document.getElementById('filtroServicios')?.value || '';
+    const terminoBusqueda = document.querySelector('.barra-busqueda input[type="text"]')?.value || '';
+
+    console.log('🔍 Aplicando filtros:', {
+        tipoComida: filtroTipoComida,
+        ambiente: filtroAmbiente,
+        servicios: filtroServicios,
+        busqueda: terminoBusqueda
+    });
+
+    // Filtrar restaurantes
+    let restaurantesFiltrados = todasLasSolicitudes.filter(solicitud => {
+        // Filtro por búsqueda de texto
+        const coincideBusqueda = !terminoBusqueda.trim() || 
+            (solicitud.restaurante && solicitud.restaurante.toLowerCase().includes(terminoBusqueda.toLowerCase()));
+        
+        // Filtros por etiquetas
+        const coincideTipoComida = restauranteTieneEtiqueta(solicitud, filtroTipoComida);
+        const coincideAmbiente = restauranteTieneEtiqueta(solicitud, filtroAmbiente);
+        const coincideServicios = restauranteTieneEtiqueta(solicitud, filtroServicios);
+
+        return coincideBusqueda && coincideTipoComida && coincideAmbiente && coincideServicios;
+    });
+
+    console.log(`📊 Restaurantes filtrados: ${restaurantesFiltrados.length} de ${todasLasSolicitudes.length}`);
+    mostrarRestaurantes(restaurantesFiltrados);
+}
+
+// Función para limpiar todos los filtros
+function limpiarFiltros() {
+    // Limpiar selects de filtros
+    const filtros = ['filtroTipoComida', 'filtroAmbiente', 'filtroServicios'];
+    filtros.forEach(filtroId => {
+        const filtro = document.getElementById(filtroId);
+        if (filtro) filtro.value = '';
+    });
+
+    // Limpiar barra de búsqueda
+    const inputBusqueda = document.querySelector('.barra-busqueda input[type="text"]');
+    if (inputBusqueda) inputBusqueda.value = '';
+
+    // Mostrar todos los restaurantes
+    mostrarRestaurantes(todasLasSolicitudes);
+    
+    console.log('🧹 Filtros limpiados - Mostrando todos los restaurantes');
+}
+
+// Configurar eventos de búsqueda y filtros
 function configurarBusqueda() {
     const inputBusqueda = document.querySelector('.barra-busqueda input[type="text"]');
     const botonBuscar = document.querySelector('.barra-busqueda .buscar');
@@ -71,22 +138,39 @@ function configurarBusqueda() {
     if (inputBusqueda && botonBuscar) {
         // Búsqueda al hacer clic en el botón
         botonBuscar.addEventListener('click', () => {
-            const termino = inputBusqueda.value;
-            buscarRestaurantes(termino);
+            aplicarFiltros();
         });
 
         // Búsqueda al presionar Enter
         inputBusqueda.addEventListener('keypress', (e) => {
             if (e.key === 'Enter') {
-                const termino = inputBusqueda.value;
-                buscarRestaurantes(termino);
+                aplicarFiltros();
             }
         });
 
         // Búsqueda en tiempo real mientras escribe
         inputBusqueda.addEventListener('input', (e) => {
-            const termino = e.target.value;
-            buscarRestaurantes(termino);
+            aplicarFiltros();
+        });
+    }
+
+    // Configurar eventos para los filtros de etiquetas
+    const filtros = ['filtroTipoComida', 'filtroAmbiente', 'filtroServicios'];
+    filtros.forEach(filtroId => {
+        const filtro = document.getElementById(filtroId);
+        if (filtro) {
+            filtro.addEventListener('change', () => {
+                console.log(`🏷️ Filtro ${filtroId} cambiado a: ${filtro.value}`);
+                aplicarFiltros();
+            });
+        }
+    });
+
+    // Configurar botón de limpiar filtros
+    const btnLimpiarFiltros = document.getElementById('btnLimpiarFiltros');
+    if (btnLimpiarFiltros) {
+        btnLimpiarFiltros.addEventListener('click', () => {
+            limpiarFiltros();
         });
     }
 }
@@ -128,7 +212,7 @@ document.addEventListener('DOMContentLoaded', async function() {
         // Mostrar todos los restaurantes inicialmente
         mostrarRestaurantes(todasLasSolicitudes);
 
-        // Configurar la funcionalidad de búsqueda
+        // Configurar la funcionalidad de búsqueda y filtros
         configurarBusqueda();
 
     } catch (error) {

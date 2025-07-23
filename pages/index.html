@@ -46,26 +46,38 @@
             <div class="barra-filtros-horizontal filtros-abajo">
 
                 <div class="filtro-item">
-                    <img src="../images/reloj.png" alt="Horario" class="icono-filtro">
-                    <select class="filtro-select">
-                    <option disabled selected>Horario</option>
-                    <option value="manana">Mañana</option>
-                    <option value="tarde">Tarde</option>
-                    <option value="noche">Noche</option>
+                    <img src="../images/menu.png" alt="Tipo de comida" class="icono-filtro">
+                    <select class="filtro-select" id="filtroTipoComida">
+                        <option value="">Tipo de comida</option>
+                        <option value="Comida Rápida">Comida Rápida</option>
+                        <option value="Gourmet">Gourmet</option>
+                        <option value="Vegetariano">Vegetariano</option>
+                        <option value="Económico">Económico</option>
                     </select>
                 </div>
 
                 <div class="filtro-item">
-                    <img src="../images/menu.png" alt="Tipo de comida" class="icono-filtro">
-                    <select class="filtro-select">
-                    <option disabled selected>Tipo de comida</option>
-                    <option value="mexicana">Mexicana</option>
-                    <option value="cafe">Café</option>
-                    <option value="internacional">Internacional</option>
+                    <img src="../images/restaurante.png" alt="Ambiente" class="icono-filtro">
+                    <select class="filtro-select" id="filtroAmbiente">
+                        <option value="">Ambiente</option>
+                        <option value="Familiar">Familiar</option>
+                        <option value="Pet Friendly">Pet Friendly</option>
+                        <option value="Terraza">Terraza</option>
                     </select>
                 </div>
-                <button class="btn-filtrar">
-                    <img src="../images/buscar_blanco.png" class="icono-boton"> Filtrar
+
+                <div class="filtro-item">
+                    <img src="../images/coctel.png" alt="Servicios" class="icono-filtro">
+                    <select class="filtro-select" id="filtroServicios">
+                        <option value="">Servicios</option>
+                        <option value="Delivery">Delivery</option>
+                        <option value="WiFi Gratuito">WiFi Gratuito</option>
+                        <option value="Estacionamiento">Estacionamiento</option>
+                    </select>
+                </div>
+
+                <button class="btn-filtrar" id="btnLimpiarFiltros">
+                    <img src="../images/borrar.png" class="icono-boton"> Limpiar Filtros
                 </button>
             </div>
         </section>
