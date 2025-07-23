@@ -326,11 +326,6 @@ html, body {
 }
 
 .restaurante-tipos,
-.restaurante-horario {
-    font-size: smaller;
-    color: #912f2f;
-    font-family: 'Rubik', sans-serif;
-}
 
 .rectangle-container {
     width: 100%;

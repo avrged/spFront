@@ -3,30 +3,52 @@ document.addEventListener('DOMContentLoaded', async function() {
     if (!container) return;
 
     try {
-        const restaurantes = await SazonAPI.getAllRestauranteros();
+        console.log('Intentando cargar solicitudes...');
+        
+        // Hacer petición directa sin usar SazonAPI
+        const response = await fetch('http://localhost:7070/solicitudes', {
+            method: 'GET',
+            headers: { 'Content-Type': 'application/json' }
+        });
+
+        if (!response.ok) {
+            throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+        }
+
+        const solicitudes = await response.json();
+        console.log('Solicitudes recibidas:', solicitudes);
 
         container.innerHTML = '';
 
-        restaurantes.forEach(rest => {
+        // Filtrar solo las solicitudes aprobadas
+        const solicitudesAprobadas = solicitudes.filter(solicitud => 
+            solicitud.estado === 'aprobado' || 
+            solicitud.estado === 'Aprobado' ||
+            solicitud.estado === 'APROBADO'
+        );
+
+        console.log('Solicitudes aprobadas:', solicitudesAprobadas);
+
+        if (solicitudesAprobadas.length === 0) {
+            container.innerHTML = '<p>No hay restaurantes aprobados disponibles.</p>';
+            return;
+        }
+
+        solicitudesAprobadas.forEach(solicitud => {
             const card = document.createElement('div');
             card.className = 'restaurante-card';
-            card.onclick = () => window.location.href = `vistaRestaurante.html?id=${rest.id}`;
+            card.onclick = () => window.location.href = `vistaRestaurante.html?id=${solicitud.id}`;
 
             card.innerHTML = `
-                <img class="restaurante-img" src="${rest.imagenPrincipal || '../images/img_rest2.jpg'}" alt="Restaurante ${rest.nombre}">
+                <img class="restaurante-img" src="${solicitud.imagen1 || '../images/img_rest2.jpg'}" alt="Restaurante ${solicitud.restaurante}">
                 <div class="restaurante-info">
-                    <h3 class="restaurante-nombre">${rest.nombre}</h3>
-                    <div class="restaurante-tipos">
-                        <span>${rest.tipoComida || ''}</span><br>
-                    </div>
-                    <div class="restaurante-horario">
-                        <span>${rest.horario || ''}</span>
-                    </div>
+                    <h3 class="restaurante-nombre">${solicitud.restaurante}</h3>
                 </div>
             `;
             container.appendChild(card);
         });
     } catch (error) {
-        container.innerHTML = '<p>Error al cargar restaurantes.</p>';
+        console.error('Error al cargar restaurantes:', error);
+        container.innerHTML = '<p>Error al cargar restaurantes. Revisa la consola para más detalles.</p>';
     }
 });

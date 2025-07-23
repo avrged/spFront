@@ -80,6 +80,10 @@ class SazonAPI {
             body: JSON.stringify(credentials)
         });
     }
+
+    static async getAllsolicitudes() {
+        return this.request('/solicitudes');
+    }
 }
 
 class UIUtils {
