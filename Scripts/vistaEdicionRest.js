@@ -327,23 +327,11 @@ document.addEventListener('DOMContentLoaded', function() {
         // Cargar menú
         const btnMenu = document.querySelector('label.btn-menu input[type="file"]');
         if (btnMenu && restaurante.menu) {
-            const label = btnMenu.closest('label.btn-menu');
-            let fileNameSpan = label.querySelector('.file-name');
-            
-            // Si no existe el span, crearlo
-            if (!fileNameSpan) {
-                fileNameSpan = document.createElement('span');
-                fileNameSpan.className = 'file-name';
-                fileNameSpan.style.marginLeft = '10px';
-                fileNameSpan.style.fontWeight = 'normal';
-                fileNameSpan.style.color = '#912F2F';
-                label.appendChild(fileNameSpan);
+            const fileNameSpan = btnMenu.nextElementSibling;
+            if (fileNameSpan) {
+                fileNameSpan.textContent = `Archivo seleccionado: ${restaurante.menu}`;
+                fileNameSpan.style.display = 'inline-block';
             }
-            
-            // Mostrar el nombre del archivo del menú
-            const nombreArchivo = restaurante.menu.split('/').pop() || restaurante.menu;
-            fileNameSpan.textContent = `Menú guardado: ${nombreArchivo}`;
-            fileNameSpan.style.display = 'inline-block';
         }
     }
 
