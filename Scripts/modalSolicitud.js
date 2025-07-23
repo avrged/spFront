@@ -192,7 +192,7 @@ document.addEventListener("DOMContentLoaded", function () {
       try {
         console.log('Enviando solicitud...');
         
-        const response = await fetch('http://localhost:7070/solicitudes/with-files', {
+        const response = await fetch('http://52.23.26.163:7070/solicitudes/with-files', {
           method: 'POST',
           body: formData
         });

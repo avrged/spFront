@@ -22,7 +22,7 @@ document.addEventListener('DOMContentLoaded', function() {
     async function verificarBackend(reintentos = 3) {
         for (let i = 0; i < reintentos; i++) {
             try {
-                const response = await fetch('http://localhost:7070/solicitudes', {
+                const response = await fetch('http://52.23.26.163:7070/solicitudes', {
                     method: 'GET',
                     headers: { 'Content-Type': 'application/json' },
                     timeout: 10000 // 10 segundos timeout
@@ -54,7 +54,7 @@ document.addEventListener('DOMContentLoaded', function() {
             // Verificar backend primero
             const backendDisponible = await verificarBackend();
             if (!backendDisponible) {
-                throw new Error('Backend no disponible en http://localhost:7070');
+                throw new Error('Backend no disponible en http://52.23.26.163:7070');
             }
 
             // Obtener datos de usuario autenticado
@@ -73,7 +73,7 @@ document.addEventListener('DOMContentLoaded', function() {
             
             if (correoUsuario) {
                 try {
-                    const responseSolicitudes = await fetch(`http://localhost:7070/solicitudes`, {
+                    const responseSolicitudes = await fetch(`http://52.23.26.163:7070/solicitudes`, {
                         method: 'GET',
                         headers: { 'Content-Type': 'application/json' }
                     });
@@ -111,7 +111,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
             try {
                 // PASO 2: Obtener todos los restaurantes y buscar por los datos del usuario
-                response = await fetch('http://localhost:7070/solicitudes', {
+                response = await fetch('http://52.23.26.163:7070/solicitudes', {
                     method: 'GET',
                     headers: { 'Content-Type': 'application/json' }
                 });
@@ -207,8 +207,29 @@ document.addEventListener('DOMContentLoaded', function() {
                         // Cargar datos en el formulario con datos combinados
                         cargarDatosEnFormulario(restauranteUsuario, window.solicitudUsuario);
                         
-                        // Cargar etiquetas si las tiene
-                        if (restauranteUsuario.etiquetas) {
+                        // Cargar etiquetas desde campos individuales (etiqueta1, etiqueta2, etiqueta3)
+                        const etiquetasIndividuales = [
+                            restauranteUsuario.etiqueta1,
+                            restauranteUsuario.etiqueta2,
+                            restauranteUsuario.etiqueta3
+                        ].filter(etiqueta => 
+                            etiqueta && 
+                            etiqueta !== '' && 
+                            etiqueta !== 'Seleccionar' && 
+                            etiqueta.trim() !== ''
+                        );
+                        
+                        console.log('🏷️ Etiquetas individuales encontradas:', {
+                            etiqueta1: restauranteUsuario.etiqueta1,
+                            etiqueta2: restauranteUsuario.etiqueta2, 
+                            etiqueta3: restauranteUsuario.etiqueta3,
+                            filtradas: etiquetasIndividuales
+                        });
+                        
+                        if (etiquetasIndividuales.length > 0) {
+                            cargarEtiquetasRestaurante(etiquetasIndividuales.join(', '));
+                        } else if (restauranteUsuario.etiquetas) {
+                            // Fallback: usar campo combinado si existe
                             cargarEtiquetasRestaurante(restauranteUsuario.etiquetas);
                         }
                         
@@ -368,25 +389,63 @@ document.addEventListener('DOMContentLoaded', function() {
     // Función para obtener las etiquetas seleccionadas
     window.obtenerEtiquetasSeleccionadas = function() {
         const etiquetasSeleccionadas = [];
-        selectsEtiquetas.forEach(select => {
-            if (select.value && select.value !== '') {
+        
+        console.log('🔍 Verificando etiquetas seleccionadas...');
+        console.log('📋 Total de selects encontrados:', selectsEtiquetas.length);
+        
+        selectsEtiquetas.forEach((select, index) => {
+            console.log(`🏷️ Select ${index + 1}:`, {
+                value: select.value,
+                isEmpty: select.value === '',
+                isSeleccionar: select.value === 'Seleccionar'
+            });
+            
+            if (select.value && select.value !== '' && select.value !== 'Seleccionar') {
                 etiquetasSeleccionadas.push(select.value);
             }
         });
-        return etiquetasSeleccionadas.join(', ');
+        
+        console.log('✅ Etiquetas válidas encontradas:', etiquetasSeleccionadas);
+        const resultado = etiquetasSeleccionadas.join(', ');
+        console.log('📝 String final de etiquetas:', resultado);
+        
+        return resultado;
     };
 
     // Función para cargar etiquetas existentes (desde el backend)
     window.cargarEtiquetasRestaurante = function(etiquetasString) {
-        if (!etiquetasString) return;
+        console.log('🔄 Cargando etiquetas desde backend:', etiquetasString);
         
-        const etiquetasArray = etiquetasString.split(',').map(e => e.trim());
+        if (!etiquetasString) {
+            console.log('⚠️ No hay etiquetas para cargar');
+            return;
+        }
+        
+        const etiquetasArray = etiquetasString.split(',').map(e => e.trim()).filter(e => e !== '');
+        console.log('📋 Array de etiquetas a cargar:', etiquetasArray);
         
         // Asignar las etiquetas a los selects disponibles
         etiquetasArray.forEach((etiqueta, index) => {
             if (index < selectsEtiquetas.length) {
+                console.log(`🏷️ Asignando etiqueta ${index + 1}: "${etiqueta}" al select`);
                 selectsEtiquetas[index].value = etiqueta;
+                
+                // Verificar si la asignación fue exitosa
+                if (selectsEtiquetas[index].value === etiqueta) {
+                    console.log(`✅ Etiqueta ${index + 1} asignada correctamente`);
+                } else {
+                    console.warn(`❌ Error al asignar etiqueta ${index + 1}: "${etiqueta}". Valor actual: "${selectsEtiquetas[index].value}"`);
+                    // Verificar si la opción existe en el select
+                    const opcionExiste = Array.from(selectsEtiquetas[index].options).some(option => option.value === etiqueta);
+                    console.log(`🔍 ¿La opción "${etiqueta}" existe en el select?`, opcionExiste);
+                }
             }
+        });
+        
+        // Verificar estado final de todos los selects
+        console.log('📊 Estado final de todos los selects:');
+        selectsEtiquetas.forEach((select, index) => {
+            console.log(`   Select ${index + 1}: "${select.value}"`);
         });
     };
 
@@ -481,6 +540,7 @@ document.addEventListener('DOMContentLoaded', function() {
             }
 
             const etiquetasSeleccionadas = obtenerEtiquetasSeleccionadas();
+            console.log('🏷️ Etiquetas obtenidas:', etiquetasSeleccionadas);
 
             // Recopilar datos del formulario
             const direccion = document.querySelector('input[placeholder="Ingrese la dirección"]')?.value || '';
@@ -513,10 +573,18 @@ document.addEventListener('DOMContentLoaded', function() {
             formData.append('instagram', instagram);
 
             // Etiquetas individuales
-            const etiquetasArray = etiquetasSeleccionadas.split(',').map(e => e.trim());
-            formData.append('etiqueta1', etiquetasArray[0] || '');
-            formData.append('etiqueta2', etiquetasArray[1] || '');
-            formData.append('etiqueta3', etiquetasArray[2] || '');
+            const etiquetasArray = etiquetasSeleccionadas.split(',').map(e => e.trim()).filter(e => e !== '');
+            console.log('🏷️ Array de etiquetas procesado:', etiquetasArray);
+            
+            formData.append('etiqueta1', etiquetasArray[0] || 'Seleccionar');
+            formData.append('etiqueta2', etiquetasArray[1] || 'Seleccionar');
+            formData.append('etiqueta3', etiquetasArray[2] || 'Seleccionar');
+            
+            console.log('📤 Etiquetas que se enviarán:', {
+                etiqueta1: etiquetasArray[0] || 'Seleccionar',
+                etiqueta2: etiquetasArray[1] || 'Seleccionar', 
+                etiqueta3: etiquetasArray[2] || 'Seleccionar'
+            });
 
             // Adjuntar imágenes solo si el usuario seleccionó nuevas
             if (img1Input && img1Input.files && img1Input.files[0]) {
@@ -559,9 +627,9 @@ document.addEventListener('DOMContentLoaded', function() {
                     return;
                 }
                 // Usar endpoint PUT /solicitudes/{id}
-                const endpointUrl = `http://localhost:7070/solicitudes/${idSolicitud}`;
+                const endpointUrl = `http://52.23.26.163:7070/solicitudes/${idSolicitud}`;
                 // Usar endpoint con /with-files para actualización con archivos
-                const endpointUrlWithFiles = `http://localhost:7070/solicitudes/${idSolicitud}/with-files`;
+                const endpointUrlWithFiles = `http://52.23.26.163:7070/solicitudes/${idSolicitud}/with-files`;
                 const response = await fetch(endpointUrlWithFiles, {
                     method: 'PUT',
                     body: formData
@@ -582,7 +650,7 @@ document.addEventListener('DOMContentLoaded', function() {
             } catch (error) {
                 console.error('❌ Error al guardar:', error);
                 if (error.name === 'TypeError' && error.message.includes('fetch')) {
-                    alert('❌ Error de conexión: Verifique que el backend esté ejecutándose en http://localhost:7070');
+                    alert('❌ Error de conexión: Verifique que el backend esté ejecutándose en http://52.23.26.163:7070');
                 } else if (error.message.includes('CORS')) {
                     alert('❌ Error CORS: El backend no permite conexiones desde este origen');
                 } else {

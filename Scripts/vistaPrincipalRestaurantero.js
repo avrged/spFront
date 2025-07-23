@@ -54,7 +54,7 @@ document.addEventListener('DOMContentLoaded', function() {
     async function verificarBackend(reintentos = 3) {
         for (let i = 0; i < reintentos; i++) {
             try {
-                const response = await fetch('http://localhost:7070/solicitudes', {
+                const response = await fetch('http://52.23.26.163:7070/solicitudes', {
                     method: 'GET',
                     headers: { 'Content-Type': 'application/json' },
                     timeout: 10000 // 10 segundos timeout
@@ -86,7 +86,7 @@ document.addEventListener('DOMContentLoaded', function() {
             // Verificar backend primero
             const backendDisponible = await verificarBackend();
             if (!backendDisponible) {
-                throw new Error('Backend no disponible en http://localhost:7070');
+                throw new Error('Backend no disponible en http://52.23.26.163:7070');
             }
 
             // Obtener datos de usuario autenticado
@@ -105,7 +105,7 @@ document.addEventListener('DOMContentLoaded', function() {
             
             if (correoUsuario) {
                 try {
-                    const responseSolicitudes = await fetch(`http://localhost:7070/solicitudes`, {
+                    const responseSolicitudes = await fetch(`http://52.23.26.163:7070/solicitudes`, {
                         method: 'GET',
                         headers: { 'Content-Type': 'application/json' }
                     });
@@ -143,7 +143,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
             try {
                 // PASO 2: Obtener todos los restaurantes y buscar por los datos del usuario
-                response = await fetch('http://localhost:7070/solicitudes', {
+                response = await fetch('http://52.23.26.163:7070/solicitudes', {
                     method: 'GET',
                     headers: { 'Content-Type': 'application/json' }
                 });
@@ -512,7 +512,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 }
                 
                 // Usar endpoint PUT /restaurantes/{id}
-                const endpointUrl = `http://localhost:7070/restaurantes/${window.restauranteActual.id}`;
+                const endpointUrl = `http://52.23.26.163:7070/restaurantes/${window.restauranteActual.id}`;
                 
                 // Enviar actualización al backend
                 const response = await fetch(endpointUrl, {
@@ -540,7 +540,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 
                 // Diagnóstico específico del error
                 if (error.name === 'TypeError' && error.message.includes('fetch')) {
-                    alert('❌ Error de conexión: Verifique que el backend esté ejecutándose en http://localhost:7070');
+                    alert('❌ Error de conexión: Verifique que el backend esté ejecutándose en http://52.23.26.163:7070');
                 } else if (error.message.includes('CORS')) {
                     alert('❌ Error CORS: El backend no permite conexiones desde este origen');
                 } else {

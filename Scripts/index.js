@@ -6,7 +6,7 @@ document.addEventListener('DOMContentLoaded', async function() {
         console.log('Intentando cargar solicitudes...');
         
         // Hacer petición directa sin usar SazonAPI
-        const response = await fetch('http://localhost:7070/solicitudes', {
+        const response = await fetch('http://52.23.26.163:7070/solicitudes', {
             method: 'GET',
             headers: { 'Content-Type': 'application/json' }
         });

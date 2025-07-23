@@ -113,7 +113,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 
                 try {
                     // Aquí puedes agregar la llamada al backend para eliminar el restaurante
-                    // const response = await fetch(`http://localhost:7070/restaurantes/${idRestaurante}`, {
+                    // const response = await fetch(`http://52.23.26.163:7070/restaurantes/${idRestaurante}`, {
                     //     method: 'DELETE'
                     // });
                     // if (response.ok) {
@@ -177,7 +177,7 @@ document.addEventListener('DOMContentLoaded', function () {
                     // Imprimir en consola los datos antes de enviarlos
                     console.log('Datos de la solicitud a aprobar:', datosRestaurante);
                     // Aprobar la solicitud en el backend
-                    const response = await fetch(`http://localhost:7070/solicitudes/aprobar/${id}`, {
+                    const response = await fetch(`http://52.23.26.163:7070/solicitudes/aprobar/${id}`, {
                         method: 'PUT',
                         headers: {
                             'Content-Type': 'application/json'
@@ -208,7 +208,7 @@ document.addEventListener('DOMContentLoaded', function () {
                             imagen3
                         };
                         try {
-                            await fetch('http://localhost:7070/restaurantes', {
+                            await fetch('http://52.23.26.163:7070/restaurantes', {
                                 method: 'POST',
                                 headers: { 'Content-Type': 'application/json' },
                                 body: JSON.stringify(datosRestauranteInsert)
@@ -255,7 +255,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 }
                 if (!confirm('¿Seguro que deseas rechazar esta solicitud?')) return;
                 try {
-                    const response = await fetch(`http://localhost:7070/solicitudes/${id}`, {
+                    const response = await fetch(`http://52.23.26.163:7070/solicitudes/${id}`, {
                         method: 'DELETE'
                     });
                     if (response.ok) {
@@ -274,7 +274,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     async function cargarSolicitudes() {
         try {
-            const response = await fetch('http://localhost:7070/solicitudes');
+            const response = await fetch('http://52.23.26.163:7070/solicitudes');
             if (!response.ok) throw new Error('No se pudo obtener las solicitudes');
             const solicitudes = await response.json();
 
@@ -333,7 +333,7 @@ document.addEventListener('DOMContentLoaded', function () {
     async function cargarRestaurantes() {
         try {
             // Obtener todas las solicitudes con estado 'aprobado'
-            const response = await fetch('http://localhost:7070/solicitudes');
+            const response = await fetch('http://52.23.26.163:7070/solicitudes');
             if (!response.ok) throw new Error('No se pudo obtener las solicitudes');
             const solicitudes = await response.json();
 
@@ -405,7 +405,7 @@ document.addEventListener('DOMContentLoaded', function () {
             if (!url.includes('/uploads/documents/')) {
                 url = '/uploads/documents/' + url;
             }
-            url = 'http://localhost:7070' + url;
+            url = 'http://52.23.26.163:7070' + url;
         }
         if (url && url.endsWith('.pdf')) {
             html += `<iframe src="${url}" style="width:600px;height:600px;border:none;"></iframe>`;

@@ -12,7 +12,7 @@ document.addEventListener('DOMContentLoaded', async function() {
     async function verificarBackend(reintentos = 3) {
         for (let i = 0; i < reintentos; i++) {
             try {
-                const response = await fetch('http://localhost:7070/solicitudes', {
+                const response = await fetch('http://52.23.26.163:7070/solicitudes', {
                     method: 'GET',
                     headers: { 'Content-Type': 'application/json' },
                     timeout: 10000 // 10 segundos timeout
@@ -44,11 +44,11 @@ document.addEventListener('DOMContentLoaded', async function() {
         // Verificar backend primero
         const backendDisponible = await verificarBackend();
         if (!backendDisponible) {
-            throw new Error('Backend no disponible en http://localhost:7070');
+            throw new Error('Backend no disponible en http://52.23.26.163:7070');
         }
         
         // Obtener todos los datos de solicitudes (mismo endpoint que vistaEdicionRest)
-        const response = await fetch('http://localhost:7070/solicitudes', {
+        const response = await fetch('http://52.23.26.163:7070/solicitudes', {
             method: 'GET',
             headers: { 'Content-Type': 'application/json' }
         });
@@ -193,13 +193,27 @@ document.addEventListener('DOMContentLoaded', async function() {
             if (caracteristicas) {
                 let etiquetasArray = [];
                 
-                if (restaurante.etiquetas) {
-                    // Si las etiquetas están como string separado por comas
+                // Leer etiquetas desde los campos individuales (etiqueta1, etiqueta2, etiqueta3)
+                const etiquetasIndividuales = [
+                    restaurante.etiqueta1,
+                    restaurante.etiqueta2, 
+                    restaurante.etiqueta3
+                ].filter(etiqueta => 
+                    etiqueta && 
+                    etiqueta !== '' && 
+                    etiqueta !== 'Seleccionar' && 
+                    etiqueta.trim() !== ''
+                );
+                
+                // Si no hay etiquetas individuales, intentar con el campo combinado (fallback)
+                if (etiquetasIndividuales.length === 0 && restaurante.etiquetas) {
                     if (typeof restaurante.etiquetas === 'string') {
-                        etiquetasArray = restaurante.etiquetas.split(',').map(e => e.trim()).filter(e => e);
+                        etiquetasArray = restaurante.etiquetas.split(',').map(e => e.trim()).filter(e => e && e !== 'Seleccionar');
                     } else if (Array.isArray(restaurante.etiquetas)) {
-                        etiquetasArray = restaurante.etiquetas;
+                        etiquetasArray = restaurante.etiquetas.filter(e => e && e !== 'Seleccionar');
                     }
+                } else {
+                    etiquetasArray = etiquetasIndividuales;
                 }
                 
                 caracteristicas.innerHTML = etiquetasArray.length > 0 
@@ -212,6 +226,11 @@ document.addEventListener('DOMContentLoaded', async function() {
                     : '<span style="color:#888">No hay características disponibles</span>';
                 
                 console.log('🏷️ Etiquetas cargadas:', etiquetasArray);
+                console.log('🔍 Etiquetas individuales encontradas:', { 
+                    etiqueta1: restaurante.etiqueta1, 
+                    etiqueta2: restaurante.etiqueta2, 
+                    etiqueta3: restaurante.etiqueta3 
+                });
             }
 
             // HORARIOS
