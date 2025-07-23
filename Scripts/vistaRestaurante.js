@@ -12,7 +12,7 @@ document.addEventListener('DOMContentLoaded', async function() {
     async function verificarBackend(reintentos = 3) {
         for (let i = 0; i < reintentos; i++) {
             try {
-                const response = await fetch('http://localhost:7070/solicitudes', {
+                const response = await fetch('http://52.23.26.163:7070/solicitudes', {
                     method: 'GET',
                     headers: { 'Content-Type': 'application/json' },
                     timeout: 10000 // 10 segundos timeout
@@ -44,11 +44,11 @@ document.addEventListener('DOMContentLoaded', async function() {
         // Verificar backend primero
         const backendDisponible = await verificarBackend();
         if (!backendDisponible) {
-            throw new Error('Backend no disponible en http://localhost:7070');
+            throw new Error('Backend no disponible en http://52.23.26.163:7070');
         }
         
         // Obtener todos los datos de solicitudes (mismo endpoint que vistaEdicionRest)
-        const response = await fetch('http://localhost:7070/solicitudes', {
+        const response = await fetch('http://52.23.26.163:7070/solicitudes', {
             method: 'GET',
             headers: { 'Content-Type': 'application/json' }
         });
