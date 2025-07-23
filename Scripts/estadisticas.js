@@ -50,14 +50,25 @@ document.addEventListener('DOMContentLoaded', function() {
                 throw new Error('Datos de estadísticas inválidos');
             }
 
-            // Si es un array, tomar el primer elemento (en caso de que devuelva múltiples registros)
+            // Si es un array, buscar el registro que coincida con el correo del restaurantero
             let datosEstadisticas = estadisticas;
             if (Array.isArray(estadisticas)) {
                 if (estadisticas.length === 0) {
                     throw new Error('No se encontraron estadísticas para este restaurante');
                 }
-                datosEstadisticas = estadisticas[0];
-                console.log('📊 Usando primer elemento del array:', datosEstadisticas);
+                
+                // Buscar el registro específico para el correo del restaurantero
+                const estadisticaCorrecta = estadisticas.find(est => est.correo === correoRestaurantero);
+                
+                if (estadisticaCorrecta) {
+                    datosEstadisticas = estadisticaCorrecta;
+                    console.log('✅ Estadística encontrada para correo:', correoRestaurantero);
+                    console.log('📊 Datos específicos del restaurante:', datosEstadisticas);
+                } else {
+                    console.error('❌ No se encontró estadística para el correo:', correoRestaurantero);
+                    console.error('📋 Correos disponibles:', estadisticas.map(est => est.correo));
+                    throw new Error(`No se encontraron estadísticas para el correo: ${correoRestaurantero}`);
+                }
             }
 
             // Descargas de menú - usar los datos directamente del backend

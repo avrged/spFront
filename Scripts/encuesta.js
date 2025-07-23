@@ -111,27 +111,51 @@ function initEncuestaForm() {
                     ubicacion: 0
                 };
                 
-                if (Array.isArray(estadisticaExistente) && estadisticaExistente.length > 0) {
-                    const estadistica = estadisticaExistente[0];
-                    estadisticaId = estadistica.id_estadistica;
-                    valoresActuales.nacional = estadistica.nacional || 0;
-                    valoresActuales.extranjero = estadistica.extranjero || 0;
-                    valoresActuales.descargas = estadistica.descargas || 0;
-                    valoresActuales.comida = estadistica.comida || 0;
-                    valoresActuales.vista = estadistica.vista || 0;
-                    valoresActuales.horario = estadistica.horario || 0;
-                    valoresActuales.recomendacion = estadistica.recomendacion || 0;
-                    valoresActuales.ubicacion = estadistica.ubicacion || 0;
+                const correoObjectivo = correo || restaurante?.correo;
+                console.log('🎯 Buscando estadística para correo:', correoObjectivo);
+                
+                if (Array.isArray(estadisticaExistente)) {
+                    // Si es un array, buscar el registro que coincida con el correo
+                    const estadisticaCorrecta = estadisticaExistente.find(est => est.correo === correoObjectivo);
+                    
+                    if (estadisticaCorrecta) {
+                        estadisticaId = estadisticaCorrecta.id_estadistica;
+                        valoresActuales.correoOriginal = estadisticaCorrecta.correo; // Guardar el correo original
+                        valoresActuales.nacional = estadisticaCorrecta.nacional || 0;
+                        valoresActuales.extranjero = estadisticaCorrecta.extranjero || 0;
+                        valoresActuales.descargas = estadisticaCorrecta.descargas || 0;
+                        valoresActuales.comida = estadisticaCorrecta.comida || 0;
+                        valoresActuales.vista = estadisticaCorrecta.vista || 0;
+                        valoresActuales.horario = estadisticaCorrecta.horario || 0;
+                        valoresActuales.recomendacion = estadisticaCorrecta.recomendacion || 0;
+                        valoresActuales.ubicacion = estadisticaCorrecta.ubicacion || 0;
+                        console.log('✅ Estadística encontrada para correo:', correoObjectivo);
+                    } else {
+                        console.error('❌ No se encontró estadística para el correo:', correoObjectivo);
+                        console.error('📋 Correos disponibles:', estadisticaExistente.map(est => est.correo));
+                        throw new Error(`No se encontró estadística para el correo: ${correoObjectivo}`);
+                    }
                 } else if (estadisticaExistente.id_estadistica) {
-                    estadisticaId = estadisticaExistente.id_estadistica;
-                    valoresActuales.nacional = estadisticaExistente.nacional || 0;
-                    valoresActuales.extranjero = estadisticaExistente.extranjero || 0;
-                    valoresActuales.descargas = estadisticaExistente.descargas || 0;
-                    valoresActuales.comida = estadisticaExistente.comida || 0;
-                    valoresActuales.vista = estadisticaExistente.vista || 0;
-                    valoresActuales.horario = estadisticaExistente.horario || 0;
-                    valoresActuales.recomendacion = estadisticaExistente.recomendacion || 0;
-                    valoresActuales.ubicacion = estadisticaExistente.ubicacion || 0;
+                    // Es un objeto único, verificar que el correo coincida
+                    if (estadisticaExistente.correo === correoObjectivo) {
+                        estadisticaId = estadisticaExistente.id_estadistica;
+                        valoresActuales.correoOriginal = estadisticaExistente.correo; // Guardar el correo original
+                        valoresActuales.nacional = estadisticaExistente.nacional || 0;
+                        valoresActuales.extranjero = estadisticaExistente.extranjero || 0;
+                        valoresActuales.descargas = estadisticaExistente.descargas || 0;
+                        valoresActuales.comida = estadisticaExistente.comida || 0;
+                        valoresActuales.vista = estadisticaExistente.vista || 0;
+                        valoresActuales.horario = estadisticaExistente.horario || 0;
+                        valoresActuales.recomendacion = estadisticaExistente.recomendacion || 0;
+                        valoresActuales.ubicacion = estadisticaExistente.ubicacion || 0;
+                        console.log('✅ Estadística directa encontrada para correo:', correoObjectivo);
+                    } else {
+                        console.error('❌ El correo no coincide:', {
+                            esperado: correoObjectivo,
+                            recibido: estadisticaExistente.correo
+                        });
+                        throw new Error(`Correo no coincide. Esperado: ${correoObjectivo}, Recibido: ${estadisticaExistente.correo}`);
+                    }
                 } else {
                     console.error('❌ Estructura de estadística no reconocida:', estadisticaExistente);
                     throw new Error('No se encontró id_estadistica en la respuesta');
@@ -145,10 +169,10 @@ function initEncuestaForm() {
 
                 // Incrementar los valores correspondientes
                 const nuevosValores = {
-                    correo: correo || restaurante?.correo,
+                    correo: valoresActuales.correoOriginal || (correo || restaurante?.correo), // Mantener el correo original del registro
                     nacional: valoresActuales.nacional,
                     extranjero: valoresActuales.extranjero,
-                    descargas: valoresActuales.descargas + 1, // Siempre incrementar descargas
+                    descargas: valoresActuales.descargas + 1, 
                     comida: valoresActuales.comida,
                     vista: valoresActuales.vista,
                     horario: valoresActuales.horario,
