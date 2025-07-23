@@ -288,7 +288,7 @@ document.addEventListener('DOMContentLoaded', function() {
         // Actualizar nombre del restaurante en la página
         const nombreElement = document.getElementById('restauranteNombre');
         if (nombreElement) {
-            nombreElement.textContent = restaurante.nombre || 'Mi Restaurante';
+            nombreElement.textContent = restaurante.restaurante || 'Mi Restaurante';
         }
 
         // Cargar otros campos del formulario
@@ -298,8 +298,8 @@ document.addEventListener('DOMContentLoaded', function() {
         }
 
         const inputTelefono = document.querySelector('input[placeholder="Ingrese su número celular"]');
-        if (inputTelefono && restaurante.telefono) {
-            inputTelefono.value = restaurante.telefono;
+        if (inputTelefono && restaurante.numero) {
+            inputTelefono.value = restaurante.numero;
         }
 
         // Cargar horarios si existen
@@ -307,14 +307,44 @@ document.addEventListener('DOMContentLoaded', function() {
         if (restaurante.horario && horariosInputs.length > 0) {
             horariosInputs[0].value = restaurante.horario;
         }
+        const inputInstagram = document.querySelector('input[placeholder="Ingrese su instagram"]');
+        if (inputInstagram && restaurante.instagram) {
+            inputInstagram.value = restaurante.instagram;
+        }
 
-        // Cargar imágenes en la galería usando ids únicos
+        const inputFacebook = document.querySelector('input[placeholder="Ingrese su facebook"]');
+        if (inputFacebook && restaurante.facebook) {
+            inputFacebook.value = restaurante.facebook;
+        }
+
         const img1 = document.getElementById('imgGaleria1');
         if (img1) img1.src = restaurante.imagen1 || '../images/imagen.png';
         const img2 = document.getElementById('imgGaleria2');
         if (img2) img2.src = restaurante.imagen2 || '../images/imagen.png';
         const img3 = document.getElementById('imgGaleria3');
         if (img3) img3.src = restaurante.imagen3 || '../images/imagen.png';
+
+        // Cargar menú
+        const btnMenu = document.querySelector('label.btn-menu input[type="file"]');
+        if (btnMenu && restaurante.menu) {
+            const label = btnMenu.closest('label.btn-menu');
+            let fileNameSpan = label.querySelector('.file-name');
+            
+            // Si no existe el span, crearlo
+            if (!fileNameSpan) {
+                fileNameSpan = document.createElement('span');
+                fileNameSpan.className = 'file-name';
+                fileNameSpan.style.marginLeft = '10px';
+                fileNameSpan.style.fontWeight = 'normal';
+                fileNameSpan.style.color = '#912F2F';
+                label.appendChild(fileNameSpan);
+            }
+            
+            // Mostrar el nombre del archivo del menú
+            const nombreArchivo = restaurante.menu.split('/').pop() || restaurante.menu;
+            fileNameSpan.textContent = `Menú guardado: ${nombreArchivo}`;
+            fileNameSpan.style.display = 'inline-block';
+        }
     }
 
     // --- Lógica de membresía ---

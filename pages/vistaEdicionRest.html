@@ -41,7 +41,6 @@
 
             <section class="formulario-edicion">
                 <div class="linea-interna">
-                    <label class="campo-titulo">Restaurante: <span>La Mansión</span></label>
                     <div class="membresia-status">
                         <div id="membresiaMensaje" class="membresia-mensaje"></div>
                         <button id="btnEstadisticas" class="btn-estadisticas" onclick="window.location.href='estadisticas.html'">
@@ -73,8 +72,7 @@
                         <div class="area horarios-area">
                             <label class="campo-titulo">Horarios:</label>
                             <div class="horarios-inputs">
-                            <span>Lunes a Viernes: <input id="horarioLVInput" type="text" placeholder="Ingrese el horario"></span>
-                            <span>Sábado a Domingo: <input id="horarioSDInput" type="text" placeholder="Ingrese el horario"></span>
+                            <input id="horarioLVInput" type="text" placeholder="Ingrese el horario">
                             </div>
                         </div>
 
@@ -86,8 +84,7 @@
                         <div class="area menu-area">
                             <label class="campo-titulo">Menú en PDF:</label>
                             <label class="btn-menu" style="display: inline-flex; align-items: center; cursor: pointer;">
-                                <img src="../images/subir.png" alt="Menú" class="icon-20">
-                                <input type="file" accept="application/pdf" style="display: none;">
+                                <input type="file" accept="application/pdf" style="display: none;" id="menuInput">
                             </label>
                         </div>
                     </div>

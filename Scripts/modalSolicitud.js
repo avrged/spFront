@@ -71,8 +71,6 @@ document.addEventListener("DOMContentLoaded", function () {
     const horario = document.getElementById("horario");
 
     const imagen1 = document.getElementsByName("imagen1")[0];
-    const imagen2 = document.getElementsByName("imagen2")[0];
-    const imagen3 = document.getElementsByName("imagen3")[0];
     const comprobante = document.getElementsByName("comprobante")[0];
     const menu = document.getElementsByName("menu")[0];
 
@@ -84,9 +82,7 @@ document.addEventListener("DOMContentLoaded", function () {
     const errorInstagram = document.getElementById("error-instagram");
     const errorDireccion = document.getElementById("error-direccion");
     const errorHorario = document.getElementById("error-horario");
-    const errorImagen1 = document.getElementById("error-imagen1");
-    const errorImagen2 = document.getElementById("error-imagen2");
-    const errorImagen3 = document.getElementById("error-imagen3");
+    const errorImagen1 = document.getElementById("error-images");
     const errorComprobante = document.getElementById("error-comprobante");
     const errorMenu = document.getElementById("error-menu");
 
@@ -101,24 +97,25 @@ document.addEventListener("DOMContentLoaded", function () {
     formularioValido &= validarCampoVacio(facebook, errorFacebook, "*Este campo es obligatorio.");
     formularioValido &= validarCampoVacio(instagram, errorInstagram, "*Este campo es obligatorio.");
 
-    // Validación individual de imágenes
-    function validarImagen(input, errorSpan) {
-      if (!input.files || input.files.length !== 1) {
-        errorSpan.textContent = "*Seleccione una imagen.";
-        formularioValido = false;
+    if (!imagen1.files || imagen1.files.length !== 3) {
+      errorImagen1.textContent = "*Seleccione tres imágenes.";
+      formularioValido = false;
+    } else {
+      let formatosValidos = true;
+      for (let i = 0; i < imagen1.files.length; i++) {
+      const tipo = imagen1.files[i].type;
+      if (tipo !== "image/png" && tipo !== "image/jpeg") {
+        formatosValidos = false;
+        break;
+      }
+      }
+      if (!formatosValidos) {
+      errorImagen1.textContent = "*Las imágenes deben ser PNG o JPEG.";
+      formularioValido = false;
       } else {
-        const tipo = input.files[0].type;
-        if (tipo !== "image/png" && tipo !== "image/jpeg") {
-          errorSpan.textContent = "*La imagen debe ser PNG o JPEG.";
-          formularioValido = false;
-        } else {
-          errorSpan.textContent = "";
-        }
+      errorImagen1.textContent = "";
       }
     }
-    validarImagen(imagen1, errorImagen1);
-    validarImagen(imagen2, errorImagen2);
-    validarImagen(imagen3, errorImagen3);
 
     if (!comprobante.files || comprobante.files.length === 0) {
       errorComprobante.textContent = "*Suba un comprobante de domicilio.";
@@ -136,50 +133,44 @@ document.addEventListener("DOMContentLoaded", function () {
 
     if (formularioValido) {
       const formData = new FormData();
-      formData.append('restaurante', restaurante.value.trim());
-      formData.append('correo', correo.value.trim());
-      formData.append('direccion', direccion.value.trim());
-      formData.append('propietario', propietario.value.trim());
-      formData.append('numero', numero.value.replace(/\D/g, ''));
-      formData.append('facebook', facebook.value.trim());
-      formData.append('instagram', instagram.value.trim());
-      formData.append('horario', horario.value.trim());
+      
+      formData.append('restaurante', document.getElementById('restaurante').value.trim());
+      formData.append('correo', document.getElementById('correo').value.trim());
+      formData.append('direccion', document.getElementById('direccion').value.trim());
+      formData.append('propietario', document.getElementById('propietario').value.trim());
+      formData.append('numero', document.getElementById('numero').value.replace(/\D/g, ''));
+      formData.append('facebook', document.getElementById('facebook').value.trim());
+      formData.append('instagram', document.getElementById('instagram').value.trim());
+      formData.append('horario', document.getElementById('horario').value.trim());
       formData.append('estado', 'pendiente');
-
-      // Imágenes
-      if (imagen1?.files && imagen1.files.length === 1) {
-        const imagen1Comprimida = await comprimirImagen(imagen1.files[0]);
-        formData.append('imagen1', imagen1Comprimida, imagen1.files[0].name || 'imagen1.jpg');
+      
+      const imagen1Input = document.getElementsByName("imagen1")[0];
+      const comprobanteInput = document.getElementsByName("comprobante")[0];
+      const menuInput = document.getElementsByName("menu")[0];
+      
+      if (imagen1Input?.files && imagen1Input.files.length >= 3) {
+        const imagen1Comprimida = await comprimirImagen(imagen1Input.files[0]);
+        const imagen2Comprimida = await comprimirImagen(imagen1Input.files[1]);
+        const imagen3Comprimida = await comprimirImagen(imagen1Input.files[2]);
+        
+        formData.append('imagen1', imagen1Comprimida, 'imagen1.jpg');
+        formData.append('imagen2', imagen2Comprimida, 'imagen2.jpg');
+        formData.append('imagen3', imagen3Comprimida, 'imagen3.jpg');
       }
-      if (imagen2?.files && imagen2.files.length === 1) {
-        const imagen2Comprimida = await comprimirImagen(imagen2.files[0]);
-        formData.append('imagen2', imagen2Comprimida, imagen2.files[0].name || 'imagen2.jpg');
-      }
-      if (imagen3?.files && imagen3.files.length === 1) {
-        const imagen3Comprimida = await comprimirImagen(imagen3.files[0]);
-        formData.append('imagen3', imagen3Comprimida, imagen3.files[0].name || 'imagen3.jpg');
-      }
-
-      // Comprobante
-      const comprobanteArchivo = comprobante?.files[0];
-      if (comprobanteArchivo) {
-        if (comprobanteArchivo.type.startsWith('image/')) {
-          const comprobanteComprimido = await comprimirImagen(comprobanteArchivo, 800, 0.4);
-          formData.append('comprobante', comprobanteComprimido, comprobanteArchivo.name || 'comprobante.jpg');
+      
+      const comprobante = comprobanteInput?.files[0];
+      if (comprobante) {
+        if (comprobante.type.startsWith('image/')) {
+          const comprobanteComprimido = await comprimirImagen(comprobante, 800, 0.4);
+          formData.append('comprobante', comprobanteComprimido, 'comprobante.jpg');
         } else {
-          formData.append('comprobante', comprobanteArchivo, comprobanteArchivo.name);
+          formData.append('comprobante', comprobante);
         }
       }
 
-      // Menú
-      const menuArchivo = menu?.files && menu.files.length > 0 ? menu.files[0] : null;
-      if (menuArchivo) {
-        if (menuArchivo.type.startsWith('image/')) {
-          const menuComprimido = await comprimirImagen(menuArchivo, 800, 0.4);
-          formData.append('menu', menuComprimido, menuArchivo.name || 'menu.jpg');
-        } else {
-          formData.append('menu', menuArchivo, menuArchivo.name);
-        }
+      if (menuInput?.files && menuInput.files.length > 0) {
+        const menuComprimido = await comprimirImagen(menuInput.files[0], 800, 0.4);
+        formData.append('menu', menuComprimido, 'menu.jpg');
       }
 
       try {
@@ -189,8 +180,41 @@ document.addEventListener("DOMContentLoaded", function () {
           method: 'POST',
           body: formData
         });
-
+        
         if (response.ok) {
+          // Obtener respuesta del backend para extraer URLs de imágenes y comprobante si las devuelve
+          let data = {};
+          try {
+            data = await response.json();
+          } catch (e) {
+            // Si no es JSON, continuar igual
+          }
+
+          // Preparar datos para la tabla restaurante
+          // Usar las URLs devueltas por el backend si existen, si no, dejar vacío
+          const datosRestaurante = {
+            nombre: document.getElementById('restaurante').value.trim(),
+            direccion: document.getElementById('direccion').value.trim(),
+            horario: document.getElementById('horario').value.trim(),
+            telefono: document.getElementById('numero').value.replace(/\D/g, ''),
+            imagen1: data.imagen1 || '',
+            imagen2: data.imagen2 || '',
+            imagen3: data.imagen3 || '',
+            // Puedes agregar más campos si tu tabla restaurante los requiere
+          };
+
+          // Enviar datos a la tabla restaurante
+          try {
+            await fetch('http://localhost:7070/restaurantes', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify(datosRestaurante)
+            });
+            console.log('Datos de restaurante enviados a la tabla restaurante');
+          } catch (e) {
+            console.error('Error al guardar en restaurante:', e);
+          }
+
           modal.style.display = "flex";
           form.reset();
           console.log('Solicitud enviada exitosamente');
