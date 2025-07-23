@@ -14,41 +14,92 @@ function initEncuestaForm() {
         }
         e.preventDefault();
 
-        // Obtén el id del restaurante desde la URL
+        // Obtener información del restaurante actual
+        const restaurante = window.restauranteActual;
         const params = new URLSearchParams(window.location.search);
         const restauranteId = params.get('id');
+        const correo = params.get('correo');
+
+        console.log('📋 Enviando encuesta para restaurante:', {
+            id: restauranteId,
+            correo: correo,
+            restaurante: restaurante?.restaurante,
+            menu: restaurante?.menu
+        });
 
         // Prepara los datos a enviar
         const data = {
             atraccion: atraccion.value,
             origen: origen.value,
-            restauranteId: restauranteId
+            restauranteId: restauranteId || restaurante?.id,
+            correoRestaurante: correo || restaurante?.correo,
+            nombreRestaurante: restaurante?.restaurante
         };
 
         try {
-            // Envía la encuesta al backend
-            const response = await fetch('/api/encuesta', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(data)
-            });
-            const result = await response.json();
+            // Primero, enviar la encuesta (esto se puede enviar a tu endpoint de encuestas)
+            console.log('📤 Enviando datos de encuesta:', data);
+            
+            // Aquí puedes enviar la encuesta a tu backend si tienes un endpoint para eso
+            // const encuestaResponse = await fetch('http://52.23.26.163:7070/encuestas', {
+            //     method: 'POST',
+            //     headers: { 'Content-Type': 'application/json' },
+            //     body: JSON.stringify(data)
+            // });
 
-            if (result.pdfUrl) {
-                // Descarga el PDF como archivo
-                const link = document.createElement('a');
-                link.href = result.pdfUrl;
-                link.download = `menu_${restauranteId}.pdf`;
-                document.body.appendChild(link);
-                link.click();
-                document.body.removeChild(link);
+            // Después de enviar la encuesta, descargar el menú
+            if (restaurante && restaurante.menu) {
+                console.log('📄 Descargando menú desde:', restaurante.menu);
+                
+                // Si el menú es una URL completa, usarla directamente
+                let menuUrl = restaurante.menu;
+                
+                // Si no es una URL completa, construir la URL del backend
+                if (!menuUrl.startsWith('http')) {
+                    menuUrl = `http://52.23.26.163:7070${menuUrl}`;
+                }
+                
+                // Descargar el archivo
+                try {
+                    const menuResponse = await fetch(menuUrl);
+                    if (menuResponse.ok) {
+                        const blob = await menuResponse.blob();
+                        const downloadUrl = window.URL.createObjectURL(blob);
+                        
+                        const link = document.createElement('a');
+                        link.href = downloadUrl;
+                        link.download = `menu_${restaurante.restaurante || 'restaurante'}.pdf`;
+                        document.body.appendChild(link);
+                        link.click();
+                        document.body.removeChild(link);
+                        
+                        // Limpiar la URL del objeto
+                        window.URL.revokeObjectURL(downloadUrl);
+                        
+                        console.log('✅ Menú descargado exitosamente');
+                    } else {
+                        console.error('❌ Error al descargar el menú:', menuResponse.status);
+                        alert('No se pudo descargar el menú. Por favor, contacta al restaurante.');
+                    }
+                } catch (downloadError) {
+                    console.error('❌ Error en la descarga:', downloadError);
+                    alert('Error al descargar el menú.');
+                }
+            } else {
+                console.warn('⚠️ No hay menú disponible para este restaurante');
+                alert('Este restaurante no tiene menú disponible para descarga.');
             }
 
-            if (typeof cerrarModalEncuesta === "function") {
+            // Cerrar el modal de la encuesta
+            if (typeof closeEncuestaModal === "function") {
+                closeEncuestaModal();
+            } else if (typeof cerrarModalEncuesta === "function") {
                 cerrarModalEncuesta();
             }
+            
         } catch (error) {
-            alert('Ocurrió un error al enviar la encuesta o descargar el menú.');
+            console.error('❌ Error al procesar la encuesta:', error);
+            alert('Ocurrió un error al enviar la encuesta.');
         }
     });
 

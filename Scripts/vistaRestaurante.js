@@ -136,6 +136,9 @@ document.addEventListener('DOMContentLoaded', async function() {
 
         console.log('✅ Restaurante encontrado:', restauranteEncontrado);
 
+        // Guardar datos del restaurante globalmente para la encuesta
+        window.restauranteActual = restauranteEncontrado;
+
         // Cargar datos en la vista usando los campos de la tabla solicitudes
         cargarDatosRestaurante(restauranteEncontrado);
         
