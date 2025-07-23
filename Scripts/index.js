@@ -37,7 +37,18 @@ document.addEventListener('DOMContentLoaded', async function() {
         solicitudesAprobadas.forEach(solicitud => {
             const card = document.createElement('div');
             card.className = 'restaurante-card';
-            card.onclick = () => window.location.href = `vistaRestaurante.html?id=${solicitud.id}`;
+            
+            // Usar correo como identificador principal, ID como fallback
+            const identificador = solicitud.correo || solicitud.id || 'sin-identificador';
+            const tipoId = solicitud.correo ? 'correo' : 'id';
+            
+            card.onclick = () => {
+                if (tipoId === 'correo') {
+                    window.location.href = `vistaRestaurante.html?correo=${encodeURIComponent(identificador)}`;
+                } else {
+                    window.location.href = `vistaRestaurante.html?id=${identificador}`;
+                }
+            };
 
             card.innerHTML = `
                 <img class="restaurante-img" src="${solicitud.imagen1 || '../images/img_rest2.jpg'}" alt="Restaurante ${solicitud.restaurante}">
