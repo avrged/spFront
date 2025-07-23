@@ -198,6 +198,41 @@ document.addEventListener("DOMContentLoaded", function () {
         });
 
         if (response.ok) {
+          // Registro exitoso, ahora crear el registro de estadísticas
+          try {
+            console.log('Creando registro de estadísticas para:', correo.value.trim());
+            
+            const estadisticasPayload = {
+              correo: correo.value.trim(),
+              nacional: 0,
+              extranjero: 0,
+              descargas: 0,
+              comida: 0,
+              vista: 0,
+              horario: 0,
+              recomendacion: 0,
+              ubicacion: 0
+            };
+
+            const estadisticasResponse = await fetch('http://52.23.26.163:7070/estadisticas', {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json'
+              },
+              body: JSON.stringify(estadisticasPayload)
+            });
+
+            if (estadisticasResponse.ok) {
+              console.log('✅ Registro de estadísticas creado exitosamente');
+            } else {
+              console.warn('⚠️ Error al crear registro de estadísticas:', estadisticasResponse.status);
+              // No mostramos error al usuario porque el registro principal fue exitoso
+            }
+          } catch (estadisticasError) {
+            console.error('❌ Error al crear estadísticas:', estadisticasError);
+            // No mostramos error al usuario porque el registro principal fue exitoso
+          }
+
           modal.style.display = "flex";
           form.reset();
           console.log('Solicitud enviada exitosamente');
