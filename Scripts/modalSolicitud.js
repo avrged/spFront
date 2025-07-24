@@ -38,7 +38,6 @@ document.addEventListener("DOMContentLoaded", function () {
     }
   }
 
-  // Función para comprimir imágenes
   function comprimirImagen(file, maxWidth = 400, quality = 0.3) {
     return new Promise((resolve) => {
       const canvas = document.createElement('canvas');
@@ -101,7 +100,6 @@ document.addEventListener("DOMContentLoaded", function () {
     formularioValido &= validarCampoVacio(facebook, errorFacebook, "*Este campo es obligatorio.");
     formularioValido &= validarCampoVacio(instagram, errorInstagram, "*Este campo es obligatorio.");
 
-    // Validación individual de imágenes
     function validarImagen(input, errorSpan) {
       if (!input.files || input.files.length !== 1) {
         errorSpan.textContent = "*Seleccione una imagen.";
@@ -137,7 +135,6 @@ document.addEventListener("DOMContentLoaded", function () {
     if (formularioValido) {
       const formData = new FormData();
       
-      // Datos básicos del restaurante
       formData.append('restaurante', restaurante.value.trim());
       formData.append('propietario', propietario.value.trim());
       formData.append('correo', correo.value.trim());
@@ -147,13 +144,10 @@ document.addEventListener("DOMContentLoaded", function () {
       formData.append('facebook', facebook.value.trim());
       formData.append('instagram', instagram.value.trim());
       formData.append('estado', 'pendiente');
-
-      // Etiquetas por defecto
       formData.append('etiqueta1', 'Seleccionar');
       formData.append('etiqueta2', 'Seleccionar');
       formData.append('etiqueta3', 'Seleccionar');
 
-      // Imágenes
       if (imagen1?.files && imagen1.files.length === 1) {
         const imagen1Comprimida = await comprimirImagen(imagen1.files[0]);
         formData.append('imagen1', imagen1Comprimida, imagen1.files[0].name || 'imagen1.jpg');
@@ -167,7 +161,6 @@ document.addEventListener("DOMContentLoaded", function () {
         formData.append('imagen3', imagen3Comprimida, imagen3.files[0].name || 'imagen3.jpg');
       }
 
-      // Comprobante
       const comprobanteArchivo = comprobante?.files[0];
       if (comprobanteArchivo) {
         if (comprobanteArchivo.type.startsWith('image/')) {
@@ -178,7 +171,6 @@ document.addEventListener("DOMContentLoaded", function () {
         }
       }
 
-      // Menú
       const menuArchivo = menu?.files && menu.files.length > 0 ? menu.files[0] : null;
       if (menuArchivo) {
         if (menuArchivo.type.startsWith('image/')) {
@@ -190,15 +182,12 @@ document.addEventListener("DOMContentLoaded", function () {
       }
 
       try {
-        console.log('Enviando solicitud...');
-        
         const response = await fetch('http://52.23.26.163:7070/solicitudes/with-files', {
           method: 'POST',
           body: formData
         });
 
         if (response.ok) {
-          // Registro exitoso, ahora crear el registro de estadísticas
           try {
             console.log('Creando registro de estadísticas para:', correo.value.trim());
             
@@ -226,16 +215,13 @@ document.addEventListener("DOMContentLoaded", function () {
               console.log('✅ Registro de estadísticas creado exitosamente');
             } else {
               console.warn('⚠️ Error al crear registro de estadísticas:', estadisticasResponse.status);
-              // No mostramos error al usuario porque el registro principal fue exitoso
             }
           } catch (estadisticasError) {
             console.error('❌ Error al crear estadísticas:', estadisticasError);
-            // No mostramos error al usuario porque el registro principal fue exitoso
           }
 
           modal.style.display = "flex";
           form.reset();
-          console.log('Solicitud enviada exitosamente');
         } else {
           const errorText = await response.text();
           console.error('Error del servidor:', response.status, errorText);

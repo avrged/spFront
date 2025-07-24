@@ -1,37 +1,32 @@
 document.addEventListener('DOMContentLoaded', async function() {
     const params = new URLSearchParams(window.location.search);
     const id = params.get('id');
-    const correo = params.get('correo'); // Agregar soporte para correo
-    
+    const correo = params.get('correo');
     if (!id && !correo) {
         console.warn('⚠️ No se proporcionó ID ni correo del restaurante - usando fallback');
-        // No hacer return, continuar con la lógica de fallback
     }
 
-    // Función para verificar si el backend está disponible (copiada de vistaEdicionRest)
     async function verificarBackend(reintentos = 3) {
         for (let i = 0; i < reintentos; i++) {
             try {
                 const response = await fetch('http://52.23.26.163:7070/solicitudes', {
                     method: 'GET',
                     headers: { 'Content-Type': 'application/json' },
-                    timeout: 10000 // 10 segundos timeout
+                    timeout: 10000
                 });
                 
-                // Si obtenemos cualquier respuesta del servidor, está disponible
                 if (response.status < 500) {
                     return true;
                 }
                 
-                // Si es error 500, el servidor está corriendo pero hay problemas
                 console.warn(`Intento ${i + 1}: Servidor responde pero con error ${response.status}`);
                 if (i < reintentos - 1) {
-                    await new Promise(resolve => setTimeout(resolve, 2000)); // Esperar 2 segundos
+                    await new Promise(resolve => setTimeout(resolve, 2000));
                 }
             } catch (error) {
                 console.warn(`Intento ${i + 1}: Error de conexión:`, error.message);
                 if (i < reintentos - 1) {
-                    await new Promise(resolve => setTimeout(resolve, 2000)); // Esperar 2 segundos
+                    await new Promise(resolve => setTimeout(resolve, 2000));
                 }
             }
         }
@@ -41,13 +36,11 @@ document.addEventListener('DOMContentLoaded', async function() {
     try {
         console.log('🔍 Buscando restaurante con:', { id, correo });
         
-        // Verificar backend primero
         const backendDisponible = await verificarBackend();
         if (!backendDisponible) {
             throw new Error('Backend no disponible en http://52.23.26.163:7070');
         }
         
-        // Obtener todos los datos de solicitudes (mismo endpoint que vistaEdicionRest)
         const response = await fetch('http://52.23.26.163:7070/solicitudes', {
             method: 'GET',
             headers: { 'Content-Type': 'application/json' }
@@ -61,7 +54,6 @@ document.addEventListener('DOMContentLoaded', async function() {
         console.log('📋 Solicitudes obtenidas:', solicitudes);
         console.log('📊 Total de solicitudes:', solicitudes.length);
         
-        // Debug: Mostrar estructura de datos disponibles
         if (solicitudes.length > 0) {
             console.log('🔬 Estructura de datos (primer elemento):', Object.keys(solicitudes[0]));
             console.log('🆔 Datos disponibles:', solicitudes.map(s => ({
@@ -72,10 +64,8 @@ document.addEventListener('DOMContentLoaded', async function() {
             })));
         }
         
-        // Buscar el restaurante usando múltiples criterios
         let restauranteEncontrado = null;
         
-        // PRIORIDAD 1: Buscar por correo (más confiable)
         if (correo) {
             restauranteEncontrado = solicitudes.find(s => 
                 s.correo && s.correo.toLowerCase() === correo.toLowerCase()
@@ -85,7 +75,6 @@ document.addEventListener('DOMContentLoaded', async function() {
             }
         }
         
-        // PRIORIDAD 2: Buscar por ID si se proporciona y no se encontró por correo
         if (!restauranteEncontrado && id && id !== 'undefined' && id !== 'null') {
             restauranteEncontrado = solicitudes.find(s => 
                 s.id == id || 
@@ -98,7 +87,6 @@ document.addEventListener('DOMContentLoaded', async function() {
             }
         }
         
-        // PRIORIDAD 3: Si no encuentra por ID específico, intentar por índice
         if (!restauranteEncontrado && id && !isNaN(parseInt(id))) {
             const index = parseInt(id);
             if (index >= 0 && index < solicitudes.length) {
@@ -107,7 +95,6 @@ document.addEventListener('DOMContentLoaded', async function() {
             }
         }
         
-        // PRIORIDAD 4: Si sigue sin encontrar, tomar el primer restaurante aprobado
         if (!restauranteEncontrado) {
             const solicitudesAprobadas = solicitudes.filter(s => 
                 s.estado === 'aprobado' || 
@@ -121,7 +108,6 @@ document.addEventListener('DOMContentLoaded', async function() {
             }
         }
         
-        // PRIORIDAD 5: Como último recurso, tomar el primer restaurante disponible
         if (!restauranteEncontrado && solicitudes.length > 0) {
             restauranteEncontrado = solicitudes[0];
             console.log('✅ Usando primer restaurante disponible como fallback');
@@ -136,16 +122,13 @@ document.addEventListener('DOMContentLoaded', async function() {
 
         console.log('✅ Restaurante encontrado:', restauranteEncontrado);
 
-        // Guardar datos del restaurante globalmente para la encuesta
         window.restauranteActual = restauranteEncontrado;
 
-        // Cargar datos en la vista usando los campos de la tabla solicitudes
         cargarDatosRestaurante(restauranteEncontrado);
         
     } catch (error) {
         console.error('❌ Error al cargar restaurante:', error);
         
-        // Manejo de errores específicos (igual que vistaEdicionRest)
         if (error.message.includes('fetch')) {
             alert('❌ Error de conexión: No se puede conectar al servidor.');
         } else if (error.message.includes('404')) {
@@ -157,18 +140,15 @@ document.addEventListener('DOMContentLoaded', async function() {
         }
     }
 
-    // Función para cargar todos los datos del restaurante en la vista
     function cargarDatosRestaurante(restaurante) {
         try {
             console.log('🎨 Cargando datos en la vista:', restaurante);
 
-            // NOMBRE DEL RESTAURANTE
             const nombreElement = document.querySelector('.restaurante-nombre');
             if (nombreElement) {
                 nombreElement.textContent = restaurante.restaurante || 'Restaurante sin nombre';
             }
 
-            // IMAGEN PRINCIPAL (usar imagen1 de la tabla solicitudes)
             const imgPrincipal = document.querySelector('.galeria-principal');
             if (imgPrincipal) {
                 const imagenPrincipal = restaurante.imagen1 || '../images/img_rest2.jpg';
@@ -177,7 +157,6 @@ document.addEventListener('DOMContentLoaded', async function() {
                 console.log('🖼️ Imagen principal cargada:', imagenPrincipal);
             }
 
-            // GALERÍA SECUNDARIA (usar imagen2 e imagen3)
             const galeriaSecundaria = document.querySelector('.galeria-secundaria');
             if (galeriaSecundaria) {
                 const imagenesSecundarias = [];
@@ -191,12 +170,10 @@ document.addEventListener('DOMContentLoaded', async function() {
                 console.log('🖼️ Imágenes secundarias cargadas:', imagenesSecundarias.length);
             }
 
-            // CARACTERÍSTICAS/ETIQUETAS
             const caracteristicas = document.querySelector('.caracteristicas-lista');
             if (caracteristicas) {
                 let etiquetasArray = [];
                 
-                // Leer etiquetas desde los campos individuales (etiqueta1, etiqueta2, etiqueta3)
                 const etiquetasIndividuales = [
                     restaurante.etiqueta1,
                     restaurante.etiqueta2, 
@@ -208,7 +185,6 @@ document.addEventListener('DOMContentLoaded', async function() {
                     etiqueta.trim() !== ''
                 );
                 
-                // Si no hay etiquetas individuales, intentar con el campo combinado (fallback)
                 if (etiquetasIndividuales.length === 0 && restaurante.etiquetas) {
                     if (typeof restaurante.etiquetas === 'string') {
                         etiquetasArray = restaurante.etiquetas.split(',').map(e => e.trim()).filter(e => e && e !== 'Seleccionar');
@@ -236,7 +212,6 @@ document.addEventListener('DOMContentLoaded', async function() {
                 });
             }
 
-            // HORARIOS
             const horarios = document.querySelector('.restaurante-horarios');
             if (horarios) {
                 horarios.innerHTML = `
@@ -246,7 +221,6 @@ document.addEventListener('DOMContentLoaded', async function() {
                 console.log('⏰ Horarios cargados:', restaurante.horario);
             }
 
-            // CONTACTOS
             const contactos = document.querySelector('.restaurante-contactos');
             if (contactos) {
                 const telefono = restaurante.numero || restaurante.telefono || 'No especificado';
@@ -262,7 +236,6 @@ document.addEventListener('DOMContentLoaded', async function() {
                 console.log('📞 Contactos cargados:', { telefono, facebook, instagram });
             }
 
-            // UBICACIÓN
             const ubicacion = document.querySelector('.restaurante-ubicacion');
             if (ubicacion) {
                 const direccion = restaurante.direccion || 'No especificada';
@@ -273,7 +246,6 @@ document.addEventListener('DOMContentLoaded', async function() {
                 console.log('📍 Ubicación cargada:', direccion);
             }
 
-            // INFORMACIÓN ADICIONAL (si existe)
             if (restaurante.descripcion) {
                 console.log('📝 Descripción disponible:', restaurante.descripcion);
             }

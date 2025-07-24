@@ -113,7 +113,6 @@ document.addEventListener('DOMContentLoaded', function () {
                 try {
                     console.log('🗑️ Eliminando restaurante:', { nombre, idRestaurante });
                     
-                    // Llamada al backend para eliminar el restaurante
                     const response = await fetch(`http://52.23.26.163:7070/solicitudes/${idRestaurante}`, {
                         method: 'DELETE',
                         headers: {
@@ -128,11 +127,9 @@ document.addEventListener('DOMContentLoaded', function () {
                     });
                     
                     if (response.ok) {
-                        // Eliminar la fila de la tabla
                         fila.remove();
                         alert(`✅ Restaurante "${nombre}" eliminado correctamente`);
                         
-                        // Recargar la lista de restaurantes para asegurar sincronización
                         await cargarRestaurantes();
                     } else {
                         const errorText = await response.text();
@@ -163,21 +160,18 @@ document.addEventListener('DOMContentLoaded', function () {
     const tablaRestaurantesBody = document.querySelector('#vista-restaurantes .tabla-admin tbody');
     if (tablaSolicitudes && tablaRestaurantesBody) {
         tablaSolicitudes.addEventListener('click', async function (e) {
-            // Ver imágenes
             const btnImg = e.target.closest('.btn-ver-imagenes');
             if (btnImg) {
                 const imagenes = JSON.parse(btnImg.getAttribute('data-imagenes'));
                 verImagenes(imagenes);
                 return;
             }
-            // Ver comprobante
             const btnComp = e.target.closest('.btn-ver-comprobante');
             if (btnComp) {
                 const comprobante = btnComp.getAttribute('data-comprobante');
                 verComprobante(comprobante);
                 return;
             }
-            // Aceptar solicitud
             if (e.target.closest('.btn-aceptar')) {
                 const fila = e.target.closest('tr');
                 if (!fila) return;
@@ -191,7 +185,6 @@ document.addEventListener('DOMContentLoaded', function () {
                 if (!confirm('¿Seguro que deseas aceptar esta solicitud? El restaurante será agregado al sistema.')) return;
                 
                 try {
-                    // Obtener los datos de la solicitud desde la fila de la tabla
                     const tds = fila.querySelectorAll('td');
                     const datosRestaurante = {
                         nombre: tds[0]?.textContent || '',
@@ -201,9 +194,7 @@ document.addEventListener('DOMContentLoaded', function () {
                         direccion: tds[4]?.textContent || '',
                         horario: tds[5]?.textContent || ''
                     };
-                    // Imprimir en consola los datos antes de enviarlos
                     console.log('Datos de la solicitud a aprobar:', datosRestaurante);
-                    // Aprobar la solicitud en el backend
                     const response = await fetch(`http://52.23.26.163:7070/solicitudes/aprobar/${id}`, {
                         method: 'PUT',
                         headers: {
@@ -213,7 +204,6 @@ document.addEventListener('DOMContentLoaded', function () {
                     });
                     
                     if (response.ok) {
-                        // Extraer imágenes y comprobante de la fila si existen
                         const imagenesBtns = fila.querySelector('.btn-ver-imagenes');
                         let imagen1 = '', imagen2 = '', imagen3 = '';
                         if (imagenesBtns && imagenesBtns.dataset.imagenes) {
@@ -224,7 +214,6 @@ document.addEventListener('DOMContentLoaded', function () {
                                 imagen3 = imagenesArr[2] || '';
                             } catch (e) {}
                         }
-                        // Preparar objeto para restaurante
                         const datosRestauranteInsert = {
                             nombre: datosRestaurante.nombre,
                             direccion: datosRestaurante.direccion,
@@ -245,10 +234,8 @@ document.addEventListener('DOMContentLoaded', function () {
                             console.error('Error al insertar en restaurante:', e);
                         }
 
-                        // Eliminar la solicitud de la tabla
                         fila.remove();
 
-                        // Recargar la lista de restaurantes si esa vista está activa
                         const vistaRestaurantesActiva = document.getElementById('vista-restaurantes').style.display !== 'none';
                         if (vistaRestaurantesActiva) {
                             await cargarRestaurantes();
@@ -259,7 +246,6 @@ document.addEventListener('DOMContentLoaded', function () {
                         const errorText = await response.text();
                         const errorObj = JSON.parse(errorText);
                         
-                        // Manejar errores específicos del backend
                         if (errorObj.message && errorObj.message.includes("doesn't have a default value")) {
                             alert(`❌ Error en el backend: Falta configurar valores por defecto en la base de datos.\n\nDetalles técnicos: ${errorObj.message}\n\n💡 Solución: El desarrollador del backend necesita asegurar que todos los campos requeridos se estén copiando correctamente de la solicitud al crear el restaurante.`);
                         } else {
@@ -271,7 +257,6 @@ document.addEventListener('DOMContentLoaded', function () {
                     alert('❌ Error de conexión al procesar la solicitud. Verifica que el servidor esté funcionando.');
                 }
             }
-            // Rechazar solicitud
             if (e.target.closest('.btn-rechazar')) {
                 const fila = e.target.closest('tr');
                 if (!fila) return;
@@ -308,7 +293,6 @@ document.addEventListener('DOMContentLoaded', function () {
             const tbody = document.querySelector('#vista-solicitudes tbody');
             tbody.innerHTML = '';
 
-            // Filtrar solo las solicitudes con estado 'pendiente'
             const solicitudesPendientes = solicitudes.filter(solicitud => 
                 solicitud.estado && solicitud.estado.toLowerCase() === 'pendiente'
             );
@@ -342,7 +326,6 @@ document.addEventListener('DOMContentLoaded', function () {
                 tbody.appendChild(tr);
             });
 
-            // Mostrar mensaje si no hay solicitudes pendientes
             if (solicitudesPendientes.length === 0) {
                 const tr = document.createElement('tr');
                 tr.innerHTML = `
@@ -361,12 +344,10 @@ document.addEventListener('DOMContentLoaded', function () {
         try {
             console.log('📋 Cargando lista de restaurantes...');
             
-            // Obtener todas las solicitudes con estado 'aprobado'
             const response = await fetch('http://52.23.26.163:7070/solicitudes');
             if (!response.ok) throw new Error('No se pudo obtener las solicitudes');
             const solicitudes = await response.json();
 
-            // Filtrar solo las aprobadas
             const restaurantesAprobados = solicitudes.filter(s => s.estado && s.estado.toLowerCase() === 'aprobado');
             console.log('🍽️ Restaurantes aprobados encontrados:', restaurantesAprobados.length);
 
@@ -386,7 +367,6 @@ document.addEventListener('DOMContentLoaded', function () {
 
             restaurantesAprobados.forEach(restaurante => {
                 const tr = document.createElement('tr');
-                // Usar el ID correcto de la solicitud
                 const idSolicitud = restaurante.id_solicitud || restaurante.id || restaurante.idSolicitud || '';
                 tr.setAttribute('data-id-restaurante', idSolicitud);
                 tr.innerHTML = `
@@ -406,7 +386,6 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     }
 
-    // Modal para mostrar imágenes y comprobantes
     function crearModal(contenidoHtml) {
         let modal = document.getElementById('modal-visualizador');
         if (!modal) {
@@ -423,7 +402,6 @@ document.addEventListener('DOMContentLoaded', function () {
         document.getElementById('cerrar-modal-visualizador').onclick = function() {
             modal.style.display = 'none';
         };
-        // Cerrar modal al hacer clic fuera del contenido
         modal.onclick = function(e) {
             if (e.target === modal) {
                 modal.style.display = 'none';
@@ -431,7 +409,6 @@ document.addEventListener('DOMContentLoaded', function () {
         };
     }
 
-    // Visualizar imágenes
     window.verImagenes = function(imagenes) {
         if (!Array.isArray(imagenes)) imagenes = [imagenes];
         let html = '<h3>Imágenes</h3><div style="display:flex;gap:10px;flex-wrap:wrap;">';
@@ -442,12 +419,9 @@ document.addEventListener('DOMContentLoaded', function () {
         crearModal(html);
     }
 
-    // Visualizar comprobante
     window.verComprobante = function(url) {
         let html = '<h3>Comprobante</h3>';
-        // Si la url no es absoluta, prepender la ruta del backend
         if (url && !/^https?:\/\//.test(url) && url.endsWith('.pdf')) {
-            // Si ya incluye /uploads/documents/ no lo dupliques
             if (!url.includes('/uploads/documents/')) {
                 url = '/uploads/documents/' + url;
             }

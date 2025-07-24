@@ -34,23 +34,17 @@ document.addEventListener("DOMContentLoaded", function () {
 });
 
 function initializeLoginForm() {
-  console.log('Buscando formulario de login...');
-  
   const form = document.getElementById("loginForm");
   
   if (!form) {
-    console.log("Formulario de login no encontrado");
     return;
   }
-
-  console.log('Formulario encontrado, configurando validaciones...');
 
   const newForm = form.cloneNode(true);
   form.parentNode.replaceChild(newForm, form);
 
   newForm.addEventListener("submit", function (event) {
     event.preventDefault();
-    console.log('Formulario enviado, validando...');
 
     const correo = document.getElementById("correo");
     const contrasena = document.getElementById("contrasena");
@@ -59,12 +53,6 @@ function initializeLoginForm() {
     const errorContrasena = document.getElementById("error-contrasena");
 
     if (!correo || !contrasena || !errorCorreo || !errorContrasena) {
-      console.log('Elementos no encontrados:', {
-        correo: !!correo,
-        contrasena: !!contrasena,
-        errorCorreo: !!errorCorreo,
-        errorContrasena: !!errorContrasena
-      });
       return;
     }
 
@@ -123,17 +111,12 @@ function initializeLoginForm() {
       })
       .then(res => res.json())
       .then(data => {
-        console.log('Respuesta completa del servidor:', data);
-        
         if (data.success) {
-          // Intentar guardar datos del usuario de diferentes formas posibles
           let usuarioData = null;
           
-          // Opción 1: data.usuario (estructura esperada)
           if (data.usuario) {
             usuarioData = data.usuario;
           }
-          // Opción 2: data contiene directamente los datos del usuario
           else if (data.id) {
             usuarioData = {
               id: data.id,
@@ -143,10 +126,9 @@ function initializeLoginForm() {
               telefono: data.telefono || ''
             };
           }
-          // Opción 3: crear objeto básico con datos disponibles
           else {
             usuarioData = {
-              id: data.id || data.userId || Date.now(), // usar timestamp como fallback
+              id: data.id || data.userId || Date.now(),
               correo: correo.value,
               rol: data.rol || rol,
               nombre: data.nombre || '',
@@ -154,7 +136,6 @@ function initializeLoginForm() {
             };
           }
           
-          // Guardar datos en sessionStorage
           if (usuarioData) {
             sessionStorage.setItem('id', usuarioData.id);
             sessionStorage.setItem('correo', usuarioData.correo);

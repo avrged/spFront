@@ -16,48 +16,39 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         });
     });
-    // --- Lógica de autenticación y carga de datos del restaurante ---
     
-    // Función para verificar si el backend está disponible
     async function verificarBackend(reintentos = 3) {
         for (let i = 0; i < reintentos; i++) {
             try {
                 const response = await fetch('http://52.23.26.163:7070/solicitudes', {
                     method: 'GET',
                     headers: { 'Content-Type': 'application/json' },
-                    timeout: 10000 // 10 segundos timeout
+                    timeout: 10000
                 });
                 
-                // Si obtenemos cualquier respuesta del servidor, está disponible
                 if (response.status < 500) {
                     return true;
                 }
                 
-                // Si es error 500, el servidor está corriendo pero hay problemas
-                console.warn(`Intento ${i + 1}: Servidor responde pero con error ${response.status}`);
                 if (i < reintentos - 1) {
-                    await new Promise(resolve => setTimeout(resolve, 2000)); // Esperar 2 segundos
+                    await new Promise(resolve => setTimeout(resolve, 2000));
                 }
             } catch (error) {
-                console.warn(`Intento ${i + 1}: Error de conexión:`, error.message);
                 if (i < reintentos - 1) {
-                    await new Promise(resolve => setTimeout(resolve, 2000)); // Esperar 2 segundos
+                    await new Promise(resolve => setTimeout(resolve, 2000));
                 }
             }
         }
         return false;
     }
 
-    // Obtener datos del restaurante del usuario autenticado
     async function cargarDatosRestauranteUsuario() {
         try {
-            // Verificar backend primero
             const backendDisponible = await verificarBackend();
             if (!backendDisponible) {
                 throw new Error('Backend no disponible en http://52.23.26.163:7070');
             }
 
-            // Obtener datos de usuario autenticado
             const idUsuario = sessionStorage.getItem('id') || localStorage.getItem('id');
             const correoUsuario = sessionStorage.getItem('correo') || localStorage.getItem('correo');
             const loginSuccess = sessionStorage.getItem('loginSuccess') || localStorage.getItem('loginSuccess');
@@ -68,7 +59,6 @@ document.addEventListener('DOMContentLoaded', function() {
                 return;
             }
 
-            // PASO 1: Obtener teléfono del usuario desde las solicitudes de registro
             let telefonoUsuario = null;
             
             if (correoUsuario) {
@@ -81,13 +71,11 @@ document.addEventListener('DOMContentLoaded', function() {
                     if (responseSolicitudes.ok) {
                         const solicitudes = await responseSolicitudes.json();
                         
-                        // Buscar la solicitud del usuario actual por correo
                         const solicitudUsuario = solicitudes.find(s => 
                             s.correo && s.correo.toLowerCase() === correoUsuario.toLowerCase()
                         );
                         
                         if (solicitudUsuario) {
-                            // Extraer teléfono de la solicitud
                             telefonoUsuario = solicitudUsuario.numero ||
                                             solicitudUsuario.telefono || 
                                             solicitudUsuario.telefonoContacto ||
@@ -95,22 +83,18 @@ document.addEventListener('DOMContentLoaded', function() {
                                             solicitudUsuario.phone ||
                                             solicitudUsuario.numeroContacto;
                             
-                            // Guardar teléfono en sessionStorage para futuras consultas
                             if (telefonoUsuario) {
                                 sessionStorage.setItem('telefono', telefonoUsuario);
                             }
                             
-                            // Guardar datos completos de la solicitud para uso posterior
                             window.solicitudUsuario = solicitudUsuario;
                         }
                     }
                 } catch (errorSolicitudes) {
-                    console.warn('Error al obtener solicitudes:', errorSolicitudes.message);
                 }
             }
 
             try {
-                // PASO 2: Obtener todos los restaurantes y buscar por los datos del usuario
                 response = await fetch('http://52.23.26.163:7070/solicitudes', {
                     method: 'GET',
                     headers: { 'Content-Type': 'application/json' }
@@ -121,7 +105,6 @@ document.addEventListener('DOMContentLoaded', function() {
                     let restauranteUsuario = null;
                     
                     if (Array.isArray(restaurantes)) {
-                        // PRIORIDAD 1: Buscar por teléfono obtenido de las solicitudes
                         if (telefonoUsuario && telefonoUsuario.trim() !== '') {
                             const telefonoLimpio = telefonoUsuario.replace(/[\s\-\(\)]/g, '');
                             
@@ -144,7 +127,6 @@ document.addEventListener('DOMContentLoaded', function() {
                             });
                         }
                         
-                        // PRIORIDAD 2: Si no se encontró por teléfono, buscar por correo
                         if (!restauranteUsuario && correoUsuario) {
                             restauranteUsuario = restaurantes.find(r => {
                                 const correosAComparar = [
@@ -162,7 +144,6 @@ document.addEventListener('DOMContentLoaded', function() {
                             });
                         }
                         
-                        // PRIORIDAD 3: Si no se encontró, buscar por ID de usuario
                         if (!restauranteUsuario && idUsuario) {
                             restauranteUsuario = restaurantes.find(r => {
                                 const idsAComparar = [
@@ -181,33 +162,10 @@ document.addEventListener('DOMContentLoaded', function() {
                     }
                     
                     if (restauranteUsuario) {
-                        // Guardar globalmente para uso posterior
                         window.restauranteActual = restauranteUsuario;
                         
-                        // Debug: Mostrar qué datos tenemos disponibles
-                        console.log('✅ Datos del restaurante encontrado:', restauranteUsuario);
-                        console.log('🔍 ID del restaurante encontrado:', {
-                            id: restauranteUsuario.id,
-                            idRestaurante: restauranteUsuario.idRestaurante,
-                            restauranteId: restauranteUsuario.restauranteId,
-                            id_restaurante: restauranteUsuario.id_restaurante
-                        });
-                        console.log('🔑 Foreign Keys del restaurante:', {
-                            id_solicitud_aprobada: restauranteUsuario.id_solicitud_aprobada,
-                            id_zona: restauranteUsuario.id_zona
-                        });
-                        if (window.solicitudUsuario) {
-                            console.log('📄 Datos de la solicitud encontrada:', window.solicitudUsuario);
-                            console.log('🔍 ID de la solicitud:', {
-                                id: window.solicitudUsuario.id,
-                                id_solicitud: window.solicitudUsuario.id_solicitud
-                            });
-                        }
-                        
-                        // Cargar datos en el formulario con datos combinados
                         cargarDatosEnFormulario(restauranteUsuario, window.solicitudUsuario);
                         
-                        // Cargar etiquetas desde campos individuales (etiqueta1, etiqueta2, etiqueta3)
                         const etiquetasIndividuales = [
                             restauranteUsuario.etiqueta1,
                             restauranteUsuario.etiqueta2,
@@ -219,32 +177,14 @@ document.addEventListener('DOMContentLoaded', function() {
                             etiqueta.trim() !== ''
                         );
                         
-                        console.log('🏷️ Etiquetas individuales encontradas:', {
-                            etiqueta1: restauranteUsuario.etiqueta1,
-                            etiqueta2: restauranteUsuario.etiqueta2, 
-                            etiqueta3: restauranteUsuario.etiqueta3,
-                            filtradas: etiquetasIndividuales
-                        });
-                        
                         if (etiquetasIndividuales.length > 0) {
                             cargarEtiquetasRestaurante(etiquetasIndividuales.join(', '));
                         } else if (restauranteUsuario.etiquetas) {
-                            // Fallback: usar campo combinado si existe
                             cargarEtiquetasRestaurante(restauranteUsuario.etiquetas);
                         }
                         
-                        return; // Éxito, salir de la función
+                        return;
                     } else {
-                        // Debug: Mostrar qué restaurantes están disponibles
-                        console.log('No se encontró restaurante específico para el usuario');
-                        console.log('Restaurantes disponibles:', restaurantes.map(r => ({
-                            id: r.id || r.idRestaurante || r.restauranteId,
-                            nombre: r.nombre,
-                            telefono: r.telefono || r.numero,
-                            correo: r.correo
-                        })));
-                        console.log('Datos del usuario buscado:', { correoUsuario, idUsuario, telefonoUsuario });
-                        
                         throw new Error('No se encontró ningún restaurante asociado al usuario');
                     }
                 } else {
@@ -252,14 +192,10 @@ document.addEventListener('DOMContentLoaded', function() {
                 }
                 
             } catch (fetchError) {
-                console.error('Error al obtener restaurantes:', fetchError);
                 throw fetchError;
             }
 
         } catch (error) {
-            console.error('Error al cargar datos del restaurante:', error);
-            
-            // Verificar si es un error de red o del servidor
             if (error.message.includes('fetch')) {
                 alert('❌ Error de conexión: No se puede conectar al servidor.');
             } else if (error.message.includes('404')) {
@@ -272,15 +208,12 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
 
-    // Función para cargar datos en el formulario
     function cargarDatosEnFormulario(restaurante) {
-        // Actualizar nombre del restaurante en la página
         const nombreElement = document.getElementById('restauranteNombre');
         if (nombreElement) {
             nombreElement.textContent = restaurante.restaurante || 'Mi Restaurante';
         }
 
-        // Cargar otros campos del formulario
         const inputUbicacion = document.querySelector('input[placeholder="Ingrese la dirección"]');
         if (inputUbicacion && restaurante.direccion) {
             inputUbicacion.value = restaurante.direccion;
@@ -291,7 +224,6 @@ document.addEventListener('DOMContentLoaded', function() {
             inputTelefono.value = restaurante.numero;
         }
 
-        // Cargar horarios si existen
         const horariosInputs = document.querySelectorAll('.horarios-inputs input');
         if (restaurante.horario && horariosInputs.length > 0) {
             horariosInputs[0].value = restaurante.horario;
@@ -313,25 +245,19 @@ document.addEventListener('DOMContentLoaded', function() {
         const img3 = document.getElementById('imgGaleria3');
         if (img3) img3.src = restaurante.imagen3 || '../images/imagen.png';
 
-        // Cargar menú
         const btnMenu = document.querySelector('label.btn-menu input[type="file"]');
         if (btnMenu && restaurante.menu) {
             const label = btnMenu.closest('label.btn-menu');
             const menuSpan = label.querySelector('span');
             
             if (menuSpan) {
-                // Mostrar el nombre del archivo del menú
                 const nombreArchivo = restaurante.menu.split('/').pop() || restaurante.menu;
                 menuSpan.textContent = nombreArchivo;
             }
         }
     }
 
-    // --- Lógica de membresía ---
-    // Simula el estado de membresía: "inactiva", "pendiente", "activa"
-    // En producción, obtén este valor del backend
-    const estadoMembresia = window.estadoMembresiaRestaurante || "activa"; // Cambia según pruebas
-
+    const estadoMembresia = window.estadoMembresiaRestaurante || "activa";
     const btnHeaderSubscripcion = document.getElementById('btnHeaderSubscripcion');
     const btnEstadisticas = document.getElementById('btnEstadisticas');
     const mensaje = document.getElementById('membresiaMensaje');
@@ -351,10 +277,8 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
 
-    // Cargar datos del restaurante al inicializar la página
     cargarDatosRestauranteUsuario();
 
-    // Etiquetas disponibles para restaurantes
     const ETIQUETAS_DISPONIBLES = [
         'Comida Rápida',
         'Pet Friendly', 
@@ -368,16 +292,13 @@ document.addEventListener('DOMContentLoaded', function() {
         'Estacionamiento'
     ];
 
-    // Llenar los dropdowns de etiquetas con las opciones disponibles
     const selectsEtiquetas = document.querySelectorAll('.etiquetas .filtro-select');
     
     selectsEtiquetas.forEach(select => {
-        // Limpiar opciones existentes (excepto la primera que es "Seleccionar")
         while (select.children.length > 1) {
             select.removeChild(select.lastChild);
         }
         
-        // Agregar las etiquetas disponibles
         ETIQUETAS_DISPONIBLES.forEach(etiqueta => {
             const option = document.createElement('option');
             option.value = etiqueta;
@@ -386,51 +307,30 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
 
-    // Función para obtener las etiquetas seleccionadas
     window.obtenerEtiquetasSeleccionadas = function() {
         const etiquetasSeleccionadas = [];
         
-        console.log('🔍 Verificando etiquetas seleccionadas...');
-        console.log('📋 Total de selects encontrados:', selectsEtiquetas.length);
-        
         selectsEtiquetas.forEach((select, index) => {
-            console.log(`🏷️ Select ${index + 1}:`, {
-                value: select.value,
-                isEmpty: select.value === '',
-                isSeleccionar: select.value === 'Seleccionar'
-            });
-            
             if (select.value && select.value !== '' && select.value !== 'Seleccionar') {
                 etiquetasSeleccionadas.push(select.value);
             }
         });
         
-        console.log('✅ Etiquetas válidas encontradas:', etiquetasSeleccionadas);
-        const resultado = etiquetasSeleccionadas.join(', ');
-        console.log('📝 String final de etiquetas:', resultado);
-        
-        return resultado;
+        return etiquetasSeleccionadas.join(', ');
     };
 
-    // Función para cargar etiquetas existentes (desde el backend)
     window.cargarEtiquetasRestaurante = function(etiquetasString) {
-        console.log('🔄 Cargando etiquetas desde backend:', etiquetasString);
-        
         if (!etiquetasString) {
-            console.log('⚠️ No hay etiquetas para cargar');
             return;
         }
         
         const etiquetasArray = etiquetasString.split(',').map(e => e.trim()).filter(e => e !== '');
-        console.log('📋 Array de etiquetas a cargar:', etiquetasArray);
         
-        // Asignar las etiquetas a los selects disponibles
         etiquetasArray.forEach((etiqueta, index) => {
             if (index < selectsEtiquetas.length) {
                 console.log(`🏷️ Asignando etiqueta ${index + 1}: "${etiqueta}" al select`);
                 selectsEtiquetas[index].value = etiqueta;
                 
-                // Verificar si la asignación fue exitosa
                 if (selectsEtiquetas[index].value === etiqueta) {
                     console.log(`✅ Etiqueta ${index + 1} asignada correctamente`);
                 } else {
@@ -442,14 +342,10 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         });
         
-        // Verificar estado final de todos los selects
-        console.log('📊 Estado final de todos los selects:');
         selectsEtiquetas.forEach((select, index) => {
-            console.log(`   Select ${index + 1}: "${select.value}"`);
         });
     };
 
-    // Establecer etiquetas por defecto
     function establecerEtiquetasPorDefecto() {
         const etiquetasPorDefecto = ['Seleccionar', 'Seleccionar', 'Seleccionar'];
         etiquetasPorDefecto.forEach((etiqueta, index) => {
@@ -459,10 +355,8 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
-    // Establecer las etiquetas por defecto al cargar la página
     establecerEtiquetasPorDefecto();
 
-    // Manejar la selección de archivos PDF
     const menuInput = document.getElementById('menuInput');
     if (menuInput) {
         menuInput.addEventListener('change', function(event) {
@@ -471,25 +365,20 @@ document.addEventListener('DOMContentLoaded', function() {
             const menuSpan = btnMenu.querySelector('span');
             
             if (file) {
-                // Cambiar el texto del span para mostrar el nombre del archivo
                 menuSpan.textContent = file.name;
             } else {
-                // Restaurar el texto original
                 menuSpan.textContent = 'Seleccionar archivo PDF';
             }
         });
     }
 
-    // Evento para evitar seleccionar la misma etiqueta en múltiples dropdowns
     selectsEtiquetas.forEach((select, index) => {
         select.addEventListener('change', function() {
             const etiquetaSeleccionada = this.value;
             
-            // Si se seleccionó una etiqueta, removerla de los otros dropdowns
             if (etiquetaSeleccionada && etiquetaSeleccionada !== '') {
                 selectsEtiquetas.forEach((otroSelect, otroIndex) => {
                     if (otroIndex !== index) {
-                        // Remover la opción seleccionada de otros dropdowns
                         const opcionARemover = otroSelect.querySelector(`option[value="${etiquetaSeleccionada}"]`);
                         if (opcionARemover && otroSelect.value !== etiquetaSeleccionada) {
                             opcionARemover.style.display = 'none';
@@ -498,39 +387,31 @@ document.addEventListener('DOMContentLoaded', function() {
                 });
             }
             
-            // Mostrar todas las opciones en todos los dropdowns y luego ocultar las ya seleccionadas
             actualizarOpcionesDisponibles();
         });
     });
 
-    // Función para actualizar las opciones disponibles en todos los dropdowns
     function actualizarOpcionesDisponibles() {
         const etiquetasYaSeleccionadas = [];
-        // Obtener todas las etiquetas ya seleccionadas
         selectsEtiquetas.forEach(select => {
             if (select.value && select.value !== '') {
                 etiquetasYaSeleccionadas.push(select.value);
             }
         });
-        // Para cada dropdown, mostrar/ocultar opciones
         selectsEtiquetas.forEach(select => {
             const etiquetaActual = select.value;
             Array.from(select.options).forEach(option => {
                 if (option.value === '' || option.value === etiquetaActual) {
-                    // Siempre mostrar la opción "Seleccionar" y la opción actualmente seleccionada
                     option.style.display = '';
                 } else if (etiquetasYaSeleccionadas.includes(option.value)) {
-                    // Ocultar opciones ya seleccionadas en otros dropdowns
                     option.style.display = 'none';
                 } else {
-                    // Mostrar opciones disponibles
                     option.style.display = '';
                 }
             });
         });
     }
 
-    // Agregar funcionalidad al botón "Aplicar Cambios"
     const btnAplicar = document.querySelector('.btn-aplicar');
     if (btnAplicar) {
         btnAplicar.addEventListener('click', async function() {
@@ -542,28 +423,21 @@ document.addEventListener('DOMContentLoaded', function() {
             const etiquetasSeleccionadas = obtenerEtiquetasSeleccionadas();
             console.log('🏷️ Etiquetas obtenidas:', etiquetasSeleccionadas);
 
-            // Recopilar datos del formulario
             const direccion = document.querySelector('input[placeholder="Ingrese la dirección"]')?.value || '';
             const telefono = document.querySelector('input[placeholder="Ingrese su número celular"]')?.value || '';
             const horario = document.querySelector('.horarios-inputs input')?.value || '';
             const instagram = document.querySelector('input[placeholder="Ingrese su instagram"]')?.value || '';
             const facebook = document.querySelector('input[placeholder="Ingrese su facebook"]')?.value || '';
-
-            // Archivos de imágenes
             const img1Input = document.getElementById('imgGaleria1Input');
             const img2Input = document.getElementById('imgGaleria2Input');
             const img3Input = document.getElementById('imgGaleria3Input');
 
-            // Depuración: mostrar los inputs y archivos seleccionados
             console.log('img1Input:', img1Input, 'files:', img1Input && img1Input.files);
             console.log('img2Input:', img2Input, 'files:', img2Input && img2Input.files);
             console.log('img3Input:', img3Input, 'files:', img3Input && img3Input.files);
-            // Archivo de menú
             const menuInput = document.getElementById('menuInput');
 
-            // Crear FormData
             const formData = new FormData();
-            // Campos principales
             formData.append('restaurante', window.restauranteActual.restaurante || window.restauranteActual.nombre || '');
             formData.append('correo', window.restauranteActual.correo || '');
             formData.append('direccion', direccion);
@@ -572,7 +446,6 @@ document.addEventListener('DOMContentLoaded', function() {
             formData.append('facebook', facebook);
             formData.append('instagram', instagram);
 
-            // Etiquetas individuales
             const etiquetasArray = etiquetasSeleccionadas.split(',').map(e => e.trim()).filter(e => e !== '');
             console.log('🏷️ Array de etiquetas procesado:', etiquetasArray);
             
@@ -586,7 +459,6 @@ document.addEventListener('DOMContentLoaded', function() {
                 etiqueta3: etiquetasArray[2] || 'Seleccionar'
             });
 
-            // Adjuntar imágenes solo si el usuario seleccionó nuevas
             if (img1Input && img1Input.files && img1Input.files[0]) {
                 formData.append('imagen1', img1Input.files[0]);
             }
@@ -596,12 +468,10 @@ document.addEventListener('DOMContentLoaded', function() {
             if (img3Input && img3Input.files && img3Input.files[0]) {
                 formData.append('imagen3', img3Input.files[0]);
             }
-            // Adjuntar menú PDF si se seleccionó
             if (menuInput && menuInput.files && menuInput.files[0]) {
                 formData.append('menu', menuInput.files[0]);
             }
 
-    // Imprimir en consola los datos que se enviarán
     const formDataPreview = {};
     formData.forEach((value, key) => {
         if (value instanceof File) {
@@ -619,16 +489,13 @@ document.addEventListener('DOMContentLoaded', function() {
             try {
                 const idUsuario = sessionStorage.getItem('id') || localStorage.getItem('id');
                 const correoUsuario = sessionStorage.getItem('correo') || localStorage.getItem('correo');
-                // Usar el id de la solicitud aprobada
                 const idSolicitud = (window.restauranteActual && (window.restauranteActual.id_solicitud || window.restauranteActual.id || window.restauranteActual.idSolicitud))
                     || (window.solicitudUsuario && (window.solicitudUsuario.id_solicitud || window.solicitudUsuario.id));
                 if (!idSolicitud) {
                     alert('❌ No se puede actualizar: No se tiene el ID de la solicitud');
                     return;
                 }
-                // Usar endpoint PUT /solicitudes/{id}
                 const endpointUrl = `http://52.23.26.163:7070/solicitudes/${idSolicitud}`;
-                // Usar endpoint con /with-files para actualización con archivos
                 const endpointUrlWithFiles = `http://52.23.26.163:7070/solicitudes/${idSolicitud}/with-files`;
                 const response = await fetch(endpointUrlWithFiles, {
                     method: 'PUT',
@@ -639,7 +506,6 @@ document.addEventListener('DOMContentLoaded', function() {
                     const responseData = await response.json();
                     console.log('✅ Respuesta del servidor:', responseData);
                     alert('✅ Datos del restaurante actualizados correctamente con archivos');
-                    // Recargar datos para reflejar cambios
                     await cargarDatosRestauranteUsuario();
                 } else {
                     const errorText = await response.text();

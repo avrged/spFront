@@ -1,18 +1,13 @@
 document.addEventListener('DOMContentLoaded', function() {
-    // Obtener datos del restaurantero autenticado
     const correoRestaurantero = sessionStorage.getItem('correo') || localStorage.getItem('correo');
     const idUsuario = sessionStorage.getItem('id') || localStorage.getItem('id');
     
-    console.log('📊 Cargando estadísticas para:', { correoRestaurantero, idUsuario });
-
     if (!correoRestaurantero && !idUsuario) {
-        console.error('❌ No se encontró información de autenticación');
         alert('Error: No se pudo identificar al restaurantero. Por favor, inicie sesión nuevamente.');
         window.location.href = 'loginRest.html';
         return;
     }
 
-    // Llamar al backend para obtener las estadísticas del restaurantero
     const parametros = new URLSearchParams();
     if (correoRestaurantero) {
         parametros.append('correo', correoRestaurantero);
@@ -21,43 +16,24 @@ document.addEventListener('DOMContentLoaded', function() {
         parametros.append('id', idUsuario);
     }
 
-    console.log('🔗 URL de consulta:', `http://52.23.26.163:7070/estadisticas?${parametros.toString()}`);
-
     fetch(`http://52.23.26.163:7070/estadisticas?${parametros.toString()}`)
         .then(res => {
-            console.log('📡 Respuesta del servidor:', {
-                status: res.status,
-                statusText: res.statusText,
-                ok: res.ok
-            });
-            
             if (!res.ok) {
                 throw new Error(`HTTP ${res.status}: ${res.statusText}`);
             }
             return res.json();
         })
         .then(estadisticas => {
-            console.log('📈 Estadísticas recibidas (RAW):', estadisticas);
-            console.log('📋 Estructura de datos:', {
-                tipo: typeof estadisticas,
-                esArray: Array.isArray(estadisticas),
-                claves: Object.keys(estadisticas || {}),
-                valores: estadisticas
-            });
-
-            // Verificar que tenemos datos válidos
             if (!estadisticas || typeof estadisticas !== 'object') {
                 throw new Error('Datos de estadísticas inválidos');
             }
 
-            // Si es un array, buscar el registro que coincida con el correo del restaurantero
             let datosEstadisticas = estadisticas;
             if (Array.isArray(estadisticas)) {
                 if (estadisticas.length === 0) {
                     throw new Error('No se encontraron estadísticas para este restaurante');
                 }
                 
-                // Buscar el registro específico para el correo del restaurantero
                 const estadisticaCorrecta = estadisticas.find(est => est.correo === correoRestaurantero);
                 
                 if (estadisticaCorrecta) {
@@ -71,23 +47,19 @@ document.addEventListener('DOMContentLoaded', function() {
                 }
             }
 
-            // Descargas de menú - usar los datos directamente del backend
             const descargasSemanaEl = document.querySelector('.estadistica-menu p strong');
             const descargasTotalesEl = document.querySelectorAll('.estadistica-menu p strong')[1];
             const porcentajeSubidaEl = document.querySelector('.porcentaje-subida');
 
-            // Usar el campo 'descargas' del modelo Estadistica
             const totalDescargas = datosEstadisticas.descargas || 0;
 
             if (descargasSemanaEl) {
-                // Si no hay dato específico de la semana, mostrar el total
                 descargasSemanaEl.textContent = datosEstadisticas.descargasSemana || totalDescargas;
             }
             if (descargasTotalesEl) {
                 descargasTotalesEl.textContent = totalDescargas;
             }
             if (porcentajeSubidaEl) {
-                // Calcular porcentaje basado en datos disponibles o mostrar 0
                 const porcentaje = datosEstadisticas.porcentajeSubida || (totalDescargas > 0 ? 15 : 0);
                 porcentajeSubidaEl.textContent = `+${porcentaje}%`;
             }
@@ -98,7 +70,6 @@ document.addEventListener('DOMContentLoaded', function() {
                 porcentaje: datosEstadisticas.porcentajeSubida || 0
             });
 
-            // Origen - usar los contadores de nacional/extranjero
             const nacional = datosEstadisticas.nacional || 0;
             const extranjero = datosEstadisticas.extranjero || 0;
             const total = nacional + extranjero;
@@ -129,7 +100,6 @@ document.addEventListener('DOMContentLoaded', function() {
                 extranjerosEl.textContent = `● Extranjeros ${porcentajeExtranjero}% (${extranjero})`;
             }
 
-            // Gráfico de pastel (origen)
             const ctxPie = document.getElementById('graficoOrigen');
             if (ctxPie) {
                 new Chart(ctxPie, {
@@ -149,8 +119,6 @@ document.addEventListener('DOMContentLoaded', function() {
                 });
             }
 
-            // Gráfico de barras (aspectos destacados)
-            // Obtener datos de aspectos desde el backend
             const comida = datosEstadisticas.comida || 0;
             const ubicacion = datosEstadisticas.ubicacion || 0;
             const recomendacion = datosEstadisticas.recomendacion || 0;
@@ -162,7 +130,6 @@ document.addEventListener('DOMContentLoaded', function() {
             let aspectosData = [];
             
             if (totalAspectos > 0) {
-                // Calcular porcentajes basados en datos reales
                 aspectosData = [
                     { nombre: 'Comida', porcentaje: Math.round((comida / totalAspectos) * 100), cantidad: comida },
                     { nombre: 'Ubicación', porcentaje: Math.round((ubicacion / totalAspectos) * 100), cantidad: ubicacion },
@@ -171,7 +138,6 @@ document.addEventListener('DOMContentLoaded', function() {
                     { nombre: 'Vista', porcentaje: Math.round((vista / totalAspectos) * 100), cantidad: vista }
                 ];
             } else {
-                // Datos por defecto si no hay estadísticas
                 aspectosData = [
                     { nombre: 'Comida', porcentaje: 0, cantidad: 0 },
                     { nombre: 'Ubicación', porcentaje: 0, cantidad: 0 },
@@ -180,16 +146,6 @@ document.addEventListener('DOMContentLoaded', function() {
                     { nombre: 'Vista', porcentaje: 0, cantidad: 0 }
                 ];
             }
-
-            console.log('📊 Datos de aspectos calculados:', {
-                comida,
-                ubicacion,
-                recomendacion,
-                horario,
-                vista,
-                totalAspectos,
-                aspectosData
-            });
 
             const ctxBar = document.getElementById('graficoAspectos');
             if (ctxBar) {

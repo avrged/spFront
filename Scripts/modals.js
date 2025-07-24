@@ -104,7 +104,7 @@ function openRegistroModal() {
                 loadRegistroScript();
             }
         })
-        .catch(error => console.error('Error cargando registro:', error));
+        .catch(error => alert('Error cargando registro: ' + error.message));
 }
 
 function closeRegistroModal() {
@@ -176,7 +176,7 @@ function openLoginAdminModal() {
                 });
             }
         })
-        .catch(error => console.error('Error cargando loginAdmin:', error));
+        .catch(error => alert('Error cargando loginAdmin: ' + error.message));
 }
 
 function closeLoginAdminModal() {
@@ -217,7 +217,7 @@ function openLoginRestModal() {
                 loadLoginScript();
             }
         })
-        .catch(error => console.error('Error cargando loginRest:', error));
+        .catch(error => alert('Error cargando loginRest: ' + error.message));
 }
 
 function closeLoginRestModal() {
@@ -279,7 +279,7 @@ function openLoginModal() {
                 setupLoginModalButtons();
             }
         })
-        .catch(error => console.error('Error cargando login:', error));
+        .catch(error => alert('Error cargando login: ' + error.message));
 }
 
 function closeLoginModal() {
