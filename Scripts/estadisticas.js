@@ -16,7 +16,7 @@ document.addEventListener('DOMContentLoaded', function() {
         parametros.append('id', idUsuario);
     }
 
-    fetch(`http://52.23.26.163:7070/estadisticas?${parametros.toString()}`)
+    fetch(`http://75.101.159.172:7070/estadisticas?${parametros.toString()}`)
         .then(res => {
             if (!res.ok) {
                 throw new Error(`HTTP ${res.status}: ${res.statusText}`);

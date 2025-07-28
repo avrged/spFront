@@ -182,7 +182,7 @@ document.addEventListener("DOMContentLoaded", function () {
       }
 
       try {
-        const response = await fetch('http://52.23.26.163:7070/solicitudes/with-files', {
+        const response = await fetch('http://75.101.159.172:7070/solicitudes/with-files', {
           method: 'POST',
           body: formData
         });
@@ -203,7 +203,7 @@ document.addEventListener("DOMContentLoaded", function () {
               ubicacion: 0
             };
 
-            const estadisticasResponse = await fetch('http://52.23.26.163:7070/estadisticas', {
+            const estadisticasResponse = await fetch('http://75.101.159.172:7070/estadisticas', {
               method: 'POST',
               headers: {
                 'Content-Type': 'application/json'

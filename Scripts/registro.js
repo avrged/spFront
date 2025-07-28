@@ -68,7 +68,7 @@ function initializeRegistroForm() {
     }
 
 if (formularioValido) {
-    fetch('http://52.23.26.163:7070/users', {
+    fetch('http://75.101.159.172:7070/users', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({

@@ -149,7 +149,7 @@ document.addEventListener('DOMContentLoaded', async function() {
     try {
         console.log('Intentando cargar solicitudes...');
         
-        const response = await fetch('http://52.23.26.163:7070/solicitudes', {
+        const response = await fetch('http://75.101.159.172:7070/solicitudes', {
             method: 'GET',
             headers: { 'Content-Type': 'application/json' }
         });
