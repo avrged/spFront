@@ -114,10 +114,9 @@ document.addEventListener('DOMContentLoaded', async function() {
         }
         
         if (!restauranteEncontrado) {
-            console.error('❌ No se encontró ningún restaurante');
-            console.error('🔍 Parámetros buscados:', { id, correo });
-            console.error('📋 Solicitudes disponibles:', solicitudes.map(s => ({ id: s.id, correo: s.correo })));
-            throw new Error(`No hay restaurantes disponibles para mostrar`);
+            console.log('No se encontró restaurante específico, redirigiendo a página principal');
+            console.log('Parámetros buscados:', { id, correo });
+            console.log('Solicitudes disponibles:', solicitudes.map(s => ({ id: s.id, correo: s.correo })));
         }
 
         console.log('✅ Restaurante encontrado:', restauranteEncontrado);
@@ -127,22 +126,22 @@ document.addEventListener('DOMContentLoaded', async function() {
         cargarDatosRestaurante(restauranteEncontrado);
         
     } catch (error) {
-        console.error('❌ Error al cargar restaurante:', error);
+        console.error('Error al cargar restaurante:', error);
         
         if (error.message.includes('fetch')) {
-            alert('❌ Error de conexión: No se puede conectar al servidor.');
+            alert('Error de conexión: No se puede conectar al servidor.');
         } else if (error.message.includes('404')) {
-            alert('❌ Endpoint no encontrado: Verifique la configuración del servidor.');
+            alert('Endpoint no encontrado: Verifique la configuración del servidor.');
         } else if (error.message.includes('500')) {
-            alert('❌ Error del servidor: Contacte al administrador.');
+            alert('Error del servidor: Contacte al administrador.');
         } else {
-            alert(`❌ Error al cargar la información del restaurante: ${error.message}`);
+            alert(`Error al cargar la información del restaurante: ${error.message}`);
         }
     }
 
     function cargarDatosRestaurante(restaurante) {
         try {
-            console.log('🎨 Cargando datos en la vista:', restaurante);
+            console.log('Cargando datos en la vista:', restaurante);
 
             const nombreElement = document.querySelector('.restaurante-nombre');
             if (nombreElement) {
@@ -154,7 +153,7 @@ document.addEventListener('DOMContentLoaded', async function() {
                 const imagenPrincipal = restaurante.imagen1 || '../images/img_rest2.jpg';
                 imgPrincipal.src = imagenPrincipal;
                 imgPrincipal.alt = `Imagen principal de ${restaurante.restaurante}`;
-                console.log('🖼️ Imagen principal cargada:', imagenPrincipal);
+                console.log('Imagen principal cargada:', imagenPrincipal);
             }
 
             const galeriaSecundaria = document.querySelector('.galeria-secundaria');
@@ -166,8 +165,8 @@ document.addEventListener('DOMContentLoaded', async function() {
                 galeriaSecundaria.innerHTML = imagenesSecundarias.length > 0
                     ? imagenesSecundarias.map(img => `<img src='${img}' alt='Imagen restaurante' class='galeria-thumb' />`).join('')
                     : '<span style="color:#888">No hay imágenes adicionales</span>';
-                
-                console.log('🖼️ Imágenes secundarias cargadas:', imagenesSecundarias.length);
+
+                console.log('Imágenes secundarias cargadas:', imagenesSecundarias.length);
             }
 
             const caracteristicas = document.querySelector('.caracteristicas-lista');
@@ -204,8 +203,8 @@ document.addEventListener('DOMContentLoaded', async function() {
                     ).join('')
                     : '<span style="color:#888">No hay características disponibles</span>';
                 
-                console.log('🏷️ Etiquetas cargadas:', etiquetasArray);
-                console.log('🔍 Etiquetas individuales encontradas:', { 
+                console.log('Etiquetas cargadas:', etiquetasArray);
+                console.log('Etiquetas individuales encontradas:', { 
                     etiqueta1: restaurante.etiqueta1, 
                     etiqueta2: restaurante.etiqueta2, 
                     etiqueta3: restaurante.etiqueta3 
@@ -218,7 +217,7 @@ document.addEventListener('DOMContentLoaded', async function() {
                     <h2>Horarios</h2>
                     <div><img src='../images/reloj.png' alt='Horario' class='icon-16' /> ${restaurante.horario || 'No especificado'}</div>
                 `;
-                console.log('⏰ Horarios cargados:', restaurante.horario);
+                console.log('Horarios cargados:', restaurante.horario);
             }
 
             const contactos = document.querySelector('.restaurante-contactos');
@@ -233,7 +232,7 @@ document.addEventListener('DOMContentLoaded', async function() {
                     <div><img src='../images/facebook.png' alt='Facebook' class='icon-16' /> ${facebook}</div>
                     <div><img src='../images/instagram.png' alt='Instagram' class='icon-16' /> ${instagram}</div>
                 `;
-                console.log('📞 Contactos cargados:', { telefono, facebook, instagram });
+                console.log('Contactos cargados:', { telefono, facebook, instagram });
             }
 
             const ubicacion = document.querySelector('.restaurante-ubicacion');
@@ -243,20 +242,20 @@ document.addEventListener('DOMContentLoaded', async function() {
                     <h2>Ubicación</h2>
                     <div><img src='../images/ubicacion.png' alt='Ubicación' class='icon-16' /> ${direccion}</div>
                 `;
-                console.log('📍 Ubicación cargada:', direccion);
+                console.log('Ubicación cargada:', direccion);
             }
 
             if (restaurante.descripcion) {
-                console.log('📝 Descripción disponible:', restaurante.descripcion);
+                console.log('Descripción disponible:', restaurante.descripcion);
             }
             if (restaurante.menu) {
-                console.log('📋 Menú disponible:', restaurante.menu);
+                console.log('Menú disponible:', restaurante.menu);
             }
 
-            console.log('✅ Todos los datos cargados correctamente');
+            console.log('Todos los datos cargados correctamente');
 
         } catch (error) {
-            console.error('❌ Error al cargar datos en la vista:', error);
+            console.error('Error al cargar datos en la vista:', error);
         }
     }
 });

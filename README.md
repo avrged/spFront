@@ -16,7 +16,6 @@
 
 *Tecnologías*
 - HTML5 + CSS3 + JavaScript
-- Responsive design (móvil y desktop)
 - API REST con backend Java (Javalin 6.6.0)
 - Subida de archivos (imágenes y PDFs)
 ## Autores

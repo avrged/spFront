@@ -38,25 +38,6 @@ document.addEventListener("DOMContentLoaded", function () {
     }
   }
 
-  function comprimirImagen(file, maxWidth = 400, quality = 0.3) {
-    return new Promise((resolve) => {
-      const canvas = document.createElement('canvas');
-      const ctx = canvas.getContext('2d');
-      const img = new Image();
-      
-      img.onload = function() {
-        const ratio = Math.min(maxWidth / img.width, maxWidth / img.height);
-        canvas.width = img.width * ratio;
-        canvas.height = img.height * ratio;
-        
-        ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
-        canvas.toBlob(resolve, 'image/jpeg', quality);
-      };
-      
-      img.src = URL.createObjectURL(file);
-    });
-  }
-
   form.addEventListener("submit", async function (event) {
     event.preventDefault();
 
@@ -149,36 +130,23 @@ document.addEventListener("DOMContentLoaded", function () {
       formData.append('etiqueta3', 'Seleccionar');
 
       if (imagen1?.files && imagen1.files.length === 1) {
-        const imagen1Comprimida = await comprimirImagen(imagen1.files[0]);
-        formData.append('imagen1', imagen1Comprimida, imagen1.files[0].name || 'imagen1.jpg');
+        formData.append('imagen1', imagen1.files[0], imagen1.files[0].name || 'imagen1.jpg');
       }
       if (imagen2?.files && imagen2.files.length === 1) {
-        const imagen2Comprimida = await comprimirImagen(imagen2.files[0]);
-        formData.append('imagen2', imagen2Comprimida, imagen2.files[0].name || 'imagen2.jpg');
+        formData.append('imagen2', imagen2.files[0], imagen2.files[0].name || 'imagen2.jpg');
       }
       if (imagen3?.files && imagen3.files.length === 1) {
-        const imagen3Comprimida = await comprimirImagen(imagen3.files[0]);
-        formData.append('imagen3', imagen3Comprimida, imagen3.files[0].name || 'imagen3.jpg');
+        formData.append('imagen3', imagen3.files[0], imagen3.files[0].name || 'imagen3.jpg');
       }
 
       const comprobanteArchivo = comprobante?.files[0];
       if (comprobanteArchivo) {
-        if (comprobanteArchivo.type.startsWith('image/')) {
-          const comprobanteComprimido = await comprimirImagen(comprobanteArchivo, 800, 0.4);
-          formData.append('comprobante', comprobanteComprimido, comprobanteArchivo.name || 'comprobante.jpg');
-        } else {
-          formData.append('comprobante', comprobanteArchivo, comprobanteArchivo.name);
-        }
+        formData.append('comprobante', comprobanteArchivo, comprobanteArchivo.name);
       }
 
       const menuArchivo = menu?.files && menu.files.length > 0 ? menu.files[0] : null;
       if (menuArchivo) {
-        if (menuArchivo.type.startsWith('image/')) {
-          const menuComprimido = await comprimirImagen(menuArchivo, 800, 0.4);
-          formData.append('menu', menuComprimido, menuArchivo.name || 'menu.jpg');
-        } else {
-          formData.append('menu', menuArchivo, menuArchivo.name);
-        }
+        formData.append('menu', menuArchivo, menuArchivo.name);
       }
 
       try {
@@ -212,12 +180,12 @@ document.addEventListener("DOMContentLoaded", function () {
             });
 
             if (estadisticasResponse.ok) {
-              console.log('✅ Registro de estadísticas creado exitosamente');
+              console.log('Registro de estadísticas creado exitosamente');
             } else {
-              console.warn('⚠️ Error al crear registro de estadísticas:', estadisticasResponse.status);
+              console.warn('Error al crear registro de estadísticas:', estadisticasResponse.status);
             }
           } catch (estadisticasError) {
-            console.error('❌ Error al crear estadísticas:', estadisticasError);
+            console.error('Error al crear estadísticas:', estadisticasError);
           }
 
           modal.style.display = "flex";

@@ -32,7 +32,7 @@ function mostrarRestaurantes(solicitudes) {
     container.innerHTML = '';
 
     if (solicitudes.length === 0) {
-        container.innerHTML = '<p>No se encontraron restaurantes.</p>';
+        container.innerHTML = '<p class="mensaje-sin-resultados">No se encontraron restaurantes.</p>';
         return;
     }
 
@@ -170,7 +170,7 @@ document.addEventListener('DOMContentLoaded', async function() {
         console.log('Solicitudes aprobadas:', todasLasSolicitudes);
 
         if (todasLasSolicitudes.length === 0) {
-            container.innerHTML = '<p>No hay restaurantes aprobados disponibles.</p>';
+            container.innerHTML = '<p class="mensaje-sin-restaurantes">No hay restaurantes disponibles.</p>';
             return;
         }
 
@@ -180,6 +180,6 @@ document.addEventListener('DOMContentLoaded', async function() {
 
     } catch (error) {
         console.error('Error al cargar restaurantes:', error);
-        container.innerHTML = '<p>Error al cargar restaurantes. Revisa la consola para más detalles.</p>';
+        container.innerHTML = '<p class="mensaje-error">Error al cargar restaurantes. Revisa la consola para más detalles.</p>';
     }
 });
