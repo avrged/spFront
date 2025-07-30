@@ -43,7 +43,7 @@ function initEncuestaForm() {
 
                 estadisticasPayload.incrementar_descargas = 1;
 
-                const getResponse = await fetch(`http://52.23.26.163:7070/estadisticas?correo=${encodeURIComponent(correo || restaurante?.correo)}`);
+                const getResponse = await fetch(`http://75.101.159.172:7070/estadisticas?correo=${encodeURIComponent(correo || restaurante?.correo)}`);
                 
                 if (!getResponse.ok) {
                     const errorText = await getResponse.text();
@@ -163,9 +163,9 @@ function initEncuestaForm() {
                 });
 
                 console.log('🆔 ID de estadística encontrado:', estadisticaId);
-                console.log('🔗 URL PUT final:', `http://52.23.26.163:7070/estadisticas/${estadisticaId}`);
+                console.log('🔗 URL PUT final:', `http://75.101.159.172:7070/estadisticas/${estadisticaId}`);
 
-                const encuestaResponse = await fetch(`http://52.23.26.163:7070/estadisticas/${estadisticaId}`, {
+                const encuestaResponse = await fetch(`http://75.101.159.172:7070/estadisticas/${estadisticaId}`, {
                     method: 'PUT',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify(nuevosValores)
@@ -208,12 +208,12 @@ function initEncuestaForm() {
                 let menuUrl = restaurante.menu;
                 
                 if (menuUrl.includes('localhost:7070')) {
-                    menuUrl = menuUrl.replace('localhost:7070', '52.23.26.163:7070');
+                    menuUrl = menuUrl.replace('localhost:7070', '75.101.159.172:7070');
                     console.log('🔄 URL corregida para descarga:', menuUrl);
                 }
                 
                 if (!menuUrl.startsWith('http')) {
-                    menuUrl = `http://52.23.26.163:7070${menuUrl}`;
+                    menuUrl = `http://75.101.159.172:7070${menuUrl}`;
                 }
                 
                 try {

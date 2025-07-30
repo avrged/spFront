@@ -113,7 +113,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 try {
                     console.log('🗑️ Eliminando restaurante:', { nombre, idRestaurante });
                     
-                    const response = await fetch(`http://52.23.26.163:7070/solicitudes/${idRestaurante}`, {
+                    const response = await fetch(`http://75.101.159.172:7070/solicitudes/${idRestaurante}`, {
                         method: 'DELETE',
                         headers: {
                             'Content-Type': 'application/json'
@@ -195,7 +195,7 @@ document.addEventListener('DOMContentLoaded', function () {
                         horario: tds[5]?.textContent || ''
                     };
                     console.log('Datos de la solicitud a aprobar:', datosRestaurante);
-                    const response = await fetch(`http://52.23.26.163:7070/solicitudes/aprobar/${id}`, {
+                    const response = await fetch(`http://75.101.159.172:7070/solicitudes/aprobar/${id}`, {
                         method: 'PUT',
                         headers: {
                             'Content-Type': 'application/json'
@@ -224,7 +224,7 @@ document.addEventListener('DOMContentLoaded', function () {
                             imagen3
                         };
                         try {
-                            await fetch('http://52.23.26.163:7070/restaurantes', {
+                            await fetch('http://75.101.159.172:7070/restaurantes', {
                                 method: 'POST',
                                 headers: { 'Content-Type': 'application/json' },
                                 body: JSON.stringify(datosRestauranteInsert)
@@ -267,7 +267,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 }
                 if (!confirm('¿Seguro que deseas rechazar esta solicitud?')) return;
                 try {
-                    const response = await fetch(`http://52.23.26.163:7070/solicitudes/${id}`, {
+                    const response = await fetch(`http://75.101.159.172:7070/solicitudes/${id}`, {
                         method: 'DELETE'
                     });
                     if (response.ok) {
@@ -286,7 +286,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     async function cargarSolicitudes() {
         try {
-            const response = await fetch('http://52.23.26.163:7070/solicitudes');
+            const response = await fetch('http://75.101.159.172:7070/solicitudes');
             if (!response.ok) throw new Error('No se pudo obtener las solicitudes');
             const solicitudes = await response.json();
 
@@ -344,7 +344,7 @@ document.addEventListener('DOMContentLoaded', function () {
         try {
             console.log('📋 Cargando lista de restaurantes...');
             
-            const response = await fetch('http://52.23.26.163:7070/solicitudes');
+            const response = await fetch('http://75.101.159.172:7070/solicitudes');
             if (!response.ok) throw new Error('No se pudo obtener las solicitudes');
             const solicitudes = await response.json();
 
@@ -425,7 +425,7 @@ document.addEventListener('DOMContentLoaded', function () {
             if (!url.includes('/uploads/documents/')) {
                 url = '/uploads/documents/' + url;
             }
-            url = 'http://52.23.26.163:7070' + url;
+            url = 'http://75.101.159.172:7070' + url;
         }
         if (url && url.endsWith('.pdf')) {
             html += `<iframe src="${url}" style="width:600px;height:600px;border:none;"></iframe>`;

@@ -1,5 +1,5 @@
 const API_CONFIG = {
-    BASE_URL: 'http://52.23.26.163:7070',
+    BASE_URL: 'http://75.101.159.172:7070',
     ENDPOINTS: {
         RESTAURANTEROS: '/api/restauranteros',
         USUARIOS: '/api/usuarios',
