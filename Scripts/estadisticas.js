@@ -38,11 +38,11 @@ document.addEventListener('DOMContentLoaded', function() {
                 
                 if (estadisticaCorrecta) {
                     datosEstadisticas = estadisticaCorrecta;
-                    console.log('✅ Estadística encontrada para correo:', correoRestaurantero);
-                    console.log('📊 Datos específicos del restaurante:', datosEstadisticas);
+                    console.log('Estadística encontrada para correo:', correoRestaurantero);
+                    console.log('Datos específicos del restaurante:', datosEstadisticas);
                 } else {
-                    console.error('❌ No se encontró estadística para el correo:', correoRestaurantero);
-                    console.error('📋 Correos disponibles:', estadisticas.map(est => est.correo));
+                    console.error('No se encontró estadística para el correo:', correoRestaurantero);
+                    console.error('Correos disponibles:', estadisticas.map(est => est.correo));
                     throw new Error(`No se encontraron estadísticas para el correo: ${correoRestaurantero}`);
                 }
             }
@@ -59,12 +59,8 @@ document.addEventListener('DOMContentLoaded', function() {
             if (descargasTotalesEl) {
                 descargasTotalesEl.textContent = totalDescargas;
             }
-            if (porcentajeSubidaEl) {
-                const porcentaje = datosEstadisticas.porcentajeSubida || (totalDescargas > 0 ? 15 : 0);
-                porcentajeSubidaEl.textContent = `+${porcentaje}%`;
-            }
 
-            console.log('📊 Datos de descargas procesados:', {
+            console.log('Datos de descargas procesados:', {
                 totalDescargas,
                 descargasSemana: datosEstadisticas.descargasSemana || totalDescargas,
                 porcentaje: datosEstadisticas.porcentajeSubida || 0
@@ -82,7 +78,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 porcentajeExtranjero = Math.round((extranjero / total) * 100);
             }
 
-            console.log('🌍 Datos de origen calculados:', {
+            console.log('Datos de origen calculados:', {
                 nacional,
                 extranjero,
                 total,
@@ -172,7 +168,7 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         })
         .catch(error => {
-            console.error('❌ Error al cargar estadísticas:', error);
+            console.error('Error al cargar estadísticas:', error);
             alert(`No se pudieron cargar las estadísticas: ${error.message}`);
         });
 });
