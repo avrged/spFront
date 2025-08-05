@@ -38,12 +38,26 @@ document.addEventListener("DOMContentLoaded", function () {
     }
   }
 
+  // Función para obtener el último id_restaurantero
+  // Función para obtener el último usuario tipo restaurantero
+  async function obtenerUltimoRestaurantero() {
+    const response = await fetch('http://localhost:7070/restauranteros');
+    const data = await response.json();
+    if (!Array.isArray(data) || data.length === 0) return null;
+    // Filtrar solo usuarios tipo restaurantero
+    const restauranteros = data
+      .map(r => r.usuario || r)
+      .filter(u => u.tipo === 'restaurantero');
+    if (restauranteros.length === 0) return null;
+    // Tomar el de mayor id_usuario
+    return restauranteros.reduce((max, u) => u.id_usuario > max.id_usuario ? u : max, restauranteros[0]);
+  }
+
   form.addEventListener("submit", async function (event) {
     event.preventDefault();
 
     const restaurante = document.getElementById("restaurante");
-    const propietario = document.getElementById("propietario");
-    const correo = document.getElementById("correo");
+    // const correo = document.getElementById("correo");
     const numero = document.getElementById("numero");
     const facebook = document.getElementById("facebook");
     const instagram = document.getElementById("instagram");
@@ -57,8 +71,8 @@ document.addEventListener("DOMContentLoaded", function () {
     const menu = document.getElementsByName("menu")[0];
 
     const errorRestaurante = document.getElementById("error-nombre-restaurante");
-    const errorPropietario = document.getElementById("error-nombre-propietario");
-    const errorCorreo = document.getElementById("error-correo");
+    // const errorPropietario = document.getElementById("error-nombre-propietario");
+    // const errorCorreo = document.getElementById("error-correo");
     const errorNumero = document.getElementById("error-numero");
     const errorFacebook = document.getElementById("error-facebook");
     const errorInstagram = document.getElementById("error-instagram");
@@ -73,8 +87,6 @@ document.addEventListener("DOMContentLoaded", function () {
     let formularioValido = true;
 
     formularioValido &= validarCampoVacio(restaurante, errorRestaurante, "*Este campo es obligatorio.");
-    formularioValido &= validarCampoVacio(propietario, errorPropietario, "*Este campo es obligatorio.");
-    formularioValido &= validarCampoVacio(correo, errorCorreo, "*Este campo es obligatorio.");
     formularioValido &= validarCampoVacio(numero, errorNumero, "*Este campo es obligatorio.");
     formularioValido &= validarCampoVacio(direccion, errorDireccion, "*Este campo es obligatorio.");
     formularioValido &= validarCampoVacio(horario, errorHorario, "*Este campo es obligatorio.");
@@ -114,85 +126,92 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 
     if (formularioValido) {
-      const formData = new FormData();
+
       
-      formData.append('restaurante', restaurante.value.trim());
-      formData.append('propietario', propietario.value.trim());
-      formData.append('correo', correo.value.trim());
-      formData.append('numero', numero.value.replace(/\D/g, ''));
+      const ultimoRestaurantero = await obtenerUltimoRestaurantero();
+      if (!ultimoRestaurantero) {
+        alert("No se pudo obtener el usuario restaurantero.");
+        return;
+      }
+      
+      
+      if (!restaurante.value.trim()) {
+        alert("El nombre del restaurante es obligatorio.");
+        return;
+      }
+      
+      
+      console.log('Datos del restaurantero usados para el registro:', {
+        id_usuario: ultimoRestaurantero.id_usuario,
+        nombre: ultimoRestaurantero.nombre,
+        correo: ultimoRestaurantero.correo,
+        contrasena: ultimoRestaurantero.contrasena,
+        tipo: ultimoRestaurantero.tipo
+      });
+
+      
+      const formData = new FormData();
+      formData.append('nombreRestaurante', restaurante.value.trim());
+      formData.append('propietario', ultimoRestaurantero.nombre);
+      formData.append('correoElectronico', ultimoRestaurantero.correo);
+      formData.append('numeroCelular', numero.value.trim());
+      formData.append('horarios', horario.value.trim());
+      formData.append('idRestaurantero', ultimoRestaurantero.id_usuario);
       formData.append('direccion', direccion.value.trim());
-      formData.append('horario', horario.value.trim());
       formData.append('facebook', facebook.value.trim());
       formData.append('instagram', instagram.value.trim());
-      formData.append('estado', 'pendiente');
-      formData.append('etiqueta1', 'Seleccionar');
-      formData.append('etiqueta2', 'Seleccionar');
-      formData.append('etiqueta3', 'Seleccionar');
+      
+      console.log('Verificando campos antes de enviar:');
+      console.log('Nombre restaurante:', restaurante.value.trim());
+      console.log('Dirección:', direccion.value.trim());
+      console.log('Horarios:', horario.value.trim());
+      console.log('Número:', numero.value.trim());
+      console.log('Facebook:', facebook.value.trim());
+      console.log('Instagram:', instagram.value.trim());
+      console.log('ID Restaurantero:', ultimoRestaurantero.id_usuario);
+      console.log("Facebook:", facebook.value.trim());
+      
+      if (imagen1?.files[0]) formData.append('imagenPrincipal', imagen1.files[0]);
+      if (imagen2?.files[0]) formData.append('imagenSecundaria', imagen2.files[0]);
+      if (imagen3?.files[0]) formData.append('imagenPlatillo', imagen3.files[0]);
+      if (comprobante?.files[0]) formData.append('comprobanteDomicilio', comprobante.files[0]);
+      if (menu?.files[0]) formData.append('menuRestaurante', menu.files[0]);
 
-      if (imagen1?.files && imagen1.files.length === 1) {
-        formData.append('imagen1', imagen1.files[0], imagen1.files[0].name || 'imagen1.jpg');
-      }
-      if (imagen2?.files && imagen2.files.length === 1) {
-        formData.append('imagen2', imagen2.files[0], imagen2.files[0].name || 'imagen2.jpg');
-      }
-      if (imagen3?.files && imagen3.files.length === 1) {
-        formData.append('imagen3', imagen3.files[0], imagen3.files[0].name || 'imagen3.jpg');
-      }
+      
+      console.log('=== DATOS A ENVIAR ===');
+      const datosParaConsola = {};
+      formData.forEach((value, key) => {
+        if (value instanceof File) {
+          datosParaConsola[key] = `${value.name} (${value.size} bytes)`;
+        } else {
+          datosParaConsola[key] = value;
+        }
+      });
+      console.table(datosParaConsola);
+      
+      
+      console.log('Campo nombreRestaurante:', formData.get('nombreRestaurante'));
+      console.log('Longitud del nombre:', formData.get('nombreRestaurante')?.length);
 
-      const comprobanteArchivo = comprobante?.files[0];
-      if (comprobanteArchivo) {
-        formData.append('comprobante', comprobanteArchivo, comprobanteArchivo.name);
-      }
-
-      const menuArchivo = menu?.files && menu.files.length > 0 ? menu.files[0] : null;
-      if (menuArchivo) {
-        formData.append('menu', menuArchivo, menuArchivo.name);
-      }
-
+      
       try {
-        const response = await fetch('http://75.101.159.172:7070/solicitudes/with-files', {
+        console.log('Enviando solicitud al endpoint:', 'http://localhost:7070/registro-restaurante');
+        
+        const response = await fetch('http://localhost:7070/registro-restaurante', {
           method: 'POST',
           body: formData
         });
 
+        console.log('Respuesta del servidor:', response.status, response.statusText);
+
         if (response.ok) {
-          try {
-            console.log('Creando registro de estadísticas para:', correo.value.trim());
-            
-            const estadisticasPayload = {
-              correo: correo.value.trim(),
-              nacional: 0,
-              extranjero: 0,
-              descargas: 0,
-              comida: 0,
-              vista: 0,
-              horario: 0,
-              recomendacion: 0,
-              ubicacion: 0
-            };
-
-            const estadisticasResponse = await fetch('http://75.101.159.172:7070/estadisticas', {
-              method: 'POST',
-              headers: {
-                'Content-Type': 'application/json'
-              },
-              body: JSON.stringify(estadisticasPayload)
-            });
-
-            if (estadisticasResponse.ok) {
-              console.log('Registro de estadísticas creado exitosamente');
-            } else {
-              console.warn('Error al crear registro de estadísticas:', estadisticasResponse.status);
-            }
-          } catch (estadisticasError) {
-            console.error('Error al crear estadísticas:', estadisticasError);
-          }
-
+          const responseData = await response.json();
+          console.log('Datos de respuesta del servidor:', responseData);
           modal.style.display = "flex";
           form.reset();
         } else {
           const errorText = await response.text();
-          console.error('Error del servidor:', response.status, errorText);
+          console.error('Error del servidor:', errorText);
           alert(`Error al enviar la solicitud: ${response.status} - ${errorText}`);
         }
       } catch (error) {

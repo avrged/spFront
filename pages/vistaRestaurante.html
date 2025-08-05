@@ -40,6 +40,18 @@
             <button class="btn-menu" onclick="openEncuestaModal()">
                 <img src="../images/download.png" alt="Menú" class="icon-20"> Menú
             </button>
+            <script>
+            // Reemplazar el onclick del botón menú para prefetch antes de abrir el modal
+            document.addEventListener('DOMContentLoaded', function() {
+                const btnMenu = document.querySelector('.btn-menu');
+                if (btnMenu) {
+                    btnMenu.onclick = async function() {
+                        await window.prefetchCantidadDescargas();
+                        openEncuestaModal();
+                    };
+                }
+            });
+            </script>
         </div>
     </main>
 

@@ -1,10 +1,10 @@
 let todasLasSolicitudes = [];
 
-function crearTarjetaRestaurante(solicitud) {
+async function crearTarjetaRestaurante(solicitud) {
     const card = document.createElement('div');
     card.className = 'restaurante-card';
     
-    const identificador = solicitud.correo || solicitud.id || 'sin-identificador';
+    const identificador = solicitud.correo || solicitud.id_solicitud || solicitud.id || 'sin-identificador';
     const tipoId = solicitud.correo ? 'correo' : 'id';
     
     card.onclick = () => {
@@ -15,17 +15,34 @@ function crearTarjetaRestaurante(solicitud) {
         }
     };
 
+    let imagenSrc = '../images/img_rest2.jpg';
+    
+    if (solicitud.id_restaurantero) {
+        try {
+            const response = await fetch(`http://localhost:7070/imagenes/restaurantero/${solicitud.id_restaurantero}`);
+            if (response.ok) {
+                const responseData = await response.json();
+                const imagenes = responseData.data || responseData;
+                if (Array.isArray(imagenes) && imagenes.length > 0) {
+                    imagenSrc = imagenes[0].ruta_imagen;
+                }
+            }
+        } catch (error) {
+            console.log('Error al cargar imagen para tarjeta:', error);
+        }
+    }
+
     card.innerHTML = `
-        <img class="restaurante-img" src="${solicitud.imagen1 || '../images/img_rest2.jpg'}" alt="Restaurante ${solicitud.restaurante}">
+        <img class="restaurante-img" src="${imagenSrc}" alt="Restaurante ${solicitud.nombre_propuesto_restaurante || solicitud.restaurante}">
         <div class="restaurante-info">
-            <h3 class="restaurante-nombre">${solicitud.restaurante}</h3>
+            <h3 class="restaurante-nombre">${solicitud.nombre_propuesto_restaurante || solicitud.restaurante}</h3>
         </div>
     `;
     
     return card;
 }
 
-function mostrarRestaurantes(solicitudes) {
+async function mostrarRestaurantes(solicitudes) {
     const container = document.querySelector('.line-parent');
     if (!container) return;
 
@@ -36,24 +53,29 @@ function mostrarRestaurantes(solicitudes) {
         return;
     }
 
-    solicitudes.forEach(solicitud => {
-        const card = crearTarjetaRestaurante(solicitud);
+    
+    const tarjetas = await Promise.all(
+        solicitudes.map(solicitud => crearTarjetaRestaurante(solicitud))
+    );
+
+    
+    tarjetas.forEach(card => {
         container.appendChild(card);
     });
 }
 
-function buscarRestaurantes(termino) {
+async function buscarRestaurantes(termino) {
     if (!termino.trim()) {
-        aplicarFiltros();
+        await aplicarFiltros();
         return;
     }
 
     const restaurantesFiltrados = todasLasSolicitudes.filter(solicitud => 
-        solicitud.restaurante && 
-        solicitud.restaurante.toLowerCase().includes(termino.toLowerCase())
+        (solicitud.nombre_propuesto_restaurante || solicitud.restaurante) && 
+        (solicitud.nombre_propuesto_restaurante || solicitud.restaurante).toLowerCase().includes(termino.toLowerCase())
     );
 
-    mostrarRestaurantes(restaurantesFiltrados);
+    await mostrarRestaurantes(restaurantesFiltrados);
 }
 
 function restauranteTieneEtiqueta(restaurante, etiqueta) {
@@ -70,7 +92,7 @@ function restauranteTieneEtiqueta(restaurante, etiqueta) {
     );
 }
 
-function aplicarFiltros() {
+async function aplicarFiltros() {
     const filtroTipoComida = document.getElementById('filtroTipoComida')?.value || '';
     const filtroAmbiente = document.getElementById('filtroAmbiente')?.value || '';
     const filtroServicios = document.getElementById('filtroServicios')?.value || '';
@@ -78,7 +100,8 @@ function aplicarFiltros() {
 
     let restaurantesFiltrados = todasLasSolicitudes.filter(solicitud => {
         const coincideBusqueda = !terminoBusqueda.trim() || 
-            (solicitud.restaurante && solicitud.restaurante.toLowerCase().includes(terminoBusqueda.toLowerCase()));
+            ((solicitud.nombre_propuesto_restaurante || solicitud.restaurante) && 
+             (solicitud.nombre_propuesto_restaurante || solicitud.restaurante).toLowerCase().includes(terminoBusqueda.toLowerCase()));
         
         const coincideTipoComida = restauranteTieneEtiqueta(solicitud, filtroTipoComida);
         const coincideAmbiente = restauranteTieneEtiqueta(solicitud, filtroAmbiente);
@@ -87,10 +110,10 @@ function aplicarFiltros() {
         return coincideBusqueda && coincideTipoComida && coincideAmbiente && coincideServicios;
     });
 
-    mostrarRestaurantes(restaurantesFiltrados);
+    await mostrarRestaurantes(restaurantesFiltrados);
 }
 
-function limpiarFiltros() {
+async function limpiarFiltros() {
     const filtros = ['filtroTipoComida', 'filtroAmbiente', 'filtroServicios'];
     filtros.forEach(filtroId => {
         const filtro = document.getElementById(filtroId);
@@ -100,7 +123,7 @@ function limpiarFiltros() {
     const inputBusqueda = document.querySelector('.barra-busqueda input[type="text"]');
     if (inputBusqueda) inputBusqueda.value = '';
 
-    mostrarRestaurantes(todasLasSolicitudes);
+    await mostrarRestaurantes(todasLasSolicitudes);
 }
 
 function configurarBusqueda() {
@@ -149,7 +172,7 @@ document.addEventListener('DOMContentLoaded', async function() {
     try {
         console.log('Intentando cargar solicitudes...');
         
-        const response = await fetch('http://75.101.159.172:7070/solicitudes', {
+        const response = await fetch('http://localhost:7070/solicitudes', {
             method: 'GET',
             headers: { 'Content-Type': 'application/json' }
         });
@@ -158,8 +181,17 @@ document.addEventListener('DOMContentLoaded', async function() {
             throw new Error(`HTTP ${response.status}: ${response.statusText}`);
         }
 
-        const solicitudes = await response.json();
+        const responseData = await response.json();
+        console.log('Respuesta completa del servidor:', responseData);
+
+        
+        const solicitudes = responseData.data || responseData;
         console.log('Solicitudes recibidas:', solicitudes);
+
+        
+        if (!Array.isArray(solicitudes)) {
+            throw new Error('La respuesta no contiene un array de solicitudes válido');
+        }
 
         todasLasSolicitudes = solicitudes.filter(solicitud => 
             solicitud.estado === 'aprobado' || 
@@ -168,13 +200,14 @@ document.addEventListener('DOMContentLoaded', async function() {
         );
 
         console.log('Solicitudes aprobadas:', todasLasSolicitudes);
+        console.log('Estados disponibles:', solicitudes.map(s => `${s.nombre_propuesto_restaurante}: ${s.estado}`));
 
         if (todasLasSolicitudes.length === 0) {
             container.innerHTML = '<p class="mensaje-sin-restaurantes">No hay restaurantes disponibles.</p>';
             return;
         }
 
-        mostrarRestaurantes(todasLasSolicitudes);
+        await mostrarRestaurantes(todasLasSolicitudes);
 
         configurarBusqueda();
 

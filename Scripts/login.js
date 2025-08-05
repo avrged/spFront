@@ -100,64 +100,26 @@ function initializeLoginForm() {
         parent = parent.parentElement;
       }
 
-      fetch('http://75.101.159.172:7070/login', {
+      fetch('http://localhost:7070/auth/login', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           correo: correo.value,
-          contrasena: contrasena.value,
-          rol: rol
+          contrasena: contrasena.value
         })
       })
       .then(res => res.json())
       .then(data => {
-        if (data.success) {
-          let usuarioData = null;
-          
-          if (data.usuario) {
-            usuarioData = data.usuario;
-          }
-          else if (data.id) {
-            usuarioData = {
-              id: data.id,
-              correo: data.correo || correo.value,
-              rol: data.rol,
-              nombre: data.nombre || '',
-              telefono: data.telefono || ''
-            };
-          }
-          else {
-            usuarioData = {
-              id: data.id || data.userId || Date.now(),
-              correo: correo.value,
-              rol: data.rol || rol,
-              nombre: data.nombre || '',
-              telefono: data.telefono || ''
-            };
-          }
-          
-          if (usuarioData) {
-            sessionStorage.setItem('id', usuarioData.id);
-            sessionStorage.setItem('correo', usuarioData.correo);
-            sessionStorage.setItem('rol', usuarioData.rol);
-            sessionStorage.setItem('nombre', usuarioData.nombre);
-            sessionStorage.setItem('telefono', usuarioData.telefono || '');
-            
-            console.log('✅ Datos guardados en sessionStorage:', {
-              id: usuarioData.id,
-              correo: usuarioData.correo,
-              rol: usuarioData.rol,
-              nombre: usuarioData.nombre,
-              telefono: usuarioData.telefono
-            });
-          } else {
-            console.warn('⚠️ No se pudieron extraer datos del usuario, guardando datos básicos');
-            sessionStorage.setItem('correo', correo.value);
-            sessionStorage.setItem('rol', data.rol || rol);
-            sessionStorage.setItem('loginSuccess', 'true');
-          }
-          
-          if (data.rol === 'administrador') {
+        if (data.success && data.usuario) {
+          const usuario = data.usuario;
+          sessionStorage.setItem('id_usuario', usuario.id_usuario);
+          sessionStorage.setItem('correo', usuario.correo);
+          sessionStorage.setItem('nombre', usuario.nombre);
+          sessionStorage.setItem('tipo', usuario.tipo);
+
+          console.log('✅ Datos guardados en sessionStorage:', usuario);
+
+          if (usuario.tipo === 'admin') {
             window.location.href = 'vistaPrincipalAdmin.html';
           } else {
             window.location.href = 'vistaPrincipalRestaurantero.html';

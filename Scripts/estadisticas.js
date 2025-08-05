@@ -1,101 +1,88 @@
 document.addEventListener('DOMContentLoaded', function() {
-    const correoRestaurantero = sessionStorage.getItem('correo') || localStorage.getItem('correo');
-    const idUsuario = sessionStorage.getItem('id') || localStorage.getItem('id');
-    
-    if (!correoRestaurantero && !idUsuario) {
-        alert('Error: No se pudo identificar al restaurantero. Por favor, inicie sesión nuevamente.');
+    const idRestaurantero = sessionStorage.getItem('id_restaurantero') || localStorage.getItem('id_restaurantero');
+    if (!idRestaurantero) {
+        alert('Error: No se pudo identificar el restaurantero. Por favor, inicie sesión nuevamente.');
         window.location.href = 'loginRest.html';
         return;
     }
 
-    const parametros = new URLSearchParams();
-    if (correoRestaurantero) {
-        parametros.append('correo', correoRestaurantero);
-    }
-    if (idUsuario) {
-        parametros.append('id', idUsuario);
-    }
-
-    fetch(`http://75.101.159.172:7070/estadisticas?${parametros.toString()}`)
-        .then(res => {
-            if (!res.ok) {
-                throw new Error(`HTTP ${res.status}: ${res.statusText}`);
-            }
-            return res.json();
-        })
-        .then(estadisticas => {
-            if (!estadisticas || typeof estadisticas !== 'object') {
-                throw new Error('Datos de estadísticas inválidos');
-            }
-
-            let datosEstadisticas = estadisticas;
-            if (Array.isArray(estadisticas)) {
-                if (estadisticas.length === 0) {
-                    throw new Error('No se encontraron estadísticas para este restaurante');
-                }
+    fetch(`http://localhost:7070/descargas/restaurantero/${idRestaurantero}`)
+        .then(res => res.json())
+        .then(data => {
+            let maxDescargas = 0;
+            let nacional = 0;
+            let extranjero = 0;
+            
+            const opinionCount = {};
+            if (data && Array.isArray(data.data) && data.data.length > 0) {
+                maxDescargas = Math.max(...data.data.map(d => d.cantidad_descargas || 0));
                 
-                const estadisticaCorrecta = estadisticas.find(est => est.correo === correoRestaurantero);
-                
-                if (estadisticaCorrecta) {
-                    datosEstadisticas = estadisticaCorrecta;
-                    console.log('Estadística encontrada para correo:', correoRestaurantero);
-                    console.log('Datos específicos del restaurante:', datosEstadisticas);
-                } else {
-                    console.error('No se encontró estadística para el correo:', correoRestaurantero);
-                    console.error('Correos disponibles:', estadisticas.map(est => est.correo));
-                    throw new Error(`No se encontraron estadísticas para el correo: ${correoRestaurantero}`);
+                data.data.forEach(d => {
+                    if ((d.origen || '').toLowerCase() === 'nacional') nacional++;
+                    if ((d.origen || '').toLowerCase() === 'extranjero') extranjero++;
+                    
+                    if (d.opinion) {
+                        const op = d.opinion.trim();
+                        opinionCount[op] = (opinionCount[op] || 0) + 1;
+                    }
+                });
+            } else if (data && typeof data.data?.cantidad_descargas === 'number') {
+                maxDescargas = data.data.cantidad_descargas;
+                if ((data.data.origen || '').toLowerCase() === 'nacional') nacional = 1;
+                if ((data.data.origen || '').toLowerCase() === 'extranjero') extranjero = 1;
+                if (data.data.opinion) {
+                    const op = data.data.opinion.trim();
+                    opinionCount[op] = (opinionCount[op] || 0) + 1;
                 }
             }
-
-            const descargasSemanaEl = document.querySelector('.estadistica-menu p strong');
-            const descargasTotalesEl = document.querySelectorAll('.estadistica-menu p strong')[1];
-            const porcentajeSubidaEl = document.querySelector('.porcentaje-subida');
-
-            const totalDescargas = datosEstadisticas.descargas || 0;
-
-            if (descargasSemanaEl) {
-                descargasSemanaEl.textContent = datosEstadisticas.descargasSemana || totalDescargas;
+            
+            const descargasMenuEl = document.querySelector('.estadistica-menu p strong');
+            if (descargasMenuEl) {
+                descargasMenuEl.textContent = maxDescargas;
             }
-            if (descargasTotalesEl) {
-                descargasTotalesEl.textContent = totalDescargas;
-            }
-
-            console.log('Datos de descargas procesados:', {
-                totalDescargas,
-                descargasSemana: datosEstadisticas.descargasSemana || totalDescargas,
-                porcentaje: datosEstadisticas.porcentajeSubida || 0
-            });
-
-            const nacional = datosEstadisticas.nacional || 0;
-            const extranjero = datosEstadisticas.extranjero || 0;
-            const total = nacional + extranjero;
-
-            let porcentajeNacional = 0;
-            let porcentajeExtranjero = 0;
-
-            if (total > 0) {
-                porcentajeNacional = Math.round((nacional / total) * 100);
-                porcentajeExtranjero = Math.round((extranjero / total) * 100);
-            }
-
-            console.log('Datos de origen calculados:', {
-                nacional,
-                extranjero,
-                total,
-                porcentajeNacional,
-                porcentajeExtranjero
-            });
-
+            
             const localesEl = document.querySelector('.estadistica-origen .locales');
             const extranjerosEl = document.querySelector('.estadistica-origen .extranjeros');
-
             if (localesEl) {
-                localesEl.textContent = `● Locales ${porcentajeNacional}% (${nacional})`;
+                localesEl.textContent = `● Locales (${nacional})`;
             }
             if (extranjerosEl) {
-                extranjerosEl.textContent = `● Extranjeros ${porcentajeExtranjero}% (${extranjero})`;
+                extranjerosEl.textContent = `● Extranjeros (${extranjero})`;
             }
-
+            
+            const sorted = Object.entries(opinionCount)
+                .sort((a, b) => b[1] - a[1]);
+            const aspectosCanvas = document.getElementById('graficoAspectos');
+            if (aspectosCanvas) {
+                if (sorted.length > 0) {
+                    new Chart(aspectosCanvas, {
+                        type: 'bar',
+                        data: {
+                            labels: sorted.map(([op]) => op),
+                            datasets: [{
+                                label: 'Veces mencionado',
+                                data: sorted.map(([, count]) => count),
+                                backgroundColor: ['#6b1e1e', '#a97c7c', '#e07878'],
+                                borderRadius: 6
+                            }]
+                        },
+                        options: {
+                            indexAxis: 'y',
+                            plugins: {
+                                legend: { display: false },
+                                title: { display: false }
+                            },
+                            scales: {
+                                x: { beginAtZero: true, ticks: { precision:0 } },
+                                y: { ticks: { color: '#6b1e1e', font: { weight: 'bold' } } }
+                            }
+                        }
+                    });
+                } else {
+                    aspectosCanvas.parentElement.innerHTML = '<div style="text-align:center;color:#a97c7c;">Sin datos de opiniones.</div>';
+                }
+            }
+            
             const ctxPie = document.getElementById('graficoOrigen');
             if (ctxPie) {
                 new Chart(ctxPie, {
@@ -103,7 +90,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     data: {
                         labels: ['Locales', 'Extranjeros'],
                         datasets: [{
-                            data: [porcentajeNacional, porcentajeExtranjero],
+                            data: [nacional, extranjero],
                             backgroundColor: ['#6b1e1e', '#e07878']
                         }]
                     },
@@ -114,61 +101,11 @@ document.addEventListener('DOMContentLoaded', function() {
                     }
                 });
             }
-
-            const comida = datosEstadisticas.comida || 0;
-            const ubicacion = datosEstadisticas.ubicacion || 0;
-            const recomendacion = datosEstadisticas.recomendacion || 0;
-            const horario = datosEstadisticas.horario || 0;
-            const vista = datosEstadisticas.vista || 0;
-            
-            const totalAspectos = comida + ubicacion + recomendacion + horario + vista;
-            
-            let aspectosData = [];
-            
-            if (totalAspectos > 0) {
-                aspectosData = [
-                    { nombre: 'Comida', porcentaje: Math.round((comida / totalAspectos) * 100), cantidad: comida },
-                    { nombre: 'Ubicación', porcentaje: Math.round((ubicacion / totalAspectos) * 100), cantidad: ubicacion },
-                    { nombre: 'Recomendación', porcentaje: Math.round((recomendacion / totalAspectos) * 100), cantidad: recomendacion },
-                    { nombre: 'Horario', porcentaje: Math.round((horario / totalAspectos) * 100), cantidad: horario },
-                    { nombre: 'Vista', porcentaje: Math.round((vista / totalAspectos) * 100), cantidad: vista }
-                ];
-            } else {
-                aspectosData = [
-                    { nombre: 'Comida', porcentaje: 0, cantidad: 0 },
-                    { nombre: 'Ubicación', porcentaje: 0, cantidad: 0 },
-                    { nombre: 'Recomendación', porcentaje: 0, cantidad: 0 },
-                    { nombre: 'Horario', porcentaje: 0, cantidad: 0 },
-                    { nombre: 'Vista', porcentaje: 0, cantidad: 0 }
-                ];
-            }
-
-            const ctxBar = document.getElementById('graficoAspectos');
-            if (ctxBar) {
-                new Chart(ctxBar, {
-                    type: 'bar',
-                    data: {
-                        labels: aspectosData.map(a => a.nombre),
-                        datasets: [{
-                            label: 'Porcentaje',
-                            data: aspectosData.map(a => a.porcentaje),
-                            backgroundColor: ['#6b1e1e', '#c06060', '#efcfcf', '#d4a4a4', '#b8b8b8']
-                        }]
-                    },
-                    options: {
-                        indexAxis: 'y',
-                        scales: {
-                            x: { beginAtZero: true, max: 100 }
-                        },
-                        plugins: {
-                            legend: { display: false }
-                        }
-                    }
-                });
-            }
+            console.log('Cantidad máxima de descargas:', maxDescargas);
+            console.log('Locales:', nacional, 'Extranjeros:', extranjero);
         })
-        .catch(error => {
-            console.error('Error al cargar estadísticas:', error);
-            alert(`No se pudieron cargar las estadísticas: ${error.message}`);
+        .catch(err => {
+            console.error('Error al obtener descargas:', err);
+            alert('No se pudieron cargar las descargas.');
         });
 });

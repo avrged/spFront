@@ -1,3 +1,26 @@
+
+async function prefetchCantidadDescargas() {
+    const restaurante = window.restauranteActual;
+    const params = new URLSearchParams(window.location.search);
+    const restauranteId = params.get('id');
+    const idRestaurantero = restaurante?.id_restaurantero || restauranteId;
+    if (!idRestaurantero) return;
+    try {
+        const resp = await fetch(`http://localhost:7070/descargas/restaurantero/${idRestaurantero}?_=${Date.now()}`);
+        if (resp.ok) {
+            const data = await resp.json();
+            if (data && Array.isArray(data.data) && data.data.length > 0) {
+                console.log('🟢 [PRE] Lista completa de descargas:', data.data);
+                const first = data.data[0];
+                console.log('🟢 [PRE] Primer objeto (más reciente) recibido del backend:', first);
+            } else if (data && typeof data.data?.cantidad_descargas === 'number') {
+                console.log('🟢 [PRE] Lista de descargas (objeto único):', data.data);
+            }
+        }
+    } catch (e) {
+        console.warn('[PRE] No se pudo obtener la cantidad de descargas actual');
+    }
+}
 function initEncuestaForm() {
     const form = document.getElementById('encuestaForm');
     const atraccion = document.getElementById('atraccion');
@@ -14,6 +37,10 @@ function initEncuestaForm() {
         }
         e.preventDefault();
 
+        
+        const submitBtn = form.querySelector('button[type="submit"], input[type="submit"]');
+        if (submitBtn) submitBtn.disabled = true;
+
         const restaurante = window.restauranteActual;
         const params = new URLSearchParams(window.location.search);
         const restauranteId = params.get('id');
@@ -29,234 +56,126 @@ function initEncuestaForm() {
 
         try {
             
-            try {
-                const estadisticasPayload = {
-                    correo: correo || restaurante?.correo,
-                    accion: 'incrementar'
-                };
-
-                if (origen.value === 'nacional') {
-                    estadisticasPayload.incrementar_nacional = 1;
-                } else if (origen.value === 'extranjero') {
-                    estadisticasPayload.incrementar_extranjero = 1;
-                }
-
-                estadisticasPayload.incrementar_descargas = 1;
-
-                const getResponse = await fetch(`http://75.101.159.172:7070/estadisticas?correo=${encodeURIComponent(correo || restaurante?.correo)}`);
-                
-                if (!getResponse.ok) {
-                    const errorText = await getResponse.text();
-                    throw new Error(`Error al obtener estadística: ${getResponse.status} - ${errorText}`);
-                }
-                
-                const responseText = await getResponse.text();
-                
-                let estadisticaExistente;
-                try {
-                    estadisticaExistente = JSON.parse(responseText);
-                } catch (parseError) {
-                    throw new Error(`Respuesta no es JSON válido: ${responseText.substring(0, 100)}`);
-                }
-                
-                let estadisticaId;
-                let valoresActuales = {
-                    nacional: 0,
-                    extranjero: 0,
-                    descargas: 0,
-                    comida: 0,
-                    vista: 0,
-                    horario: 0,
-                    recomendacion: 0,
-                    ubicacion: 0
-                };
-                
-                const correoObjectivo = correo || restaurante?.correo;
-                console.log('🎯 Buscando estadística para correo:', correoObjectivo);
-                
-                if (Array.isArray(estadisticaExistente)) {
-                    const estadisticaCorrecta = estadisticaExistente.find(est => est.correo === correoObjectivo);
-                    
-                    if (estadisticaCorrecta) {
-                        estadisticaId = estadisticaCorrecta.id_estadistica;
-                        valoresActuales.correoOriginal = estadisticaCorrecta.correo; 
-                        valoresActuales.nacional = estadisticaCorrecta.nacional || 0;
-                        valoresActuales.extranjero = estadisticaCorrecta.extranjero || 0;
-                        valoresActuales.descargas = estadisticaCorrecta.descargas || 0;
-                        valoresActuales.comida = estadisticaCorrecta.comida || 0;
-                        valoresActuales.vista = estadisticaCorrecta.vista || 0;
-                        valoresActuales.horario = estadisticaCorrecta.horario || 0;
-                        valoresActuales.recomendacion = estadisticaCorrecta.recomendacion || 0;
-                        valoresActuales.ubicacion = estadisticaCorrecta.ubicacion || 0;
-                        console.log('✅ Estadística encontrada para correo:', correoObjectivo);
-                    } else {
-                        console.error('❌ No se encontró estadística para el correo:', correoObjectivo);
-                        console.error('📋 Correos disponibles:', estadisticaExistente.map(est => est.correo));
-                        throw new Error(`No se encontró estadística para el correo: ${correoObjectivo}`);
-                    }
-                } else if (estadisticaExistente.id_estadistica) {
-                    if (estadisticaExistente.correo === correoObjectivo) {
-                        estadisticaId = estadisticaExistente.id_estadistica;
-                        valoresActuales.correoOriginal = estadisticaExistente.correo;
-                        valoresActuales.nacional = estadisticaExistente.nacional || 0;
-                        valoresActuales.extranjero = estadisticaExistente.extranjero || 0;
-                        valoresActuales.descargas = estadisticaExistente.descargas || 0;
-                        valoresActuales.comida = estadisticaExistente.comida || 0;
-                        valoresActuales.vista = estadisticaExistente.vista || 0;
-                        valoresActuales.horario = estadisticaExistente.horario || 0;
-                        valoresActuales.recomendacion = estadisticaExistente.recomendacion || 0;
-                        valoresActuales.ubicacion = estadisticaExistente.ubicacion || 0;
-                        console.log('✅ Estadística directa encontrada para correo:', correoObjectivo);
-                    } else {
-                        console.error('❌ El correo no coincide:', {
-                            esperado: correoObjectivo,
-                            recibido: estadisticaExistente.correo
-                        });
-                        throw new Error(`Correo no coincide. Esperado: ${correoObjectivo}, Recibido: ${estadisticaExistente.correo}`);
-                    }
-                } else {
-                    console.error('❌ Estructura de estadística no reconocida:', estadisticaExistente);
-                    throw new Error('No se encontró id_estadistica en la respuesta');
-                }
-
-                if (!estadisticaId) {
-                    throw new Error('ID de estadística es null o undefined');
-                }
-
-                console.log('📊 Valores actuales:', valoresActuales);
-
-                const nuevosValores = {
-                    correo: valoresActuales.correoOriginal || (correo || restaurante?.correo),
-                    nacional: valoresActuales.nacional,
-                    extranjero: valoresActuales.extranjero,
-                    descargas: valoresActuales.descargas + 1, 
-                    comida: valoresActuales.comida,
-                    vista: valoresActuales.vista,
-                    horario: valoresActuales.horario,
-                    recomendacion: valoresActuales.recomendacion,
-                    ubicacion: valoresActuales.ubicacion
-                };
-
-                if (origen.value === 'nacional') {
-                    nuevosValores.nacional = valoresActuales.nacional + 1;
-                } else if (origen.value === 'extranjero') {
-                    nuevosValores.extranjero = valoresActuales.extranjero + 1;
-                }
-
-                if (atraccion.value === 'comida') {
-                    nuevosValores.comida = valoresActuales.comida + 1;
-                } else if (atraccion.value === 'vista') {
-                    nuevosValores.vista = valoresActuales.vista + 1;
-                } else if (atraccion.value === 'horario') {
-                    nuevosValores.horario = valoresActuales.horario + 1;
-                } else if (atraccion.value === 'recomendacion') {
-                    nuevosValores.recomendacion = valoresActuales.recomendacion + 1;
-                } else if (atraccion.value === 'ubicacion') {
-                    nuevosValores.ubicacion = valoresActuales.ubicacion + 1;
-                }
-
-                console.log('📈 Valores incrementados:', {
-                    antes: valoresActuales,
-                    despues: nuevosValores,
-                    incremento_origen: origen.value,
-                    incremento_atraccion: atraccion.value
-                });
-
-                console.log('🆔 ID de estadística encontrado:', estadisticaId);
-                console.log('🔗 URL PUT final:', `http://75.101.159.172:7070/estadisticas/${estadisticaId}`);
-
-                const encuestaResponse = await fetch(`http://75.101.159.172:7070/estadisticas/${estadisticaId}`, {
-                    method: 'PUT',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(nuevosValores)
-                });
-
-                console.log('📈 Respuesta del servidor de estadísticas:', {
-                    status: encuestaResponse.status,
-                    statusText: encuestaResponse.statusText,
-                    ok: encuestaResponse.ok
-                });
-
-                if (encuestaResponse.ok) {
-                    const resultado = await encuestaResponse.text();
-                    console.log('✅ Respuesta PUT cruda:', resultado);
-                    
-                    try {
-                        const resultadoParsed = JSON.parse(resultado);
-                        console.log('✅ Estadísticas actualizadas:', resultadoParsed);
-                    } catch (parseError) {
-                        console.log('✅ Respuesta PUT (texto):', resultado);
-                    }
-                } else {
-                    try {
-                        const errorText = await encuestaResponse.text();
-                        console.error('❌ Error del servidor (estadísticas):', {
-                            status: encuestaResponse.status,
-                            error: errorText
-                        });
-                    } catch (e) {
-                        console.warn('⚠️ Error al actualizar estadísticas:', encuestaResponse.status);
-                    }
-                }
-            } catch (estadisticasError) {
-                console.error('❌ Error al enviar estadísticas:', estadisticasError);
-            }
-
             if (restaurante && restaurante.menu) {
                 console.log('📄 Descargando menú desde:', restaurante.menu);
+                let menuUrlOriginal = restaurante.menu;
+                let menuUrlAlterna = menuUrlOriginal;
                 
-                let menuUrl = restaurante.menu;
-                
-                if (menuUrl.includes('localhost:7070')) {
-                    menuUrl = menuUrl.replace('localhost:7070', '75.101.159.172:7070');
-                    console.log('🔄 URL corregida para descarga:', menuUrl);
+                if (menuUrlOriginal.includes('localhost:7070')) {
+                    menuUrlAlterna = menuUrlOriginal.replace('localhost:7070', '75.101.159.172:7070');
+                    console.log('🔄 URL corregida para descarga:', menuUrlAlterna);
+                } else if (!menuUrlOriginal.startsWith('http')) {
+                    
+                    menuUrlAlterna = `http://75.101.159.172:7070${menuUrlOriginal}`;
                 }
-                
-                if (!menuUrl.startsWith('http')) {
-                    menuUrl = `http://75.101.159.172:7070${menuUrl}`;
+
+                let descargado = false;
+                let ultimoStatus = null;
+                let urlsAProbar = [menuUrlOriginal];
+                if (menuUrlAlterna !== menuUrlOriginal) {
+                    urlsAProbar.push(menuUrlAlterna);
                 }
-                
-                try {
-                    console.log('⬇️ Intentando descargar desde:', menuUrl);
-                    
-                    const menuResponse = await fetch(menuUrl);
-                    
-                    console.log('📥 Respuesta de descarga:', {
-                        status: menuResponse.status,
-                        statusText: menuResponse.statusText,
-                        ok: menuResponse.ok
-                    });
-                    
-                    if (menuResponse.ok) {
-                        const blob = await menuResponse.blob();
-                        const downloadUrl = window.URL.createObjectURL(blob);
-                        
-                        const link = document.createElement('a');
-                        link.href = downloadUrl;
-                        link.download = `menu_${restaurante.restaurante || 'restaurante'}.pdf`;
-                        document.body.appendChild(link);
-                        link.click();
-                        document.body.removeChild(link);
-                        
-                        window.URL.revokeObjectURL(downloadUrl);
-                        
-                        console.log('✅ Menú descargado exitosamente');
-                    } else {
-                        console.error('❌ Error al descargar el menú:', menuResponse.status);
-                        alert('No se pudo descargar el menú. Por favor, contacta al restaurante.');
+
+                for (let url of urlsAProbar) {
+                    try {
+                        console.log('⬇️ Intentando descargar desde:', url);
+                        const menuResponse = await fetch(url);
+                        console.log('📥 Respuesta de descarga:', {
+                            status: menuResponse.status,
+                            statusText: menuResponse.statusText,
+                            ok: menuResponse.ok
+                        });
+                        ultimoStatus = menuResponse.status;
+                        if (menuResponse.ok) {
+                            const blob = await menuResponse.blob();
+                            const downloadUrl = window.URL.createObjectURL(blob);
+                            const link = document.createElement('a');
+                            link.href = downloadUrl;
+                            link.download = `menu_${restaurante.restaurante || 'restaurante'}.pdf`;
+                            document.body.appendChild(link);
+                            link.click();
+                            document.body.removeChild(link);
+                            window.URL.revokeObjectURL(downloadUrl);
+                            console.log('✅ Menú descargado exitosamente');
+                            descargado = true;
+                            break;
+                        }
+                    } catch (downloadError) {
+                        console.error('❌ Error en la descarga:', downloadError);
+                        ultimoStatus = downloadError.message;
                     }
-                } catch (downloadError) {
-                    console.error('❌ Error en la descarga:', downloadError);
-                    
-                    if (downloadError.message.includes('CORS') || downloadError.message.includes('NetworkError')) {
-                        alert('Error de conexión al descargar el menú. El servidor puede no estar disponible.');
-                    } else {
-                        alert('Error al descargar el menú.');
-                    }
+                }
+                if (!descargado) {
+                    alert('No se pudo descargar el menú. Por favor, contacta al restaurante.');
                 }
             } else {
                 console.warn('⚠️ No hay menú disponible para este restaurante');
                 alert('Este restaurante no tiene menú disponible para descarga.');
+            }
+
+            
+            const idRestaurantero = restaurante?.id_restaurantero || restauranteId;
+            
+            let origenEncuesta = origen.value;
+            if (origenEncuesta.toLowerCase() === 'nacional') origenEncuesta = 'Nacional';
+            if (origenEncuesta.toLowerCase() === 'extranjero') origenEncuesta = 'Extranjero';
+
+            
+            let opinionEncuesta = atraccion.value.trim().toLowerCase();
+            if (opinionEncuesta === 'comida' || opinionEncuesta === 'la comida') opinionEncuesta = 'La comida';
+            if (opinionEncuesta === 'ubicacion' || opinionEncuesta === 'la ubicacion') opinionEncuesta = 'La ubicacion';
+            if (opinionEncuesta === 'recomendacion') opinionEncuesta = 'Recomendacion';
+            if (opinionEncuesta === 'horario' || opinionEncuesta === 'el horario') opinionEncuesta = 'El horario';
+            if (opinionEncuesta === 'vista' || opinionEncuesta === 'la vista') opinionEncuesta = 'La vista';
+
+
+            if (idRestaurantero) {
+                
+                let cantidadDescargas = 1;
+                try {
+                    const resp = await fetch(`http://localhost:7070/descargas/restaurantero/${idRestaurantero}?_=${Date.now()}`);
+                    if (resp.ok) {
+                        const data = await resp.json();
+                        if (data && Array.isArray(data.data) && data.data.length > 0) {
+                            const first = data.data[0];
+                            console.log('🟢 Primer objeto (más reciente) recibido del backend:', first);
+                            if (typeof first.cantidad_descargas === 'number') {
+                                cantidadDescargas = first.cantidad_descargas;
+                            }
+                        } else if (data && typeof data.data?.cantidad_descargas === 'number') {
+                            cantidadDescargas = data.data.cantidad_descargas;
+                        }
+                    }
+                } catch (e) {
+                    console.warn('No se pudo obtener la cantidad de descargas actual, se usará 0');
+                }
+                console.log('📊 Cantidad de descargas actual:', cantidadDescargas + 1);
+
+                
+                const encuestaBody = {
+                    cantidad_descargas: cantidadDescargas + 1,
+                    origen: origenEncuesta,
+                    opinion: opinionEncuesta,
+                    id_restaurantero: idRestaurantero
+                };
+                console.log('📊 Enviando encuesta con los siguientes datos:', encuestaBody);
+                try {
+                    const response = await fetch('http://localhost:7070/descargas', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(encuestaBody)
+                    });
+                    if (response.ok) {
+                        console.log('✅ Encuesta enviada correctamente');
+                    } else {
+                        const errorText = await response.text();
+                        alert('Error al registrar la encuesta: ' + errorText);
+                    }
+                } catch (error) {
+                    alert('Error al enviar la encuesta: ' + error.message);
+                }
+            } else {
+                alert('No se pudo identificar el restaurante para registrar la encuesta.');
             }
 
             if (typeof closeEncuestaModal === "function") {
@@ -264,10 +183,12 @@ function initEncuestaForm() {
             } else if (typeof cerrarModalEncuesta === "function") {
                 cerrarModalEncuesta();
             }
-            
         } catch (error) {
             console.error('❌ Error al procesar la encuesta:', error);
             alert('Ocurrió un error al enviar la encuesta.');
+        } finally {
+            
+            if (submitBtn) submitBtn.disabled = false;
         }
     });
 
@@ -335,3 +256,4 @@ function descargarMenuPDF(restauranteId) {
 }
 
 window.initEncuestaForm = initEncuestaForm;
+window.prefetchCantidadDescargas = prefetchCantidadDescargas;

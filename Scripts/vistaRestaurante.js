@@ -9,7 +9,7 @@ document.addEventListener('DOMContentLoaded', async function() {
     async function verificarBackend(reintentos = 3) {
         for (let i = 0; i < reintentos; i++) {
             try {
-                const response = await fetch('http://75.101.159.172:7070/solicitudes', {
+                const response = await fetch('http://localhost:7070/solicitudes', {
                     method: 'GET',
                     headers: { 'Content-Type': 'application/json' },
                     timeout: 10000
@@ -38,10 +38,10 @@ document.addEventListener('DOMContentLoaded', async function() {
         
         const backendDisponible = await verificarBackend();
         if (!backendDisponible) {
-            throw new Error('Backend no disponible en http://75.101.159.172:7070');
+            throw new Error('Backend no disponible en http://localhost:7070');
         }
-        
-        const response = await fetch('http://75.101.159.172:7070/solicitudes', {
+
+        const response = await fetch('http://localhost:7070/solicitudes', {
             method: 'GET',
             headers: { 'Content-Type': 'application/json' }
         });
@@ -50,15 +50,31 @@ document.addEventListener('DOMContentLoaded', async function() {
             throw new Error(`HTTP ${response.status}: ${response.statusText}`);
         }
         
-        const solicitudes = await response.json();
+        const responseData = await response.json();
+        console.log('📋 Respuesta completa:', responseData);
+        
+        const solicitudes = responseData.data || responseData;
         console.log('📋 Solicitudes obtenidas:', solicitudes);
         console.log('📊 Total de solicitudes:', solicitudes.length);
         
-        if (solicitudes.length > 0) {
-            console.log('🔬 Estructura de datos (primer elemento):', Object.keys(solicitudes[0]));
-            console.log('🆔 Datos disponibles:', solicitudes.map(s => ({
-                id: s.id,
-                restaurante: s.restaurante,
+        if (!Array.isArray(solicitudes)) {
+            throw new Error('La respuesta no contiene un array de solicitudes válido');
+        }
+        
+        const solicitudesAprobadas = solicitudes.filter(s => 
+            s.estado === 'aprobado' || 
+            s.estado === 'Aprobado' ||
+            s.estado === 'APROBADO'
+        );
+        
+        console.log('✅ Solicitudes aprobadas encontradas:', solicitudesAprobadas.length);
+        console.log('📊 Estados disponibles:', solicitudes.map(s => s.estado));
+        
+        if (solicitudesAprobadas.length > 0) {
+            console.log('🔬 Estructura de datos (primer elemento aprobado):', Object.keys(solicitudesAprobadas[0]));
+            console.log('🆔 Datos aprobados disponibles:', solicitudesAprobadas.map(s => ({
+                id_solicitud: s.id_solicitud,
+                nombre_propuesto_restaurante: s.nombre_propuesto_restaurante,
                 estado: s.estado,
                 correo: s.correo
             })));
@@ -67,59 +83,52 @@ document.addEventListener('DOMContentLoaded', async function() {
         let restauranteEncontrado = null;
         
         if (correo) {
-            restauranteEncontrado = solicitudes.find(s => 
+            restauranteEncontrado = solicitudesAprobadas.find(s => 
                 s.correo && s.correo.toLowerCase() === correo.toLowerCase()
             );
             if (restauranteEncontrado) {
-                console.log('✅ Restaurante encontrado por correo:', correo);
+                console.log('✅ Restaurante aprobado encontrado por correo:', correo);
             }
         }
         
         if (!restauranteEncontrado && id && id !== 'undefined' && id !== 'null') {
-            restauranteEncontrado = solicitudes.find(s => 
-                s.id == id || 
-                s.idRestaurante == id || 
-                s.restauranteId == id ||
-                s.id_restaurante == id
+            restauranteEncontrado = solicitudesAprobadas.find(s => 
+                s.id_solicitud == id || 
+                s.id == id
             );
             if (restauranteEncontrado) {
-                console.log('✅ Restaurante encontrado por ID:', id);
+                console.log('✅ Restaurante aprobado encontrado por ID:', id);
             }
         }
         
         if (!restauranteEncontrado && id && !isNaN(parseInt(id))) {
             const index = parseInt(id);
-            if (index >= 0 && index < solicitudes.length) {
-                restauranteEncontrado = solicitudes[index];
-                console.log('✅ Restaurante encontrado por índice:', index);
+            if (index >= 0 && index < solicitudesAprobadas.length) {
+                restauranteEncontrado = solicitudesAprobadas[index];
+                console.log('✅ Restaurante aprobado encontrado por índice:', index);
             }
         }
         
-        if (!restauranteEncontrado) {
-            const solicitudesAprobadas = solicitudes.filter(s => 
-                s.estado === 'aprobado' || 
-                s.estado === 'Aprobado' ||
-                s.estado === 'APROBADO'
-            );
-            
-            if (solicitudesAprobadas.length > 0) {
-                restauranteEncontrado = solicitudesAprobadas[0];
-                console.log('✅ Usando primer restaurante aprobado disponible');
-            }
-        }
-        
-        if (!restauranteEncontrado && solicitudes.length > 0) {
-            restauranteEncontrado = solicitudes[0];
-            console.log('✅ Usando primer restaurante disponible como fallback');
+        if (!restauranteEncontrado && solicitudesAprobadas.length > 0) {
+            restauranteEncontrado = solicitudesAprobadas[0];
+            console.log('✅ Usando primer restaurante aprobado disponible');
         }
         
         if (!restauranteEncontrado) {
-            console.log('No se encontró restaurante específico, redirigiendo a página principal');
+            console.log('❌ No se encontraron restaurantes aprobados');
             console.log('Parámetros buscados:', { id, correo });
-            console.log('Solicitudes disponibles:', solicitudes.map(s => ({ id: s.id, correo: s.correo })));
+            console.log('Total solicitudes aprobadas:', solicitudesAprobadas.length);
+            alert('No se encontraron restaurantes aprobados disponibles.');
+            return;
         }
 
-        console.log('✅ Restaurante encontrado:', restauranteEncontrado);
+        console.log('✅ Restaurante aprobado encontrado:', restauranteEncontrado);
+        console.log('📋 Estado del restaurante:', restauranteEncontrado.estado);
+
+        if (restauranteEncontrado.id_restaurantero) {
+            sessionStorage.setItem('id_restaurantero', restauranteEncontrado.id_restaurantero);
+            localStorage.setItem('id_restaurantero', restauranteEncontrado.id_restaurantero);
+        }
 
         window.restauranteActual = restauranteEncontrado;
 
@@ -139,62 +148,48 @@ document.addEventListener('DOMContentLoaded', async function() {
         }
     }
 
-    function cargarDatosRestaurante(restaurante) {
+    async function cargarDatosRestaurante(restauranteSolicitud) {
         try {
-            console.log('Cargando datos en la vista:', restaurante);
+            const idRestaurantero = restauranteSolicitud.id_restaurantero;
+            if (!idRestaurantero) {
+                console.warn('No se encontró id_restaurantero para cargar datos completos');
+                return;
+            }
+
+            const response = await fetch(`http://localhost:7070/restaurantes/restaurantero/${idRestaurantero}`);
+            if (!response.ok) {
+                throw new Error(`Error al obtener datos del restaurante: HTTP ${response.status}`);
+            }
+            const data = await response.json();
+            const restaurante = (data.data && data.data.length > 0) ? data.data[0] : null;
+            if (!restaurante) {
+                throw new Error('No se encontraron datos del restaurante');
+            }
+
+            let menuUrl = null;
+            try {
+                const menuResponse = await fetch(`http://localhost:7070/menus/restaurantero/${idRestaurantero}`);
+                if (menuResponse.ok) {
+                    const menuData = await menuResponse.json();
+                    if (menuData && menuData.data && menuData.data.length > 0) {
+                        menuUrl = menuData.data[0].ruta_menu || menuData.data[0].ruta_archivo || null;
+                    }
+                }
+            } catch (e) {
+                console.warn('No se pudo obtener el menú del restaurante:', e);
+            }
+            restaurante.menu = menuUrl;
+            window.restauranteActual = restaurante;
 
             const nombreElement = document.querySelector('.restaurante-nombre');
-            if (nombreElement) {
-                nombreElement.textContent = restaurante.restaurante || 'Restaurante sin nombre';
-            }
-
-            const imgPrincipal = document.querySelector('.galeria-principal');
-            if (imgPrincipal) {
-                const imagenPrincipal = restaurante.imagen1 || '../images/img_rest2.jpg';
-                imgPrincipal.src = imagenPrincipal;
-                imgPrincipal.alt = `Imagen principal de ${restaurante.restaurante}`;
-                console.log('Imagen principal cargada:', imagenPrincipal);
-            }
-
-            const galeriaSecundaria = document.querySelector('.galeria-secundaria');
-            if (galeriaSecundaria) {
-                const imagenesSecundarias = [];
-                if (restaurante.imagen2) imagenesSecundarias.push(restaurante.imagen2);
-                if (restaurante.imagen3) imagenesSecundarias.push(restaurante.imagen3);
-                
-                galeriaSecundaria.innerHTML = imagenesSecundarias.length > 0
-                    ? imagenesSecundarias.map(img => `<img src='${img}' alt='Imagen restaurante' class='galeria-thumb' />`).join('')
-                    : '<span style="color:#888">No hay imágenes adicionales</span>';
-
-                console.log('Imágenes secundarias cargadas:', imagenesSecundarias.length);
-            }
+            if (nombreElement) nombreElement.textContent = restaurante.nombre || 'Restaurante sin nombre';
 
             const caracteristicas = document.querySelector('.caracteristicas-lista');
             if (caracteristicas) {
-                let etiquetasArray = [];
-                
-                const etiquetasIndividuales = [
-                    restaurante.etiqueta1,
-                    restaurante.etiqueta2, 
-                    restaurante.etiqueta3
-                ].filter(etiqueta => 
-                    etiqueta && 
-                    etiqueta !== '' && 
-                    etiqueta !== 'Seleccionar' && 
-                    etiqueta.trim() !== ''
-                );
-                
-                if (etiquetasIndividuales.length === 0 && restaurante.etiquetas) {
-                    if (typeof restaurante.etiquetas === 'string') {
-                        etiquetasArray = restaurante.etiquetas.split(',').map(e => e.trim()).filter(e => e && e !== 'Seleccionar');
-                    } else if (Array.isArray(restaurante.etiquetas)) {
-                        etiquetasArray = restaurante.etiquetas.filter(e => e && e !== 'Seleccionar');
-                    }
-                } else {
-                    etiquetasArray = etiquetasIndividuales;
-                }
-                
-                caracteristicas.innerHTML = etiquetasArray.length > 0 
+                const etiquetasArray = typeof restaurante.etiquetas === 'string'
+                    ? restaurante.etiquetas.split(',').map(e => e.trim()).filter(e => e)
+                    : [];
+                caracteristicas.innerHTML = etiquetasArray.length > 0
                     ? etiquetasArray.map(etiqueta =>
                         `<div class='caracteristica-item'>
                             <img src='../images/etiqueta.png' alt='Etiqueta' class='icon-etiqueta' />
@@ -202,13 +197,6 @@ document.addEventListener('DOMContentLoaded', async function() {
                         </div>`
                     ).join('')
                     : '<span style="color:#888">No hay características disponibles</span>';
-                
-                console.log('Etiquetas cargadas:', etiquetasArray);
-                console.log('Etiquetas individuales encontradas:', { 
-                    etiqueta1: restaurante.etiqueta1, 
-                    etiqueta2: restaurante.etiqueta2, 
-                    etiqueta3: restaurante.etiqueta3 
-                });
             }
 
             const horarios = document.querySelector('.restaurante-horarios');
@@ -217,45 +205,150 @@ document.addEventListener('DOMContentLoaded', async function() {
                     <h2>Horarios</h2>
                     <div><img src='../images/reloj.png' alt='Horario' class='icon-16' /> ${restaurante.horario || 'No especificado'}</div>
                 `;
-                console.log('Horarios cargados:', restaurante.horario);
             }
 
             const contactos = document.querySelector('.restaurante-contactos');
             if (contactos) {
-                const telefono = restaurante.numero || restaurante.telefono || 'No especificado';
-                const facebook = restaurante.facebook || 'No especificado';
-                const instagram = restaurante.instagram || 'No especificado';
-                
                 contactos.innerHTML = `
                     <h2>Contactos</h2>
-                    <div><img src='../images/llamada.png' alt='Teléfono' class='icon-16' /> ${telefono}</div>
-                    <div><img src='../images/facebook.png' alt='Facebook' class='icon-16' /> ${facebook}</div>
-                    <div><img src='../images/instagram.png' alt='Instagram' class='icon-16' /> ${instagram}</div>
+                    <div><img src='../images/llamada.png' alt='Teléfono' class='icon-16' /> ${restaurante.telefono || 'No especificado'}</div>
+                    <div><img src='../images/facebook.png' alt='Facebook' class='icon-16' /> ${restaurante.facebook || 'No especificado'}</div>
+                    <div><img src='../images/instagram.png' alt='Instagram' class='icon-16' /> ${restaurante.instagram || 'No especificado'}</div>
                 `;
-                console.log('Contactos cargados:', { telefono, facebook, instagram });
             }
 
             const ubicacion = document.querySelector('.restaurante-ubicacion');
             if (ubicacion) {
-                const direccion = restaurante.direccion || 'No especificada';
                 ubicacion.innerHTML = `
                     <h2>Ubicación</h2>
-                    <div><img src='../images/ubicacion.png' alt='Ubicación' class='icon-16' /> ${direccion}</div>
+                    <div><img src='../images/ubicacion.png' alt='Ubicación' class='icon-16' /> ${restaurante.direccion || 'No especificada'}</div>
                 `;
-                console.log('Ubicación cargada:', direccion);
             }
 
-            if (restaurante.descripcion) {
-                console.log('Descripción disponible:', restaurante.descripcion);
-            }
-            if (restaurante.menu) {
-                console.log('Menú disponible:', restaurante.menu);
-            }
+            cargarImagenesRestaurante(restaurante);
 
-            console.log('Todos los datos cargados correctamente');
+            console.log('✅ Datos del restaurante cargados:', restaurante);
 
         } catch (error) {
             console.error('Error al cargar datos en la vista:', error);
         }
     }
+
+    async function cargarImagenesRestaurante(restaurante) {
+        try {
+            const idRestaurantero = restaurante.id_restaurantero;
+            if (!idRestaurantero) {
+                console.warn('No se encontró id_restaurantero para cargar imágenes');
+                cargarImagenesDefault();
+                return;
+            }
+
+            console.log('🖼️ Cargando imágenes para restaurantero:', idRestaurantero);
+
+            const response = await fetch(`http://localhost:7070/imagenes/restaurantero/${idRestaurantero}`, {
+                method: 'GET',
+                headers: { 'Content-Type': 'application/json' }
+            });
+
+            if (!response.ok) {
+                console.warn(`Error al cargar imágenes: HTTP ${response.status}`);
+                cargarImagenesDefault();
+                return;
+            }
+
+            const responseData = await response.json();
+            console.log('📸 Respuesta de imágenes:', responseData);
+
+            const imagenes = responseData.data || responseData;
+            
+            if (!Array.isArray(imagenes) || imagenes.length === 0) {
+                console.warn('No se encontraron imágenes para este restaurante');
+                cargarImagenesDefault();
+                return;
+            }
+
+            const imgPrincipal = document.querySelector('.galeria-principal');
+            if (imgPrincipal && imagenes.length > 0) {
+                const imagenPrincipal = imagenes[0].ruta_imagen;
+                imgPrincipal.src = imagenPrincipal;
+                imgPrincipal.alt = `Imagen principal de ${restaurante.nombre_propuesto_restaurante}`;
+                console.log('🖼️ Imagen principal cargada:', imagenPrincipal);
+            }
+
+            const galeriaSecundaria = document.querySelector('.galeria-secundaria');
+            if (galeriaSecundaria) {
+                const imagenesSecundarias = imagenes.slice(1); 
+                
+                galeriaSecundaria.innerHTML = imagenesSecundarias.length > 0
+                    ? imagenesSecundarias.map(img => 
+                        `<img src='${img.ruta_imagen}' alt='Imagen restaurante' class='galeria-thumb' />`
+                    ).join('')
+                    : '<span style="color:#888">No hay imágenes adicionales</span>';
+
+                console.log('🖼️ Imágenes secundarias cargadas:', imagenesSecundarias.length);
+            }
+
+            console.log(`✅ Se cargaron ${imagenes.length} imágenes del restaurante`);
+
+        } catch (error) {
+            console.error('Error al cargar imágenes del restaurante:', error);
+            cargarImagenesDefault();
+        }
+    }
+
+    function cargarImagenesDefault() {
+        console.log('🖼️ Cargando imágenes por defecto');
+        
+        const imgPrincipal = document.querySelector('.galeria-principal');
+        if (imgPrincipal) {
+            imgPrincipal.src = '../images/img_rest2.jpg';
+            imgPrincipal.alt = 'Imagen por defecto del restaurante';
+        }
+
+        const galeriaSecundaria = document.querySelector('.galeria-secundaria');
+        if (galeriaSecundaria) {
+            galeriaSecundaria.innerHTML = '<span style="color:#888">No hay imágenes adicionales</span>';
+        }
+    }
 });
+async function enviarEncuesta() {
+    try {
+        const idRestaurantero = window.restauranteActual?.id_restaurantero;
+        if (!idRestaurantero) {
+            alert('No se pudo identificar el restaurante.');
+            return;
+        }
+
+        const opinion = document.getElementById('opinionSelect')?.value || '';
+        const origen = document.getElementById('origenSelect')?.value || '';
+
+        if (!opinion || !origen) {
+            alert('Por favor selecciona una opción en ambas preguntas.');
+            return;
+        }
+
+        const body = {
+            cantidad_descargas: 1,
+            opinion,
+            origen
+        };
+
+        const response = await fetch(`http://localhost:7070/descargas/restaurantero/${idRestaurantero}`, {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(body)
+        });
+
+        if (response.ok) {
+            alert('¡Gracias por tu respuesta!');
+            if (typeof closeEncuestaModal === 'function') closeEncuestaModal();
+        } else {
+            const errorText = await response.text();
+            alert('Error al registrar la encuesta: ' + errorText);
+        }
+    } catch (error) {
+        alert('Error al enviar la encuesta: ' + error.message);
+    }
+}
+
+window.enviarEncuesta = enviarEncuesta;
