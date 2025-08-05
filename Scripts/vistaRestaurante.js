@@ -9,7 +9,7 @@ document.addEventListener('DOMContentLoaded', async function() {
     async function verificarBackend(reintentos = 3) {
         for (let i = 0; i < reintentos; i++) {
             try {
-                const response = await fetch('http://localhost:7070/solicitudes', {
+                const response = await fetch('http://52.23.26.163:7070/solicitudes', {
                     method: 'GET',
                     headers: { 'Content-Type': 'application/json' },
                     timeout: 10000
@@ -38,10 +38,10 @@ document.addEventListener('DOMContentLoaded', async function() {
         
         const backendDisponible = await verificarBackend();
         if (!backendDisponible) {
-            throw new Error('Backend no disponible en http://localhost:7070');
+            throw new Error('Backend no disponible en http://52.23.26.163:7070');
         }
 
-        const response = await fetch('http://localhost:7070/solicitudes', {
+        const response = await fetch('http://52.23.26.163:7070/solicitudes', {
             method: 'GET',
             headers: { 'Content-Type': 'application/json' }
         });
@@ -156,7 +156,7 @@ document.addEventListener('DOMContentLoaded', async function() {
                 return;
             }
 
-            const response = await fetch(`http://localhost:7070/restaurantes/restaurantero/${idRestaurantero}`);
+            const response = await fetch(`http://52.23.26.163:7070/restaurantes/restaurantero/${idRestaurantero}`);
             if (!response.ok) {
                 throw new Error(`Error al obtener datos del restaurante: HTTP ${response.status}`);
             }
@@ -168,7 +168,7 @@ document.addEventListener('DOMContentLoaded', async function() {
 
             let menuUrl = null;
             try {
-                const menuResponse = await fetch(`http://localhost:7070/menus/restaurantero/${idRestaurantero}`);
+                const menuResponse = await fetch(`http://52.23.26.163:7070/menus/restaurantero/${idRestaurantero}`);
                 if (menuResponse.ok) {
                     const menuData = await menuResponse.json();
                     if (menuData && menuData.data && menuData.data.length > 0) {
@@ -245,7 +245,7 @@ document.addEventListener('DOMContentLoaded', async function() {
 
             console.log('🖼️ Cargando imágenes para restaurantero:', idRestaurantero);
 
-            const response = await fetch(`http://localhost:7070/imagenes/restaurantero/${idRestaurantero}`, {
+            const response = await fetch(`http://52.23.26.163:7070/imagenes/restaurantero/${idRestaurantero}`, {
                 method: 'GET',
                 headers: { 'Content-Type': 'application/json' }
             });
@@ -333,7 +333,7 @@ async function enviarEncuesta() {
             origen
         };
 
-        const response = await fetch(`http://localhost:7070/descargas/restaurantero/${idRestaurantero}`, {
+        const response = await fetch(`http://52.23.26.163:7070/descargas/restaurantero/${idRestaurantero}`, {
             method: 'PUT',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(body)

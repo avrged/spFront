@@ -19,7 +19,7 @@ async function crearTarjetaRestaurante(solicitud) {
     
     if (solicitud.id_restaurantero) {
         try {
-            const response = await fetch(`http://localhost:7070/imagenes/restaurantero/${solicitud.id_restaurantero}`);
+            const response = await fetch(`http://52.23.26.163:7070/imagenes/restaurantero/${solicitud.id_restaurantero}`);
             if (response.ok) {
                 const responseData = await response.json();
                 const imagenes = responseData.data || responseData;
@@ -172,7 +172,7 @@ document.addEventListener('DOMContentLoaded', async function() {
     try {
         console.log('Intentando cargar solicitudes...');
         
-        const response = await fetch('http://localhost:7070/solicitudes', {
+        const response = await fetch('http://52.23.26.163:7070/solicitudes', {
             method: 'GET',
             headers: { 'Content-Type': 'application/json' }
         });

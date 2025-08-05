@@ -100,7 +100,7 @@ function initializeLoginForm() {
         parent = parent.parentElement;
       }
 
-      fetch('http://localhost:7070/auth/login', {
+      fetch('http://52.23.26.163:7070/auth/login', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({

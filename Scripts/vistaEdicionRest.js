@@ -20,7 +20,7 @@ document.addEventListener('DOMContentLoaded', function() {
     async function verificarBackend(reintentos = 3) {
         for (let i = 0; i < reintentos; i++) {
             try {
-                const response = await fetch('http://localhost:7070/solicitudes', {
+                const response = await fetch('http://52.23.26.163:7070/solicitudes', {
                     method: 'GET',
                     headers: { 'Content-Type': 'application/json' },
                     timeout: 10000
@@ -44,7 +44,7 @@ document.addEventListener('DOMContentLoaded', function() {
         try {
             const backendDisponible = await verificarBackend();
             if (!backendDisponible) {
-                throw new Error('Backend no disponible en http://localhost:7070');
+                throw new Error('Backend no disponible en http://52.23.26.163:7070');
             }
             const idUsuario = sessionStorage.getItem('id') || localStorage.getItem('id');
             const correoUsuario = sessionStorage.getItem('correo') || localStorage.getItem('correo');
@@ -57,7 +57,7 @@ document.addEventListener('DOMContentLoaded', function() {
             let telefonoUsuario = null;
             if (correoUsuario) {
                 try {
-                    const responseSolicitudes = await fetch(`http://localhost:7070/solicitudes`, {
+                    const responseSolicitudes = await fetch(`http://52.23.26.163:7070/solicitudes`, {
                         method: 'GET',
                         headers: { 'Content-Type': 'application/json' }
                     });
@@ -89,7 +89,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     idRestauranteroValido = window.solicitudUsuario.id_restaurantero;
                 }
                 if (idRestauranteroValido) {
-                    const restauranteResponse = await fetch(`http://localhost:7070/restaurantes/restaurantero/${idRestauranteroValido}`, {
+                    const restauranteResponse = await fetch(`http://52.23.26.163:7070/restaurantes/restaurantero/${idRestauranteroValido}`, {
                         method: 'GET',
                         headers: { 'Content-Type': 'application/json' }
                     });
@@ -110,7 +110,7 @@ document.addEventListener('DOMContentLoaded', function() {
                         }
                     }
                 }
-                response = await fetch('http://localhost:7070/solicitudes', {
+                response = await fetch('http://52.23.26.163:7070/solicitudes', {
                     method: 'GET',
                     headers: { 'Content-Type': 'application/json' }
                 });
@@ -188,7 +188,7 @@ document.addEventListener('DOMContentLoaded', function() {
         try {
             console.log('🖼️ Cargando imágenes para restaurantero ID:', idRestaurantero);
             
-            const response = await fetch(`http://localhost:7070/imagenes/restaurantero/${idRestaurantero}`);
+            const response = await fetch(`http://52.23.26.163:7070/imagenes/restaurantero/${idRestaurantero}`);
             
             if (response.ok) {
                 const result = await response.json();
@@ -514,7 +514,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 const formData = new FormData();
                 formData.append('ruta_imagen', imagen.input.files[0]);
                 
-                const response = await fetch(`http://localhost:7070/imagenes/${imagen.idImagen}`, {
+                const response = await fetch(`http://52.23.26.163:7070/imagenes/${imagen.idImagen}`, {
                     method: 'PUT',
                     body: formData
                 });
@@ -569,9 +569,9 @@ document.addEventListener('DOMContentLoaded', function() {
             };
 
             console.log('📤 Datos a enviar:', datosRestaurante);
-            console.log('🌐 URL del endpoint:', `http://localhost:7070/restaurantes/actualizar/${idRestaurante}`);
+            console.log('🌐 URL del endpoint:', `http://52.23.26.163:7070/restaurantes/actualizar/${idRestaurante}`);
 
-            const response = await fetch(`http://localhost:7070/restaurantes/actualizar/${idRestaurante}`, {
+            const response = await fetch(`http://52.23.26.163:7070/restaurantes/actualizar/${idRestaurante}`, {
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json'
@@ -609,7 +609,7 @@ document.addEventListener('DOMContentLoaded', function() {
             const formData = new FormData();
             formData.append('ruta_archivo', menuInput.files[0]);
             formData.append('ruta_menu', menuInput.files[0]);
-            const response = await fetch(`http://localhost:7070/menus/restaurantero/${idRestaurantero}`, {
+            const response = await fetch(`http://52.23.26.163:7070/menus/restaurantero/${idRestaurantero}`, {
                 method: 'PUT',
                 body: formData
             });

@@ -6,7 +6,7 @@ async function prefetchCantidadDescargas() {
     const idRestaurantero = restaurante?.id_restaurantero || restauranteId;
     if (!idRestaurantero) return;
     try {
-        const resp = await fetch(`http://localhost:7070/descargas/restaurantero/${idRestaurantero}?_=${Date.now()}`);
+        const resp = await fetch(`http://52.23.26.163:7070/descargas/restaurantero/${idRestaurantero}?_=${Date.now()}`);
         if (resp.ok) {
             const data = await resp.json();
             if (data && Array.isArray(data.data) && data.data.length > 0) {
@@ -61,8 +61,8 @@ function initEncuestaForm() {
                 let menuUrlOriginal = restaurante.menu;
                 let menuUrlAlterna = menuUrlOriginal;
                 
-                if (menuUrlOriginal.includes('localhost:7070')) {
-                    menuUrlAlterna = menuUrlOriginal.replace('localhost:7070', '75.101.159.172:7070');
+                if (menuUrlOriginal.includes('52.23.26.163:7070')) {
+                    menuUrlAlterna = menuUrlOriginal.replace('52.23.26.163:7070', '75.101.159.172:7070');
                     console.log('🔄 URL corregida para descarga:', menuUrlAlterna);
                 } else if (!menuUrlOriginal.startsWith('http')) {
                     
@@ -133,7 +133,7 @@ function initEncuestaForm() {
                 
                 let cantidadDescargas = 1;
                 try {
-                    const resp = await fetch(`http://localhost:7070/descargas/restaurantero/${idRestaurantero}?_=${Date.now()}`);
+                    const resp = await fetch(`http://52.23.26.163:7070/descargas/restaurantero/${idRestaurantero}?_=${Date.now()}`);
                     if (resp.ok) {
                         const data = await resp.json();
                         if (data && Array.isArray(data.data) && data.data.length > 0) {
@@ -160,7 +160,7 @@ function initEncuestaForm() {
                 };
                 console.log('📊 Enviando encuesta con los siguientes datos:', encuestaBody);
                 try {
-                    const response = await fetch('http://localhost:7070/descargas', {
+                    const response = await fetch('http://52.23.26.163:7070/descargas', {
                         method: 'POST',
                         headers: { 'Content-Type': 'application/json' },
                         body: JSON.stringify(encuestaBody)

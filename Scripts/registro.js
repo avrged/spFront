@@ -86,7 +86,7 @@ function initializeRegistroForm() {
         try {
             console.log("Enviando solicitud de registro...");
             
-            const response = await fetch('http://localhost:7070/usuarios', {
+            const response = await fetch('http://52.23.26.163:7070/usuarios', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({

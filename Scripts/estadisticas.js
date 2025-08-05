@@ -6,7 +6,7 @@ document.addEventListener('DOMContentLoaded', function() {
         return;
     }
 
-    fetch(`http://localhost:7070/descargas/restaurantero/${idRestaurantero}`)
+    fetch(`http://52.23.26.163:7070/descargas/restaurantero/${idRestaurantero}`)
         .then(res => res.json())
         .then(data => {
             let maxDescargas = 0;

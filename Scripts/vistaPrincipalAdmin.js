@@ -117,7 +117,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 try {
                     console.log('🗑️ Eliminando restaurante:', { nombre, idRestaurantero });
                     
-                    const response = await fetch(`http://localhost:7070/solicitudes/restaurantero/${idRestaurantero}/rechazar`, {
+                    const response = await fetch(`http://52.23.26.163:7070/solicitudes/restaurantero/${idRestaurantero}/rechazar`, {
                         method: 'DELETE'
                     });
                     
@@ -200,7 +200,7 @@ document.addEventListener('DOMContentLoaded', function () {
                     console.log('Datos de la solicitud a aprobar:', datosRestaurante);
                     console.log('🎯 Aprobando solicitud con ID Restaurantero:', idRestaurantero);
                     
-                    const response = await fetch(`http://localhost:7070/solicitudes/restaurantero/${idRestaurantero}/aprobar`, {
+                    const response = await fetch(`http://52.23.26.163:7070/solicitudes/restaurantero/${idRestaurantero}/aprobar`, {
                         method: 'PUT',
                         headers: {
                             'Content-Type': 'application/json'
@@ -242,7 +242,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 }
                 if (!confirm('¿Seguro que deseas rechazar esta solicitud?')) return;
                 try {
-                    const response = await fetch(`http://localhost:7070/solicitudes/restaurantero/${idRestaurantero}/rechazar`, {
+                    const response = await fetch(`http://52.23.26.163:7070/solicitudes/restaurantero/${idRestaurantero}/rechazar`, {
                         method: 'DELETE'
                     });
                     if (response.ok) {
@@ -261,7 +261,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     async function cargarSolicitudes() {
         try {
-            const response = await fetch('http://localhost:7070/solicitudes');
+            const response = await fetch('http://52.23.26.163:7070/solicitudes');
             if (!response.ok) throw new Error('No se pudo obtener las solicitudes');
             const result = await response.json();
             const solicitudes = result.data || [];
@@ -287,7 +287,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 let direccionRestaurante = direccion;
                 if (idRestaurantero && idRestaurantero !== 'Sin ID') {
                     try {
-                        const restauranteResponse = await fetch(`http://localhost:7070/restaurantes/restaurantero/${idRestaurantero}`);
+                        const restauranteResponse = await fetch(`http://52.23.26.163:7070/restaurantes/restaurantero/${idRestaurantero}`);
                         if (restauranteResponse.ok) {
                             const restauranteResult = await restauranteResponse.json();
                             const restaurantes = restauranteResult.data || [];
@@ -299,7 +299,7 @@ document.addEventListener('DOMContentLoaded', function () {
                         }
                     } catch (err) {}
                     try {
-                        const imagenesResponse = await fetch(`http://localhost:7070/imagenes/restaurantero/${idRestaurantero}`);
+                        const imagenesResponse = await fetch(`http://52.23.26.163:7070/imagenes/restaurantero/${idRestaurantero}`);
                         if (imagenesResponse.ok) {
                             const imagenesResult = await imagenesResponse.json();
                             const imagenes = imagenesResult.data || [];
@@ -312,7 +312,7 @@ document.addEventListener('DOMContentLoaded', function () {
                         }
                     } catch (err) {}
                     try {
-                        const comprobantesResponse = await fetch(`http://localhost:7070/comprobantes/restaurantero/${idRestaurantero}`);
+                        const comprobantesResponse = await fetch(`http://52.23.26.163:7070/comprobantes/restaurantero/${idRestaurantero}`);
                         if (comprobantesResponse.ok) {
                             const comprobantesResult = await comprobantesResponse.json();
                             const comprobantes = comprobantesResult.data || [];
@@ -325,7 +325,7 @@ document.addEventListener('DOMContentLoaded', function () {
                         }
                     } catch (err) {}
                     try {
-                        const menusResponse = await fetch(`http://localhost:7070/menus/restaurantero/${idRestaurantero}`);
+                        const menusResponse = await fetch(`http://52.23.26.163:7070/menus/restaurantero/${idRestaurantero}`);
                         if (menusResponse.ok) {
                             const menusResult = await menusResponse.json();
                             const menus = menusResult.data || [];
@@ -368,7 +368,7 @@ document.addEventListener('DOMContentLoaded', function () {
     async function cargarRestaurantes() {
         try {
             console.log('📋 Cargando lista de restaurantes...');
-            const response = await fetch('http://localhost:7070/solicitudes');
+            const response = await fetch('http://52.23.26.163:7070/solicitudes');
             if (!response.ok) throw new Error('No se pudo obtener las solicitudes');
             const result = await response.json();
             const solicitudes = result.data || [];
@@ -418,7 +418,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 if ((!direccionOriginal || !telefono || telefono === 'Sin teléfono') && idRestaurantero && idRestaurantero !== '') {
                     try {
                         console.log('🏠📞 Consultando endpoint para obtener datos completos del restaurantero:', idRestaurantero);
-                        const restauranteResponse = await fetch(`http://localhost:7070/restaurantes/restaurantero/${idRestaurantero}`);
+                        const restauranteResponse = await fetch(`http://52.23.26.163:7070/restaurantes/restaurantero/${idRestaurantero}`);
                         console.log('🏠📞 Estado de la respuesta:', restauranteResponse.status, restauranteResponse.statusText);
                         
                         if (restauranteResponse.ok) {

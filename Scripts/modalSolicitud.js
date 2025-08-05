@@ -41,7 +41,7 @@ document.addEventListener("DOMContentLoaded", function () {
   // Función para obtener el último id_restaurantero
   // Función para obtener el último usuario tipo restaurantero
   async function obtenerUltimoRestaurantero() {
-    const response = await fetch('http://localhost:7070/restauranteros');
+    const response = await fetch('http://52.23.26.163:7070/restauranteros');
     const data = await response.json();
     if (!Array.isArray(data) || data.length === 0) return null;
     // Filtrar solo usuarios tipo restaurantero
@@ -195,9 +195,9 @@ document.addEventListener("DOMContentLoaded", function () {
 
       
       try {
-        console.log('Enviando solicitud al endpoint:', 'http://localhost:7070/registro-restaurante');
+        console.log('Enviando solicitud al endpoint:', 'http://52.23.26.163:7070/registro-restaurante');
         
-        const response = await fetch('http://localhost:7070/registro-restaurante', {
+        const response = await fetch('http://52.23.26.163:7070/registro-restaurante', {
           method: 'POST',
           body: formData
         });
